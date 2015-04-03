@@ -24,7 +24,7 @@ namespace ABus.Contracts
         /// </summary>
         public TimeSpan TimeToBeReceived { get; set; }
 
-        public string MessageId { get { return null; } }
+        public string MessageId { get; set; }
 
 
         /// <summary>
@@ -35,6 +35,6 @@ namespace ABus.Contracts
         /// <summary>
         /// Gets/sets the body content of the message
         /// </summary>
-        public object Body { get; set; }
+        public byte[] Body { get; set; }
     }
 }

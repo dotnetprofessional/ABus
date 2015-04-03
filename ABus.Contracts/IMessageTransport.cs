@@ -23,6 +23,20 @@ namespace ABus.Contracts
         /// <param name="message"></param>
         void Send(string queue, RawMessage message);
 
+        void Send(string queue, IEnumerable<RawMessage> message);
+
+        /// <summary>
+        /// Sends a command message to the Endpoint
+        /// </summary>
+        /// <param name="message"></param>
+        Task SendAsync(string queue, RawMessage message);
+
+        /// <summary>
+        /// Sends a command message to the Endpoint
+        /// </summary>
+        /// <param name="message"></param>
+        Task SendAsync(string queue, IEnumerable<RawMessage> message);
+
         /// <summary>
         /// Create a subsription on the Endpoint
         /// </summary>
