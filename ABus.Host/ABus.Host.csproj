@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BB4F786C-2966-4E73-91BB-6775CF177CF7}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{1E70FE4D-E996-4835-8532-EC46F69380B4}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ABus.Contracts</RootNamespace>
-    <AssemblyName>ABus.Contracts</AssemblyName>
+    <RootNamespace>ABus.Host</RootNamespace>
+    <AssemblyName>ABus.Host</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -30,30 +32,49 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Topshelf">
+      <HintPath>..\packages\Topshelf.3.1.4\lib\net40-full\Topshelf.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
-    <Compile Include="IBus.cs" />
-    <Compile Include="ICommand.cs" />
-    <Compile Include="IEvent.cs" />
-    <Compile Include="IHandleMessage.cs" />
-    <Compile Include="IMessage.cs" />
-    <Compile Include="IMessageQueue.cs" />
-    <Compile Include="IMessageTransport.cs" />
-    <Compile Include="MetaData.cs" />
-    <Compile Include="MetaDataCollection.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueueEndpoint.cs" />
-    <Compile Include="RawMessage.cs" />
-    <Compile Include="RawMessageReceivedEventArgs.cs" />
-    <Compile Include="TransportException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ABus.AzureServiceBus\ABus.AzureServiceBus.csproj">
+      <Project>{f8c6d3b9-51cd-4701-b353-a648cc0fcf16}</Project>
+      <Name>ABus.AzureServiceBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ABus.Contracts\ABus.Contracts.csproj">
+      <Project>{bb4f786c-2966-4e73-91bb-6775cf177cf7}</Project>
+      <Name>ABus.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ABus.Sample\ABus.Sample.csproj">
+      <Project>{4073ad6a-33ab-471a-a2f1-fe8c68b3798c}</Project>
+      <Name>ABus.Sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ABus\ABus.csproj">
+      <Project>{5cad9197-311e-4ad0-a3ea-66f25e150816}</Project>
+      <Name>ABus</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
