@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Sample", "ABus.Sample\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus", "ABus\ABus.csproj", "{5CAD9197-311E-4AD0-A3EA-66F25E150816}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Unity", "ABus.Unity\ABus.Unity.csproj", "{CDB63549-9343-483C-9009-57155799CEAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,16 @@ Global
 		{5CAD9197-311E-4AD0-A3EA-66F25E150816}.Release|ARM.ActiveCfg = Release|Any CPU
 		{5CAD9197-311E-4AD0-A3EA-66F25E150816}.Release|x64.ActiveCfg = Release|Any CPU
 		{5CAD9197-311E-4AD0-A3EA-66F25E150816}.Release|x86.ActiveCfg = Release|Any CPU
+		{CDB63549-9343-483C-9009-57155799CEAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB63549-9343-483C-9009-57155799CEAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB63549-9343-483C-9009-57155799CEAF}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{CDB63549-9343-483C-9009-57155799CEAF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CDB63549-9343-483C-9009-57155799CEAF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CDB63549-9343-483C-9009-57155799CEAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB63549-9343-483C-9009-57155799CEAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDB63549-9343-483C-9009-57155799CEAF}.Release|ARM.ActiveCfg = Release|Any CPU
+		{CDB63549-9343-483C-9009-57155799CEAF}.Release|x64.ActiveCfg = Release|Any CPU
+		{CDB63549-9343-483C-9009-57155799CEAF}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

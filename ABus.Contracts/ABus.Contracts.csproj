@@ -42,6 +42,7 @@
     <Compile Include="Class1.cs" />
     <Compile Include="IBus.cs" />
     <Compile Include="ICommand.cs" />
+    <Compile Include="IConfigureHost.cs" />
     <Compile Include="IEvent.cs" />
     <Compile Include="IHandleMessage.cs" />
     <Compile Include="IMessage.cs" />

@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Reflection;
+﻿using System.Configuration;
+using System.Diagnostics;
 using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using ABus.AzureServiceBus;
 using ABus.Contracts;
 using ABus.Sample;
+using ABus.Unity;
 using Newtonsoft.Json;
 using Topshelf;
-using Topshelf.Hosts;
-using Topshelf.Logging;
 
 namespace ABus.Host
 {
@@ -20,9 +14,27 @@ namespace ABus.Host
     {
         public static void Main()
         {
+            var p = new Pipeline(new UnityContainerAdaptor());
+
+            p.Authenticate
+                .Register<SampleMessageHandler>()
+                .AndAlso<SampleMessageHandler>()
+                .And()
+                .Authenticate.Register<SampleMessageHandler>();
+
+            p.Start();
+        }
+
+
+        public static void Main2()
+        {
+            var consoleTracer = new ConsoleTraceListener();
+            
+            Trace.Listeners.Add(consoleTracer);
+
             // Create the topic
             var t = new AzureBusTransport();
-            var host = new ABus.Contracts.HostDefinition
+            var host = new HostDefinition
             {
                 Uri = "sb://abus-dev.servicebus.windows.net",
                 Credentials = "SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uyauQw6sme25rx0EzLc/2VSWafIF6PROzdkZ9A4N918=",
@@ -33,15 +45,16 @@ namespace ABus.Host
 
             var entity = new TestMessage { Name = "Sample Message", Addresss = "1 Way" };
             var json = JsonConvert.SerializeObject(entity);
-            var raw = new RawMessage { Body = System.Text.Encoding.Unicode.GetBytes(json) };
+            var raw = new RawMessage { Body = Encoding.Unicode.GetBytes(json) };
             var endpoint = new QueueEndpoint { Host = host.Uri, Name = "ABus.Sample.TestMessage" };
             t.Send(endpoint, raw);
 
+            var busProcess = new BusProcessHost();
             HostFactory.Run(x =>
             {
                 x.Service<BusProcessHost>(s =>
                 {
-                    s.ConstructUsing(name => new BusProcessHost());
+                    s.ConstructUsing(name => busProcess);
                     s.WhenStarted(tc => tc.Start());
                     s.WhenStopped(tc => tc.Stop());
                 });

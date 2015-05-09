@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ABus.AzureServiceBus;
 using ABus.Contracts;
+using Microsoft.Practices.Unity;
 using Newtonsoft.Json;
 
 namespace ABus
@@ -49,13 +50,18 @@ namespace ABus
 
     public class BusProcessHost
     {
-        // TODO: This should be a collection that is associated with the message namespaces it handles
-        IMessageTransport Transport { get; set; }
+        IUnityContainer Container { get; set; }
+
+        MessageTransportFactory TransportFactory;
+        public IMessageTransport Transport { get; set; }
 
         Dictionary<string, HostDefinition> HostDefinitions;
  
         public BusProcessHost()
         {
+            this.Container = new UnityContainer();
+
+
             this.InitializeHostDefinitions();
             this.ConfigureHosts();
 
@@ -67,6 +73,11 @@ namespace ABus
                 this.RegisterEventHandlers(h);
         }
 
+        void RegisterTypes()
+        {
+            this.Container.RegisterType<IBus, Bus>();
+
+        }
         /// <summary>
         /// Sets the host definitions for each host Uri
         /// </summary>
@@ -87,25 +98,14 @@ namespace ABus
 
         void ConfigureHosts()
         {
-            foreach(var h in this.HostDefinitions)
-                this.ConfigureHost(h.Value);
-        }
-
-        /// <summary>
-        /// Configures a Host transport based on its definition
-        /// </summary>
-        void ConfigureHost(HostDefinition host)
-        {
-            // TODO: Make this smarter so that only one instance of any given transport is created
-
-            var hostInstance = Activator.CreateInstance(host.Transport) as IMessageTransport;
-            if (hostInstance != null)
+            this.TransportFactory = new MessageTransportFactory();
+            foreach (var h in this.HostDefinitions)
             {
-                hostInstance.ConfigureHost(host);
+                var transport = this.TransportFactory.GetTransport(h.Value);
+                transport.MessageReceived += Transport_MessageReceived;
 
-                this.Transport = hostInstance;
-                // Listen for any incomming messages from the transport
-                this.Transport.MessageReceived += Transport_MessageReceived;
+                // TODO: Need to find a way to support multiple transports
+                this.Transport = transport;
             }
         }
 
@@ -139,6 +139,7 @@ namespace ABus
 
             // Only deal with implementations of IHandleMessage interfaces
             var interfaces = handlerInterfaces.Where(i => i.Name == "IHandleMessage`1");
+            var tasks = new List<Task>();
             foreach (var interfaceImplementation in interfaces)
             {
                 // Get the message type used
@@ -169,10 +170,14 @@ namespace ABus
                 // At the moment commands and events are treated the same, this needs to change later
 
                 var endpoint = this.GetQueueEndpointFromType(messageType);
+                Trace.Write(string.Format("Adding subscription {0}:{1}-->{2}...", endpoint.Host, endpoint.Name, subscriptionKey));
                 var t = this.Transport.SubscribeAsync(endpoint, subscriptionKey);
-                t.Wait();
+                tasks.Add(t);
+                Trace.WriteLine("done.");
             }
+            Task.WaitAll(tasks.ToArray());
         }
+
 
         /// <summary>
         /// Searches all loaded dlls for classes that implement the IHandeMesssage interface
@@ -181,11 +186,13 @@ namespace ABus
         List<Type> SearchForHandlers()
         {
             IEnumerable<Type> types =
-            (from a in AppDomain.CurrentDomain.GetAssemblies()
-            from t in a.GetTypes()
-            from i in t.GetTypeInfo().ImplementedInterfaces
-            where i.Name == "IHandleMessage`1"
-            select t).Distinct();
+                (from a in AppDomain.CurrentDomain.GetAssemblies()
+                 where a.FullName.StartsWith("Microsoft") == false
+                    from t in a.GetTypes()
+                    
+                    from i in t.GetTypeInfo().ImplementedInterfaces
+                    where i.Name == "IHandleMessage`1"
+                    select t).Distinct();
             return types.ToList();
         }
 
@@ -223,6 +230,25 @@ namespace ABus
             return endpoint;
         }
 
+    }
+
+    public class MessageTransportFactory
+    {
+        Dictionary<string, IMessageTransport> HostInstances = new Dictionary<string, IMessageTransport>(); 
+        public IMessageTransport GetTransport(HostDefinition host)
+        {
+            if (!this.HostInstances.ContainsKey(host.Transport.FullName))
+            {
+                var hostInstance = Activator.CreateInstance(host.Transport) as IMessageTransport;
+                if (hostInstance != null)
+                {
+                    hostInstance.ConfigureHost(host);
+                    this.HostInstances.Add(host.Transport.FullName, hostInstance);
+                }
+            }
+
+            return this.HostInstances[host.Transport.FullName];
+        }
     }
 
     public class HandlerInstance
