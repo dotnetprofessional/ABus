@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Text;
 using ABus.AzureServiceBus;
@@ -14,6 +15,9 @@ namespace ABus.Host
     {
         public static void Main()
         {
+            var consoleTracer = new ConsoleTraceListener();
+            Trace.Listeners.Add(consoleTracer);
+
             var p = new Pipeline(new UnityContainerAdaptor());
 
             p.Authenticate
@@ -23,6 +27,8 @@ namespace ABus.Host
                 .Authenticate.Register<SampleMessageHandler>();
 
             p.Start();
+
+            Console.ReadLine();
         }
 
 

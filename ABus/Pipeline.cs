@@ -46,6 +46,7 @@ namespace ABus
 
             // Define system tasks and put them in the appropriate pipeline stages
             this.InitializationPipeline.AddTask(PiplineStages.Initialize, typeof(InitailizePipeline));
+            this.InitializationPipeline.AddTask(PiplineStages.Initialize, typeof(InitailizePipeline2));
         }
 
         /// <summary>
@@ -71,9 +72,19 @@ namespace ABus
         {
 
             var taskInstance = this.ServiceLocator.GetInstance(task.Value) as IPipelineInitializationTask;
-            taskInstance.Invoke(context, () => this.ExecuteInitializationTask(context, task.Next));
+            taskInstance.Invoke(context, () =>
+            {
+                if (task.Next != null)
+                    this.ExecuteInitializationTask(context, task.Next);
+            });
         }
 
+        void ExecuteMessageTask(MessageContext context, LinkedListNode<Type> task)
+        {
+
+            var taskInstance = this.ServiceLocator.GetInstance(task.Value) as IPipelineMessageTask;
+            taskInstance.Invoke(context, () => this.ExecuteMessageTask(context, task.Next));
+        }
 
 
         public PipelineStageGrammar Authenticate
