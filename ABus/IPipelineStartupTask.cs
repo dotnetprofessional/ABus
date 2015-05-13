@@ -2,7 +2,7 @@ using System;
 
 namespace ABus
 {
-    public interface IPipelineInitializationTask
+    public interface IPipelineStartupTask
     {
         void Invoke(PipelineContext context, Action next);
     }

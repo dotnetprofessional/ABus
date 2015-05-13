@@ -8,11 +8,11 @@ namespace ABus
         public Stage(string name)
         {
             this.Name = name;
-            this.Tasks = new LinkedList<Type>();
+            this.Tasks = new LinkedList<PipelineTask>();
         }
 
         public string Name { get; private set; }
 
-        public LinkedList<Type> Tasks { get; private set; }
+        public LinkedList<PipelineTask> Tasks { get; private set; }
     }
 }

@@ -61,10 +61,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusProcessHost.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="InitailizePipeline.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="StageCollection.cs" />
-    <Compile Include="IPipelineInitializationTask.cs" />
+    <Compile Include="IPipelineStartupTask.cs" />
     <Compile Include="IPipelineMessageTask.cs" />
     <Compile Include="MessageContext.cs" />
     <Compile Include="PipelineContext.cs" />

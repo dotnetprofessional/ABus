@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ABus
 {
@@ -16,9 +15,9 @@ namespace ABus
         /// Returns an ordered list of tasks
         /// </summary>
         /// <returns></returns>
-        public LinkedList<Type> GetTasks()
+        public LinkedList<PipelineTask> GetTasks()
         {
-            LinkedList<Type> tasks = null;
+            LinkedList<PipelineTask> tasks = null;
 
             for (int i = 0; i < this.Stages.Count; i++)
             {
@@ -41,13 +40,11 @@ namespace ABus
             this.Stages.Add(new Stage(name));
         }
 
-        public void AddTask(string stageName, Type task)
+        public void AddTask(string stageName, PipelineTask task)
         {
             var stage = this.Stages[stageName];
             stage.Tasks.AddLast(task);
         }
-
-
-
     }
+
 }

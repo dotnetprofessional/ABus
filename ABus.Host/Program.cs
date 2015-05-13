@@ -20,11 +20,11 @@ namespace ABus.Host
 
             var p = new Pipeline(new UnityContainerAdaptor());
 
-            p.Authenticate
-                .Register<SampleMessageHandler>()
-                .AndAlso<SampleMessageHandler>()
+            p.StartupPipeline
+                .Initialize.Register("task1", typeof(InitailizePipeline3))
+                .AndAlso("task1", typeof(InitailizePipeline4))
                 .And()
-                .Authenticate.Register<SampleMessageHandler>();
+                .InboundMessagePipeline.Authenticate.Register("task1", typeof(InboundMessageTask));
 
             p.Start();
 

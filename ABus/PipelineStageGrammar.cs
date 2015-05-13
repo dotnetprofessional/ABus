@@ -1,31 +1,32 @@
+using System;
+
 namespace ABus
 {
     public class PipelineStageGrammar
     {
-        Pipeline Pipeline { get; set; }
+        PipelineGrammar Pipeline { get; set; }
         string Name { get; set; }
 
-        public PipelineStageGrammar(Pipeline pipeline, string name)
+        public PipelineStageGrammar(PipelineGrammar pipeline, string name)
         {
             this.Pipeline = pipeline;
             this.Name = name;
         }
 
-        public PipelineStageGrammar Register<T>()
+        public PipelineStageGrammar Register(string taskName, Type task)
         {
-            this.Pipeline.Register<T>(this.Name);
+            this.Pipeline.AssociatedPipeline.Register(this.Pipeline.PipelineName, this.Name, new PipelineTask(taskName, task));
             return this;
         }
 
         public Pipeline And()
         {
-            return this.Pipeline;
+            return this.Pipeline.AssociatedPipeline;
         }
 
-        public PipelineStageGrammar AndAlso<T>()
+        public PipelineStageGrammar AndAlso(string taskName, Type task)
         {
-            this.Pipeline.Register<T>(this.Name);
-            return this;
+            return this.Register(taskName, task);
         }
     }
 }
