@@ -54,8 +54,8 @@ namespace ABus
             this.InboundMessagePipelineTasks.AddStage(InboundMessageStages.PostHandlerExecution);
 
             // Register the known startup stage tasks
-            this.StartupPipeline.Initialize.Register("Task1", typeof(InitailizePipeline));
-            this.StartupPipeline.Initialize.Register("Task2", typeof(InitailizePipeline2));
+            this.StartupPipeline.Initialize.Register("Task1", typeof (InitailizePipeline))
+                .AndAlso("Task2", typeof (InitailizePipeline2));
         }
 
         /// <summary>
