@@ -14,9 +14,9 @@ namespace ABus.Tasks
                 var transport = context.TransportInstances[m.Transport.Name];
                 var exists = transport.QueueExists(new QueueEndpoint {Host = m.Transport.Uri, Name = m.Queue}).Result;
                 if (exists)
-                    Trace.WriteLine(string.Format("Found: queue: {0}:{1}", m.Transport.Name, m.Queue));
+                    Trace.TraceWarning(string.Format("Found: queue: {0}:{1}", m.Transport.Name, m.Queue));
                 else
-                    Trace.WriteLine(string.Format("NOT FOUND: queue: {0}:{1}", m.Transport.Name, m.Queue));
+                    Trace.TraceError(string.Format("NOT FOUND: queue: {0}:{1}", m.Transport.Name, m.Queue));
             }
 
             next();

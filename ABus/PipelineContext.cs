@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using ABus.Contracts;
 using Microsoft.Practices.ServiceLocation;
 
@@ -9,7 +10,7 @@ namespace ABus
     /// </summary>
     public class PipelineContext
     {
-        public PipelineContext(IServiceLocator serviceLocator)
+        public PipelineContext(IServiceLocator serviceLocator, ABusTraceSource traceListener)
         {
             this.ServiceLocator = serviceLocator;
             this.AvailableTransports = new List<TransportDefinition>();
@@ -17,6 +18,9 @@ namespace ABus
             this.RegisteredHandlers = new List<RegisteredHandler>();
             this.Configuration = new PipelineConfiguration();
             this.TransportInstances = new Dictionary<string, IMessageTransport>();
+
+            // Used to output trace information
+            this.Trace = traceListener;
         }
 
         public List<TransportDefinition> AvailableTransports { get; set; } 
@@ -29,6 +33,8 @@ namespace ABus
 
         public IServiceLocator ServiceLocator { get; private set; }
 
-        public Dictionary<string, IMessageTransport> TransportInstances { get; set; } 
+        public Dictionary<string, IMessageTransport> TransportInstances { get; set; }
+
+        public ABusTraceSource Trace { get; private set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using ABus.Tasks;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity.Configuration;
@@ -28,6 +29,7 @@ namespace ABus
         PipelineTasks StartupPipelineTasks;
         PipelineTasks InboundMessagePipelineTasks;
         PipelineTasks OutboundMessagePipelineTasks;
+        ABusTraceSource Trace { get; set; }
 
         //BlockingCollection<IPipelineTask> Tasks;
 
@@ -37,6 +39,7 @@ namespace ABus
             this.StartupPipelineTasks = new PipelineTasks();
             this.InboundMessagePipelineTasks = new PipelineTasks();
             this.OutboundMessagePipelineTasks = new PipelineTasks();
+            this.Trace = new ABusTraceSource("ABus");
 
             this.StartupPipeline= new StartupPipelineGrammer(this, "Startup");
             this.InboundMessagePipeline = new InboundMessagePipelineGrammer(this, "InboundMessage");
@@ -71,7 +74,7 @@ namespace ABus
         {
             var tasks = this.StartupPipelineTasks.GetTasks();
             if(tasks.Count > 0)
-                this.ExecuteStartupTask(new PipelineContext(this.ServiceLocator), tasks.First);
+                this.ExecuteStartupTask(new PipelineContext(this.ServiceLocator, this.Trace), tasks.First);
         }
 
 
