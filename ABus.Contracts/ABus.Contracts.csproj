@@ -39,7 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IAssemblyResolver.cs" />
+    <Compile Include="IAssemblyResolver.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="IBus.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="IConfigureHost.cs" />

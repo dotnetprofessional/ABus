@@ -50,7 +50,7 @@ namespace ABus.Unity
         protected override object DoGetInstance(Type serviceType, string key)
         {
             return this.container.Resolve(serviceType, key);
-        }
+        } 
 
         /// <summary>
         ///  When implemented by inheriting classes, this method will do the actual work of
