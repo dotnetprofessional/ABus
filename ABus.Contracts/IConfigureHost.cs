@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ABus.Contracts
 {
@@ -22,7 +19,7 @@ namespace ABus.Contracts
         public HostConfigurationGrammar WithHost(string uri, string credentials, Type transport)
         {
             var c = new HostConfiguration();
-            c.Definition = new HostDefinition {Uri = uri, Credentials = credentials, Transport = transport};
+            c.Definition = new TransportDefinition {Uri = uri, Credentials = credentials, TransportObsolete = transport};
             this.Configuration.Add(c);
             this.CurrentHost = c;
             return this;
@@ -45,7 +42,7 @@ namespace ABus.Contracts
             this.Namespaces = new List<string>();
         }
 
-        public HostDefinition Definition { get; set; }
+        public TransportDefinition Definition { get; set; }
 
         public List<string> Namespaces { get; set; }
     }

@@ -60,20 +60,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyResolver.cs" />
     <Compile Include="BusProcessHost.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="InitailizePipeline.cs" />
     <Compile Include="Pipeline.cs" />
+    <Compile Include="PipelineConfiguration.cs" />
+    <Compile Include="PipelineContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RegisteredHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RegisteredMessageType.cs" />
     <Compile Include="StageCollection.cs" />
     <Compile Include="IPipelineStartupTask.cs" />
     <Compile Include="IPipelineMessageTask.cs" />
     <Compile Include="MessageContext.cs" />
-    <Compile Include="PipelineContext.cs" />
     <Compile Include="PipelineStageGrammar.cs" />
     <Compile Include="PipelineTask.cs" />
     <Compile Include="PipelineTasks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stage.cs" />
+    <Compile Include="Tasks\AssignTransportToMessageTypesTask.cs" />
+    <Compile Include="Tasks\DefineTransportDefinitionsTask.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tasks\InitializeTransportsTask.cs" />
+    <Compile Include="Tasks\ScanMessageTypesTask.cs" />
+    <Compile Include="Tasks\ScanMessageHandlersTask.cs" />
+    <Compile Include="Tasks\ValidateQueuesTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ABus.AzureServiceBus\ABus.AzureServiceBus.csproj">

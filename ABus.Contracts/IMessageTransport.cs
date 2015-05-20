@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ABus.Contracts
@@ -10,7 +8,7 @@ namespace ABus.Contracts
     {
         event EventHandler<RawMessage> MessageReceived;
 
-        void ConfigureHost(HostDefinition host);
+        void ConfigureHost(TransportDefinition transport);
 
         /// <summary>
         /// Publishes an event message to the Endpoint

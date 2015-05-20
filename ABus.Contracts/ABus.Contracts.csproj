@@ -39,7 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="IAssemblyResolver.cs" />
     <Compile Include="IBus.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="IConfigureHost.cs" />
@@ -54,6 +54,12 @@
     <Compile Include="QueueEndpoint.cs" />
     <Compile Include="RawMessage.cs" />
     <Compile Include="RawMessageReceivedEventArgs.cs" />
+    <Compile Include="Transport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TransportDefinition.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TransportException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

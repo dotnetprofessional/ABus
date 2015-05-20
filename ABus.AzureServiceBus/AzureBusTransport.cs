@@ -19,21 +19,22 @@ namespace ABus.AzureServiceBus
 
         public AzureBusTransport()
         {
-            this.HostInstances = new Dictionary<string, HostInstance>();
+            this.HostInstances = new Dictionary<string, TransportInstance>();
             this.CreatedTopicClients = new Dictionary<string, TopicClient>();
             this.CreatedSubscriptionClients = new Dictionary<string, SubscriptionClient>();
         }
 
-        Dictionary<string, HostInstance> HostInstances { get; set; }
-        public void ConfigureHost(HostDefinition host)
+        Dictionary<string, TransportInstance> HostInstances { get; set; }
+         
+        public void ConfigureHost(TransportDefinition transport)
         {
-            if (!this.HostInstances.ContainsKey(host.Uri))
+            if (!this.HostInstances.ContainsKey(transport.Uri))
             {
-                var hostInstance = new HostInstance { Uri = host.Uri, Credentials = host.Credentials };
+                var hostInstance = new TransportInstance { Uri = transport.Uri, Credentials = transport.Credentials };
                 var ns = NamespaceManager.CreateFromConnectionString(hostInstance.ConnectionString);
                 hostInstance.Namespace = ns;
 
-                this.HostInstances.Add(host.Uri, hostInstance);
+                this.HostInstances.Add(transport.Uri, hostInstance);
             }
         }
 
@@ -222,7 +223,7 @@ namespace ABus.AzureServiceBus
         }
     }
 
-    internal class HostInstance : HostDefinition
+    internal class TransportInstance : TransportDefinition
     {
         public NamespaceManager Namespace { get; set; }
 

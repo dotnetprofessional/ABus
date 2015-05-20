@@ -18,14 +18,14 @@ namespace ABus.Host
             var consoleTracer = new ConsoleTraceListener();
             Trace.Listeners.Add(consoleTracer);
 
-            var p = new Pipeline(new UnityContainerAdaptor());
+            var p = new Pipeline(new UnityBootstraper());
 
             p.StartupPipeline
                 .Initialize.Register("task1", typeof(InitailizePipeline3))
-                .AndAlso("task1", typeof(InitailizePipeline4))
+                .Then("task1", typeof(InitailizePipeline4))
                 .And()
                 .InboundMessagePipeline.Authenticate.Register("task1", typeof(InboundMessageTask));
-
+             
             p.Start();
 
             Console.ReadLine();
@@ -40,19 +40,19 @@ namespace ABus.Host
 
             // Create the topic
             var t = new AzureBusTransport();
-            var host = new HostDefinition
+            var host = new TransportDefinition
             {
                 Uri = "sb://abus-dev.servicebus.windows.net",
                 Credentials = "SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uyauQw6sme25rx0EzLc/2VSWafIF6PROzdkZ9A4N918=",
-                Transport = typeof (AzureBusTransport)
+                TransportObsolete = typeof (AzureBusTransport)
             };
 
             t.ConfigureHost(host);
 
-            var entity = new TestMessage { Name = "Sample Message", Addresss = "1 Way" };
+            var entity = new TestMessageCommand { Name = "Sample Message", Addresss = "1 Way" };
             var json = JsonConvert.SerializeObject(entity);
             var raw = new RawMessage { Body = Encoding.Unicode.GetBytes(json) };
-            var endpoint = new QueueEndpoint { Host = host.Uri, Name = "ABus.Sample.TestMessage" };
+            var endpoint = new QueueEndpoint { Host = host.Uri, Name = "ABus.Sample.TestMessageCommand" };
             t.Send(endpoint, raw);
 
             var busProcess = new BusProcessHost();

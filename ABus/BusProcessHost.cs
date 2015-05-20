@@ -55,14 +55,14 @@ namespace ABus
         MessageTransportFactory TransportFactory;
         public IMessageTransport Transport { get; set; }
 
-        Dictionary<string, HostDefinition> HostDefinitions;
+        Dictionary<string, TransportDefinition> HostDefinitions;
  
         public BusProcessHost()
         {
             this.Container = new UnityContainer();
 
 
-            this.InitializeHostDefinitions();
+            this.InitializeTransportDefinitions();
             this.ConfigureHosts();
 
             this.InitializeTopics().Wait();
@@ -79,18 +79,18 @@ namespace ABus
 
         }
         /// <summary>
-        /// Sets the host definitions for each host Uri
+        /// Sets the transport definitions for each transport Uri
         /// </summary>
-        void InitializeHostDefinitions()
+        void InitializeTransportDefinitions()
         {
-            this.HostDefinitions = new Dictionary<string, HostDefinition>();
+            this.HostDefinitions = new Dictionary<string, TransportDefinition>();
 
             // TODO: Obtain this from configuration
-            var host = new ABus.Contracts.HostDefinition
+            var host = new ABus.Contracts.TransportDefinition
             {
                 Uri = "sb://abus-dev.servicebus.windows.net",
                 Credentials = "SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uyauQw6sme25rx0EzLc/2VSWafIF6PROzdkZ9A4N918=",
-                Transport = typeof(AzureBusTransport)
+                TransportObsolete = typeof(AzureBusTransport)
             };
 
             this.HostDefinitions.Add(host.Uri, host);
@@ -177,7 +177,7 @@ namespace ABus
             }
             Task.WaitAll(tasks.ToArray());
         }
-
+         
 
         /// <summary>
         /// Searches all loaded dlls for classes that implement the IHandeMesssage interface
@@ -224,8 +224,8 @@ namespace ABus
 
         QueueEndpoint GetQueueEndpointFromType(Type messageType)
         {
-            // TODO: Need to pick host based on suppored message types
-            // Only one host is currently supported
+            // TODO: Need to pick transport based on suppored message types
+            // Only one transport is currently supported
             var endpoint = new QueueEndpoint {Host = this.HostDefinitions.First().Value.Uri, Name = messageType.FullName};
             return endpoint;
         }
@@ -235,19 +235,19 @@ namespace ABus
     public class MessageTransportFactory
     {
         Dictionary<string, IMessageTransport> HostInstances = new Dictionary<string, IMessageTransport>(); 
-        public IMessageTransport GetTransport(HostDefinition host)
+        public IMessageTransport GetTransport(TransportDefinition transport)
         {
-            if (!this.HostInstances.ContainsKey(host.Transport.FullName))
+            if (!this.HostInstances.ContainsKey(transport.TransportObsolete.FullName))
             {
-                var hostInstance = Activator.CreateInstance(host.Transport) as IMessageTransport;
+                var hostInstance = Activator.CreateInstance(transport.TransportObsolete) as IMessageTransport;
                 if (hostInstance != null)
                 {
-                    hostInstance.ConfigureHost(host);
-                    this.HostInstances.Add(host.Transport.FullName, hostInstance);
+                    hostInstance.ConfigureHost(transport);
+                    this.HostInstances.Add(transport.TransportObsolete.FullName, hostInstance);
                 }
             }
 
-            return this.HostInstances[host.Transport.FullName];
+            return this.HostInstances[transport.TransportObsolete.FullName];
         }
     }
 

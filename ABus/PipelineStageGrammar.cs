@@ -24,9 +24,9 @@ namespace ABus
             return this.Pipeline.AssociatedPipeline;
         }
 
-        public PipelineStageGrammar AndAlso(string taskName, Type task)
+        public PipelineStageGrammar Then(string taskName, Type task)
         {
             return this.Register(taskName, task);
-        }
+        } 
     }
 }

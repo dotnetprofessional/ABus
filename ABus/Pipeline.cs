@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using ABus.Tasks;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity.Configuration;
 
@@ -54,18 +55,23 @@ namespace ABus
             this.InboundMessagePipelineTasks.AddStage(InboundMessageStages.PostHandlerExecution);
 
             // Register the known startup stage tasks
-            this.StartupPipeline.Initialize.Register("Task1", typeof (InitailizePipeline))
-                .AndAlso("Task2", typeof (InitailizePipeline2));
+            this.StartupPipeline.Initialize.Register("TransportDefinitions", typeof (DefineTransportDefinitionsTask))
+                .Then("ScanMessageTypes", typeof(ScanMessageTypesTask))
+                .Then("ScanHandlers", typeof(ScanMessageHandlersTask))
+                .Then("AssignTransportToMessageTypes", typeof(AssignTransportToMessageTypesTask))
+                .Then("InitializeTransports", typeof(InitializeTransportsTask))
+                .Then("ValidateQueues", typeof(ValidateQueuesTask))
+                .Then("Task2", typeof(InitailizePipeline2));
         }
 
         /// <summary>
         /// Start processing the pipeline
         /// </summary>
-        public void Start()
+        public void Start() 
         {
             var tasks = this.StartupPipelineTasks.GetTasks();
             if(tasks.Count > 0)
-                this.ExecuteStartupTask(new PipelineContext(), tasks.First);
+                this.ExecuteStartupTask(new PipelineContext(this.ServiceLocator), tasks.First);
         }
 
 

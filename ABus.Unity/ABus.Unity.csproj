@@ -63,6 +63,16 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ABus.Contracts\ABus.Contracts.csproj">
+      <Project>{bb4f786c-2966-4e73-91bb-6775cf177cf7}</Project>
+      <Name>ABus.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ABus\ABus.csproj">
+      <Project>{5CAD9197-311E-4AD0-A3EA-66F25E150816}</Project>
+      <Name>ABus</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
