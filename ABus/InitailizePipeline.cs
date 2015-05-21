@@ -7,9 +7,9 @@ namespace ABus
     {
         public void Invoke(PipelineContext context, Action next)
         {
-            Trace.WriteLine("Startup Pipeline task invoked!");
+            context.Trace.Information("Startup Pipeline task invoked!");
             next();
-            Trace.WriteLine("Startup Pipeline task ended!");
+            context.Trace.Information("Startup Pipeline task ended!");
         }
     }
 
@@ -17,19 +17,19 @@ namespace ABus
     {
         public void Invoke(PipelineContext context, Action next)
         {
-            Trace.WriteLine("Startup Pipeline2 task invoked!");
+            context.Trace.Information("Startup Pipeline2 task invoked!");
             next();
-            Trace.WriteLine("Startup Pipeline2 task ended!");
+            context.Trace.Information("Startup Pipeline2 task ended!");
         }
     }
 
     public class InboundMessageTask : IPipelineMessageTask
     {
         public void Invoke(MessageContext context, Action next)
-        {
-            Trace.WriteLine("Message Pipeline1 task invoked!");
+        { 
+            context.Trace.Information("Message Pipeline1 task invoked!");
             next();
-            Trace.WriteLine("Message Pipeline1 task ended!");
+            context.Trace.Information("Message Pipeline1 task ended!");
         }
     }
 
@@ -37,9 +37,9 @@ namespace ABus
     {
         public void Invoke(PipelineContext context, Action next)
         {
-            Trace.WriteLine("Startup Pipeline3 task invoked!");
+            context.Trace.Information("Startup Pipeline3 task invoked!");
             next();
-            Trace.WriteLine("Startup Pipeline task3 ended!");
+            context.Trace.Information("Startup Pipeline task3 ended!");
         }
     }
 
@@ -47,9 +47,9 @@ namespace ABus
     {
         public void Invoke(PipelineContext context, Action next)
         {
-            Trace.WriteLine("Startup Pipeline4 task invoked!");
+            context.Trace.Information("Startup Pipeline4 task invoked!");
             next();
-            Trace.WriteLine("Startup Pipeline4 task ended!");
+            context.Trace.Information("Startup Pipeline4 task ended!");
         }
     }
 }

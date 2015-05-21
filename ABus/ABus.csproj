@@ -87,6 +87,7 @@
     <Compile Include="Tasks\DefineTransportDefinitionsTask.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Tasks\InitializeHandlersTask.cs" />
     <Compile Include="Tasks\InitializeTransportsTask.cs" />
     <Compile Include="Tasks\ScanMessageTypesTask.cs" />
     <Compile Include="Tasks\ScanMessageHandlersTask.cs" />

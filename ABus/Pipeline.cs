@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using ABus.Contracts;
 using ABus.Tasks;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity.Configuration;
@@ -24,12 +25,14 @@ namespace ABus
     }
     public class Pipeline
     {
+
         IServiceLocator ServiceLocator { get; set; }
 
         PipelineTasks StartupPipelineTasks;
         PipelineTasks InboundMessagePipelineTasks;
         PipelineTasks OutboundMessagePipelineTasks;
         ABusTraceSource Trace { get; set; }
+        PipelineContext PipelineContext { get; set; }
 
         //BlockingCollection<IPipelineTask> Tasks;
 
@@ -39,7 +42,7 @@ namespace ABus
             this.StartupPipelineTasks = new PipelineTasks();
             this.InboundMessagePipelineTasks = new PipelineTasks();
             this.OutboundMessagePipelineTasks = new PipelineTasks();
-            this.Trace = new ABusTraceSource("ABus");
+            this.Trace = new ABusTraceSource();
 
             this.StartupPipeline= new StartupPipelineGrammer(this, "Startup");
             this.InboundMessagePipeline = new InboundMessagePipelineGrammer(this, "InboundMessage");
@@ -70,15 +73,22 @@ namespace ABus
         /// <summary>
         /// Start processing the pipeline
         /// </summary>
-        public void Start() 
+        public void Start()
         {
+            this.PipelineContext = new PipelineContext(this.ServiceLocator, this.Trace);
+            this.PipelineContext.MessageReceivedHandler += InboundMessageReceived;
+
             var tasks = this.StartupPipelineTasks.GetTasks();
             if(tasks.Count > 0)
-                this.ExecuteStartupTask(new PipelineContext(this.ServiceLocator, this.Trace), tasks.First);
+                this.ExecuteStartupTask(this.PipelineContext, tasks.First);
         }
 
+        void InboundMessageReceived(object sender, RawMessage e)
+        {
+            // Start the inbound message pipeline
+        }
 
-        public StartupPipelineGrammer StartupPipeline { get; private set; }
+        public StartupPipelineGrammer StartupPipeline { get; private set; } 
         public InboundMessagePipelineGrammer InboundMessagePipeline { get; private set; }
 
         internal Pipeline RegisterStartupTask(string stage, PipelineTask task)

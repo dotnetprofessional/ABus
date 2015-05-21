@@ -47,10 +47,10 @@ namespace ABus.Tasks
 
                     context.RegisteredHandlers.Add(registeredHandler);
 
-                    Trace.WriteLine(string.Format("Class: {0} handles {1} message type.",registeredHandler.ClassType.Name, registeredHandler.MessageType.Name));
+                    context.Trace.Verbose(string.Format("Class: {0} handles {1} message type.", registeredHandler.ClassType.Name, registeredHandler.MessageType.Name));
                 }
             }
-            next();
+            next(); 
         }
     } 
 }

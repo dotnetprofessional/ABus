@@ -15,12 +15,12 @@ namespace ABus.Host
     {
         public static void Main()
         {
-            var consoleTracer = new ColorConsoleTraceListener();
-            Trace.Listeners.Add(consoleTracer);
+            //var consoleTracer = new ColorConsoleTraceListener();
+            //Trace.Listeners.Add(consoleTracer);
 
             var p = new Pipeline(new UnityBootstraper());
 
-            p.StartupPipeline
+            p.StartupPipeline 
                 .Initialize.Register("task1", typeof(InitailizePipeline3))
                 .Then("task1", typeof(InitailizePipeline4))
                 .And()

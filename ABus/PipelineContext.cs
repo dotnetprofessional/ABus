@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using ABus.Contracts;
@@ -28,7 +29,7 @@ namespace ABus
         public List<RegisteredMessageType> RegisteredMessageTypes { get; set; }
 
         public List<RegisteredHandler> RegisteredHandlers { get; set; } 
-
+         
         public PipelineConfiguration Configuration { get; set; }
 
         public IServiceLocator ServiceLocator { get; private set; }
@@ -36,5 +37,13 @@ namespace ABus
         public Dictionary<string, IMessageTransport> TransportInstances { get; set; }
 
         public ABusTraceSource Trace { get; private set; }
+
+        public event EventHandler<RawMessage> MessageReceivedHandler;
+
+        public void RaiseMessageReceivedEvent(object sender, RawMessage e)
+        {
+            if (this.MessageReceivedHandler != null)
+                this.MessageReceivedHandler(sender, e);
+        }
     }
 }

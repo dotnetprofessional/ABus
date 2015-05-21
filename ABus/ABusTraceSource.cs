@@ -1,35 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace ABus
 {
-    public class ABusTraceSource : TraceSource
+    public class ABusTraceSource
     {
-        public ABusTraceSource(string name) : base(name)
+        TraceSource TraceSource = new TraceSource("ABus");
+
+        public void Information(string message)
         {
+            this.TraceSource.TraceInformation(message);
         }
 
-        public ABusTraceSource(string name, SourceLevels defaultLevel) : base(name, defaultLevel)
+        public void Error(string message)
         {
+            this.TraceSource.TraceEvent(TraceEventType.Error, 0, message);
         }
 
-        public void TraceInformation(string message)
+        public void Warning(string message) 
         {
-            this.TraceEvent(TraceEventType.Information, 0, message);
+            this.TraceSource.TraceEvent(TraceEventType.Warning, 0, message);
         }
 
-        public void TraceError(string message)
+        public void Verbose(string message)
         {
-            this.TraceEvent(TraceEventType.Error, 0, message);
+            this.TraceSource.TraceEvent(TraceEventType.Verbose, 0, message);
         }
 
-        public void TraceWarning(string message)
+        public void Critical(string message)
         {
-            this.TraceEvent(TraceEventType.Warning, 0, message);
+            this.TraceSource.TraceEvent(TraceEventType.Critical, 0, message);
+        }
+
+        public void Start(string message)
+        {
+            this.TraceSource.TraceEvent(TraceEventType.Start, 0, message);
+        }
+
+        public void Stop(string message)
+        {
+            this.TraceSource.TraceEvent(TraceEventType.Stop, 0, message);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace ABus.Host
 {
-    public class ColorConsoleTraceListener : ConsoleTraceListener
+    public class ColorConsoleTraceListener : TraceListener
     {
         readonly Dictionary<TraceEventType, ConsoleColor> eventColor = new Dictionary<TraceEventType, ConsoleColor>();
 
@@ -19,10 +19,20 @@ namespace ABus.Host
             this.eventColor.Add(TraceEventType.Error, ConsoleColor.DarkRed);
 
             this.eventColor.Add(TraceEventType.Critical, ConsoleColor.Red);
-
+             
             this.eventColor.Add(TraceEventType.Start, ConsoleColor.DarkCyan);
 
             this.eventColor.Add(TraceEventType.Stop, ConsoleColor.DarkCyan);
+        }
+
+        public override void Write(string message)
+        {
+            Console.Write(message);
+        }
+
+        public override void WriteLine(string message)
+        {
+            Console.WriteLine(message);
         }
 
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
@@ -36,7 +46,11 @@ namespace ABus.Host
 
             Console.ForegroundColor = this.getEventColor(eventType, originalColor);
 
-            base.TraceEvent(eventCache, source, eventType, id, format, args);
+            //base.TraceEvent(eventCache, source, eventType, id, format, args);
+            if(args == null) // R# is wrong this doesn't always evaluate to false
+                this.WriteLine(string.Format(format));
+            else
+                this.WriteLine(string.Format(format, args));
 
             Console.ForegroundColor = originalColor;
         }

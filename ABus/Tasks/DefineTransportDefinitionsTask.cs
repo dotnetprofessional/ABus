@@ -18,9 +18,9 @@ namespace ABus.Tasks
             };
 
             context.AvailableTransports.Add(host);
-            context.Trace.TraceInformation(string.Format("Transport definition: {0} using transport {1}", host.Name, host.Transport.Name));
+            context.Trace.Verbose(string.Format("Transport definition: {0} using transport {1}", host.Name, host.Transport.Name));
             
             next();
         }
-    }
+    } 
 } 

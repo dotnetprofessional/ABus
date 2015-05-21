@@ -14,5 +14,7 @@ namespace ABus
         public object TypeInstance { get; set; }
 
         public IBus Bus { get; set; }
+
+        public ABusTraceSource Trace { get; private set; } 
     }
 }

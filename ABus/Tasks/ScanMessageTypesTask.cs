@@ -34,9 +34,9 @@ namespace ABus.Tasks
 
                 context.RegisteredMessageTypes.Add(registeredMessageType);
 
-                Trace.WriteLine(string.Format("Message {0} type found.", registeredMessageType.Name));
+                context.Trace.Verbose(string.Format("Message {0} type found.", registeredMessageType.Name));
             }
-            next();
+            next(); 
         }
     } 
 }

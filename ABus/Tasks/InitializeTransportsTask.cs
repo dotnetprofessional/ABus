@@ -13,9 +13,13 @@ namespace ABus.Tasks
                 var transport = context.ServiceLocator.GetInstance(type) as IMessageTransport;
                 transport.ConfigureHost(t);
                 context.TransportInstances.Add(t.Name, transport);
-            }
 
+                transport.MessageReceived += context.RaiseMessageReceivedEvent;
+            }
+             
             next();
         }
+
+
     }
 } 
