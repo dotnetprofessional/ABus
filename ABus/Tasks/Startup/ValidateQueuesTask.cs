@@ -22,7 +22,7 @@ namespace ABus.Tasks.Startup
                     {
                         // Create queue
                         transport.CreateQueue(endpoint).Wait();
-                        context.Trace.Information(string.Format("Created: queue: {0}:{1}", m.Transport.Name, m.Queu e));
+                        context.Trace.Information(string.Format("Created: queue: {0}:{1}", m.Transport.Name, m.Queue));
                     }
                 }
             }
