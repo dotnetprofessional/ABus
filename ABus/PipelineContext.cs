@@ -15,8 +15,8 @@ namespace ABus
         {
             this.ServiceLocator = serviceLocator;
             this.AvailableTransports = new List<TransportDefinition>();
-            this.RegisteredMessageTypes = new List<RegisteredMessageType>();
-            this.RegisteredHandlers = new List<RegisteredHandler>();
+            this.RegisteredMessageTypes = new RegisteredMessageTypeCollection();
+            this.RegisteredHandlers = new RegisteredHandlerCollection();
             this.Configuration = new PipelineConfiguration();
             this.TransportInstances = new Dictionary<string, IMessageTransport>();
 
@@ -24,11 +24,11 @@ namespace ABus
             this.Trace = traceListener;
         }
 
-        public List<TransportDefinition> AvailableTransports { get; set; } 
+        public List<TransportDefinition> AvailableTransports { get; set; }
 
-        public List<RegisteredMessageType> RegisteredMessageTypes { get; set; }
+        public RegisteredMessageTypeCollection RegisteredMessageTypes { get; set; }
 
-        public List<RegisteredHandler> RegisteredHandlers { get; set; } 
+        public RegisteredHandlerCollection RegisteredHandlers { get; set; } 
          
         public PipelineConfiguration Configuration { get; set; }
 
@@ -39,7 +39,7 @@ namespace ABus
         public ABusTraceSource Trace { get; private set; }
 
         public event EventHandler<RawMessage> MessageReceivedHandler;
-
+         
         public void RaiseMessageReceivedEvent(object sender, RawMessage e)
         {
             if (this.MessageReceivedHandler != null)

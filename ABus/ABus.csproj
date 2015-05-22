@@ -83,15 +83,19 @@
     <Compile Include="PipelineTasks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stage.cs" />
-    <Compile Include="Tasks\AssignTransportToMessageTypesTask.cs" />
-    <Compile Include="Tasks\DefineTransportDefinitionsTask.cs">
+    <Compile Include="Tasks\Inbound\DeserializeMessageTask.cs" />
+    <Compile Include="Tasks\Inbound\InvokeHandlerTask.cs" />
+    <Compile Include="Tasks\Startup\AssignTransportToMessageTypesTask.cs" />
+    <Compile Include="Tasks\Startup\DefineTransportDefinitionsTask.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Tasks\InitializeHandlersTask.cs" />
-    <Compile Include="Tasks\InitializeTransportsTask.cs" />
-    <Compile Include="Tasks\ScanMessageTypesTask.cs" />
-    <Compile Include="Tasks\ScanMessageHandlersTask.cs" />
-    <Compile Include="Tasks\ValidateQueuesTask.cs" />
+    <Compile Include="Tasks\Startup\InitializeHandlersTask.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tasks\Startup\InitializeTransportsTask.cs" />
+    <Compile Include="Tasks\Startup\ScanMessageTypesTask.cs" />
+    <Compile Include="Tasks\Startup\ScanMessageHandlersTask.cs" />
+    <Compile Include="Tasks\Startup\ValidateQueuesTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ABus.AzureServiceBus\ABus.AzureServiceBus.csproj">
@@ -107,6 +111,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

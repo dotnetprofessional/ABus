@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using ABus.Contracts;
 
-namespace ABus.Tasks
+namespace ABus.Tasks.Startup
 {
     class ValidateQueuesTask : IPipelineStartupTask
     {
@@ -12,14 +11,24 @@ namespace ABus.Tasks
             {
                 // get message transport
                 var transport = context.TransportInstances[m.Transport.Name];
-                var exists = transport.QueueExists(new QueueEndpoint {Host = m.Transport.Uri, Name = m.Queue}).Result;
+                var endpoint = new QueueEndpoint {Host = m.Transport.Uri, Name = m.Queue};
+                var exists = transport.QueueExists(endpoint).Result;
                 if (exists)
                     context.Trace.Verbose(string.Format("Found: queue: {0}:{1}", m.Transport.Name, m.Queue));
                 else
+                {
                     context.Trace.Critical(string.Format("NOT FOUND: queue: {0}:{1}", m.Transport.Name, m.Queue));
+                    if (context.Configuration.EnsureQueuesExist)
+                    {
+                        // Create queue
+                        transport.CreateQueue(endpoint).Wait();
+                        context.Trace.Information(string.Format("Created: queue: {0}:{1}", m.Transport.Name, m.Queu e));
+                    }
+                }
             }
 
             next(); 
         }
     } 
 }
+ 

@@ -1,18 +1,28 @@
+using System;
+using System.Collections.ObjectModel;
 using ABus.Contracts;
 
 namespace ABus
 {
+    public class RegisteredMessageTypeCollection : KeyedCollection<string, RegisteredMessageType>
+    {
+        protected override string GetKeyForItem(RegisteredMessageType item)
+        {
+            return item.FullName;
+        }
+    }
+
     public class RegisteredMessageType
     {
         /// <summary>
-        /// The name of the type
+        /// The full name of the type
         /// </summary>
-        public string Name { get; set; }
-
+        public string FullName { get; set; }
+         
         /// <summary>
-        /// The fully qualified path for the type
+        /// The type
         /// </summary>
-        public string Path { get; set; }
+        public Type MessageType{ get; set; }
 
         /// <summary>
         /// The queue to send and recieve messages for this type on

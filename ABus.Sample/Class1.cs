@@ -10,11 +10,11 @@ namespace ABus.Sample
         public void Handler(TestMessageCommand messageCommand)
         {
             //Console.WriteLine(string.Format("Received message with Id {0} and Name {1}", this.Bus.CurrentMessage.MessageId, message.Name));
-            Console.WriteLine(string.Format("Received message with Id {0} and Name {1}", 1, messageCommand.Name));
+            Console.WriteLine(string.Format("Received message with name {0} and address {1}", messageCommand.Name, messageCommand.Addresss));
         }
 
         public void Handler(string test)
-        {
+        { 
 
         } 
 

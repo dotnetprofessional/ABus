@@ -7,14 +7,21 @@ namespace ABus
     /// </summary>
     public class MessageContext
     {
-        public RawMessage RawMessage { get; set; }
+        public MessageContext(string subscriptionName, RawMessage rawMessage, PipelineContext pipelineContext)
+        {
+            SubscriptionName = subscriptionName;
+            RawMessage = rawMessage;
+            PipelineContext = pipelineContext;
+        }
+         
+        public RawMessage RawMessage { get; private set; }
 
-        public QueueEndpoint Endpoint { get; set; }
+        public string SubscriptionName{ get; private set; }
 
         public object TypeInstance { get; set; }
 
         public IBus Bus { get; set; }
 
-        public ABusTraceSource Trace { get; private set; } 
+        public PipelineContext PipelineContext { get; private set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ABus.Tasks
+namespace ABus.Tasks.Startup
 {
     class AssignTransportToMessageTypesTask : IPipelineStartupTask
     {
@@ -10,11 +10,11 @@ namespace ABus.Tasks
             foreach (var m in context.RegisteredMessageTypes)
             {
                 // Strip off the suffix of Command and Event from queue names
-                m.Queue = m.Path.Replace("Command","").Replace("Event","");
+                m.Queue = m.MessageType.FullName.Replace("Command","").Replace("Event","");
                 m.Transport = context.AvailableTransports[0];
             }
 
             next();
-        }
+        } 
     }
 } 

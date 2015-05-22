@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using ABus.Contracts;
 
-namespace ABus.Tasks
+namespace ABus.Tasks.Startup
 {
     class DefineTransportDefinitionsTask : IPipelineStartupTask
     {
@@ -21,6 +20,6 @@ namespace ABus.Tasks
             context.Trace.Verbose(string.Format("Transport definition: {0} using transport {1}", host.Name, host.Transport.Name));
             
             next();
-        }
+         
     } 
 } 

@@ -27,7 +27,7 @@ namespace ABus.Contracts
         /// <summary>
         /// Sends a command message to the Endpoint
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message"></param> 
         Task SendAsync(QueueEndpoint endpoint, RawMessage message);
 
         /// <summary>
@@ -39,8 +39,8 @@ namespace ABus.Contracts
         /// <summary>
         /// Create a subsription on the Endpoint
         /// </summary>
-        /// <param name="name">The unique name for this subscription</param>
-        Task SubscribeAsync(QueueEndpoint endpoint, string name);
+        /// <param name="subscriptionName">The unique name for this subscription</param>
+        Task SubscribeAsync(QueueEndpoint endpoint, string subscriptionName);
 
         /// <summary>
         /// Create a queue with the supplied name

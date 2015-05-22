@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using ABus.Contracts;
 
-namespace ABus.Tasks
+namespace ABus.Tasks.Startup
 {
     public class ScanMessageTypesTask : IPipelineStartupTask
     {
@@ -29,14 +25,14 @@ namespace ABus.Tasks
             foreach (var messageType in messageTypes)
             {
                 var registeredMessageType = new RegisteredMessageType();
-                registeredMessageType.Name = messageType.Name;
-                registeredMessageType.Path = messageType.FullName;
+                registeredMessageType.FullName = messageType.FullName;
+                registeredMessageType.MessageType = messageType;
 
                 context.RegisteredMessageTypes.Add(registeredMessageType);
 
-                context.Trace.Verbose(string.Format("Message {0} type found.", registeredMessageType.Name));
+                context.Trace.Verbose(string.Format("Message {0} type found.", registeredMessageType.FullName));
             }
             next(); 
-        }
+        } 
     } 
 }

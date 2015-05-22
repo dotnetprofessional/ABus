@@ -15,8 +15,13 @@ namespace ABus.Host
     {
         public static void Main()
         {
-            //var consoleTracer = new ColorConsoleTraceListener();
-            //Trace.Listeners.Add(consoleTracer);
+            for (int i = 1; i < 100; i++)
+            {
+                Main3(i);
+               
+            }
+            var consoleTracer = new ColorConsoleTraceListener();
+            Trace.Listeners.Add(consoleTracer);
 
             var p = new Pipeline(new UnityBootstraper());
 
@@ -24,7 +29,7 @@ namespace ABus.Host
                 .Initialize.Register("task1", typeof(InitailizePipeline3))
                 .Then("task1", typeof(InitailizePipeline4))
                 .And()
-                .InboundMessagePipeline
+                .InboundMessagePipeline  
                 .Authenticate.Register("task1", typeof(InboundMessageTask));
              
             p.Start();
@@ -33,7 +38,7 @@ namespace ABus.Host
         }
 
 
-        public static void Main2()
+        public static void Main3(int count)
         {
             var consoleTracer = new ConsoleTraceListener();
             
@@ -50,12 +55,13 @@ namespace ABus.Host
 
             t.ConfigureHost(host);
 
-            var entity = new TestMessageCommand { Name = "Sample Message", Addresss = "1 Way" };
+            var entity = new TestMessageCommand { Name = "Sample Message", Addresss = count + " Way" };
             var json = JsonConvert.SerializeObject(entity);
             var raw = new RawMessage { Body = Encoding.Unicode.GetBytes(json) };
-            var endpoint = new QueueEndpoint { Host = host.Uri, Name = "ABus.Sample.TestMessageCommand" };
+            raw.MetaData.Add(new MetaData{Name = StandardMetaData.MessageType, Value = entity.GetType().FullName});
+            var endpoint = new QueueEndpoint { Host = host.Uri, Name = "abus.sample.testmessage" };
             t.Send(endpoint, raw);
-
+            return;
             var busProcess = new BusProcessHost();
             HostFactory.Run(x =>
             {

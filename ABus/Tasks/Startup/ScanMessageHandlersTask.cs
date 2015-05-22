@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using ABus.Contracts;
 
-namespace ABus.Tasks
+namespace ABus.Tasks.Startup
 {
     public class ScanMessageHandlersTask: IPipelineStartupTask
     {
@@ -39,7 +38,7 @@ namespace ABus.Tasks
                     var method = interfaceImplementation.GetTypeInfo().DeclaredMethods.First();
 
                     // Find the already found MessageType
-                    var messageType = context.RegisteredMessageTypes.FirstOrDefault(t => t.Path == argumentType.FullName);
+                    var messageType = context.RegisteredMessageTypes.FirstOrDefault(t => t.MessageType.FullName == argumentType.FullName);
 
                     registeredHandler.MessageType = messageType;
                     registeredHandler.Method = method;
@@ -47,10 +46,10 @@ namespace ABus.Tasks
 
                     context.RegisteredHandlers.Add(registeredHandler);
 
-                    context.Trace.Verbose(string.Format("Class: {0} handles {1} message type.", registeredHandler.ClassType.Name, registeredHandler.MessageType.Name));
+                    context.Trace.Verbose(string.Format("Class: {0} handles {1} message type.", registeredHandler.ClassType.Name, registeredHandler.MessageType.FullName));
                 }
             }
-            next(); 
+            next();  
         }
     } 
 }

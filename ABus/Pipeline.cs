@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using ABus.Contracts;
 using ABus.Tasks;
+using ABus.Tasks.Inbound;
+using ABus.Tasks.Startup;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity.Configuration;
 
@@ -67,7 +69,13 @@ namespace ABus
                 .Then("AssignTransportToMessageTypes", typeof(AssignTransportToMessageTypesTask))
                 .Then("InitializeTransports", typeof(InitializeTransportsTask))
                 .Then("ValidateQueues", typeof(ValidateQueuesTask))
+                .Then("InitializeHandlers", typeof(InitializeHandlersTask))
+                
                 .Then("Task2", typeof(InitailizePipeline2));
+
+            this.InboundMessagePipeline.Deserialize.Register("DeserializeMessage", typeof (DeserializeMessageTask));
+            this.InboundMessagePipeline.ExecuteHandler.Register("InvokeHandler", typeof (InvokeHandlerTask));
+
         }
 
         /// <summary>
@@ -85,13 +93,19 @@ namespace ABus
 
         void InboundMessageReceived(object sender, RawMessage e)
         {
+            // Initialize the message context
+            var inboundMessageContext = new MessageContext(sender as string, e, this.PipelineContext);
+
             // Start the inbound message pipeline
+            var tasks = this.InboundMessagePipelineTasks.GetTasks();
+            if (tasks.Count > 0)
+                this.ExecuteMessageTask(inboundMessageContext, tasks.First);
         }
 
         public StartupPipelineGrammer StartupPipeline { get; private set; } 
         public InboundMessagePipelineGrammer InboundMessagePipeline { get; private set; }
 
-        internal Pipeline RegisterStartupTask(string stage, PipelineTask task)
+        Pipeline RegisterStartupTask(string stage, PipelineTask task)
         {
             if (!this.StartupPipelineTasks.StageExists(stage))
                 throw new ArgumentException("There is no stage named: " + stage);
@@ -99,7 +113,8 @@ namespace ABus
             this.StartupPipelineTasks.AddTask(stage, task);
             return this;
         }
-        internal Pipeline RegisterInboundMessageTask(string stage, PipelineTask task)
+
+        Pipeline RegisterInboundMessageTask(string stage, PipelineTask task)
         {
             if (!this.InboundMessagePipelineTasks.StageExists(stage))
                 throw new ArgumentException("There is no stage named: " + stage);
@@ -108,7 +123,7 @@ namespace ABus
             return this;
         }
 
-        internal Pipeline RegisterOutboundMessageTask(string stage, PipelineTask task)
+        Pipeline RegisterOutboundMessageTask(string stage, PipelineTask task)
         {
             if (!this.OutboundMessagePipelineTasks.StageExists(stage))
                 throw new ArgumentException("There is no stage named: " + stage);
@@ -131,6 +146,7 @@ namespace ABus
                     throw new ArgumentException("Unknown pipeline " + pipeline);
             }   
         }
+        
         void ExecuteStartupTask(PipelineContext context, LinkedListNode<PipelineTask> task)
         {
 
@@ -146,7 +162,11 @@ namespace ABus
         {
 
             var taskInstance = this.ServiceLocator.GetInstance(task.Value.Task) as IPipelineMessageTask;
-            taskInstance.Invoke(context, () => this.ExecuteMessageTask(context, task.Next));
+            taskInstance.Invoke(context, () =>
+            { 
+                if (task.Next != null)
+                    this.ExecuteMessageTask(context, task.Next);
+            });
         }
     }
 

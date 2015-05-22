@@ -82,9 +82,9 @@ namespace ABus.AzureServiceBus
             return client.SendAsync(brokeredMessage);
         }
 
-        public async Task SubscribeAsync(QueueEndpoint endpoint, string name)
+        public async Task SubscribeAsync(QueueEndpoint endpoint, string subscriptionName)
         {
-            var client = await this.GetSubscriptionClient(endpoint, name);
+            var client = await this.GetSubscriptionClient(endpoint, subscriptionName);
             TransportException transportException = null;
 
             // Configure the callback options
@@ -103,13 +103,13 @@ namespace ABus.AzureServiceBus
                     // publish the message to the lister
                     if (this.MessageReceived != null)
                     {
-                        this.MessageReceived(string.Format("{0}:{1}", endpoint.Name, name), this.ConvertFromBrokeredMessage(message));
+                        this.MessageReceived(subscriptionName, this.ConvertFromBrokeredMessage(message));
                     }
 
                     // Remove message from subscription
                     await message.CompleteAsync();
                 }
-                catch (Exception ex)
+                catch (Exception ex) 
                 {
                     // Capture the exception that has occured so that it can be evented out
                     transportException = new TransportException("OnMessage pump", ex);
@@ -159,16 +159,20 @@ namespace ABus.AzureServiceBus
 
         async Task<SubscriptionClient> GetSubscriptionClient(QueueEndpoint endpoint, string subscription)
         {
-            var fullyQualifiedSubscriptionName = endpoint.SubscriptionKey(subscription);
             var host = this.HostInstances[endpoint.Host];
             var ns = host.Namespace;
 
             var topic = endpoint.Name;
 
-            if (!this.CreatedSubscriptionClients.ContainsKey(fullyQualifiedSubscriptionName))
+            if (!this.CreatedSubscriptionClients.ContainsKey(subscription))
             {
                 if (!ns.TopicExists(topic))
                     throw new ArgumentException(string.Format("Unable to subscribe to topic {0} as it does not exist.", topic));
+
+                // Verify that the error queue exists before setting up the subscription
+                var errorQueue = "errors";
+                if (!ns.TopicExists(errorQueue))
+                    await this.CreateQueue(new QueueEndpoint { Host = endpoint.Host, Name = errorQueue });
 
                 // Now check if the subscription already exists if not create it
                 if (!ns.SubscriptionExists(topic, subscription))
@@ -179,23 +183,25 @@ namespace ABus.AzureServiceBus
                         LockDuration = TimeSpan.FromSeconds(300), // 5 mins
                         EnableDeadLetteringOnMessageExpiration = true,
                         EnableDeadLetteringOnFilterEvaluationExceptions = true,
-                        ForwardDeadLetteredMessagesTo = "errors",
+                        ForwardDeadLetteredMessagesTo = errorQueue,
                     };
-                    await ns.CreateSubscriptionAsync(subscriptionConfig);
+                    ns.CreateSubscriptionAsync(subscriptionConfig).Wait();
                 }
 
                 var subscriptionClient = SubscriptionClient.CreateFromConnectionString(host.ConnectionString, topic, subscription, ReceiveMode.PeekLock);
 
-                this.CreatedSubscriptionClients.Add(fullyQualifiedSubscriptionName, subscriptionClient);
+                this.CreatedSubscriptionClients.Add(subscription, subscriptionClient);
             }
 
             // return the topic client that has been stored
-            return this.CreatedSubscriptionClients[fullyQualifiedSubscriptionName];
+            return this.CreatedSubscriptionClients[subscription];
         }
 
         BrokeredMessage ConvertToBrokeredMessage(RawMessage rawMessage)
         {
             var bm = new BrokeredMessage(new MemoryStream(rawMessage.Body), true);
+            foreach (var m in rawMessage.MetaData)
+                bm.Properties.Add(m.Name, m.Value);
 
             return bm;
         }
@@ -204,6 +210,11 @@ namespace ABus.AzureServiceBus
         {
             var msg = new RawMessage();
             msg.MessageId = brokeredMessage.MessageId;
+
+            // Transfer meta data
+            foreach(var p in brokeredMessage.Properties)
+                msg.MetaData.Add(new MetaData{Name = p.Key, Value = p.Value as string});
+
             using (var stream = brokeredMessage.GetBody<Stream>())
             {
                 var buffer = new byte[stream.Length];

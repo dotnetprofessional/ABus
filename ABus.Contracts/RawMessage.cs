@@ -9,16 +9,16 @@ namespace ABus.Contracts
     {
         public RawMessage()
         {
-            this.MetaData = new Dictionary<string, MetaData>();
+            this.MetaData = new MetaDataCollection();
         }
 
         /// <summary>
         /// Gets/sets other applicative out-of-band information.
         /// 
         /// </summary>
-        public Dictionary<string, MetaData> MetaData { get; set; }
+        public MetaDataCollection MetaData { get; set; }
 
-
+         
         /// <summary>
         /// Gets/sets the maximum time limit in which the message  must be received.
         /// </summary>

@@ -19,7 +19,7 @@ namespace ABus
         {
             context.Trace.Information("Startup Pipeline2 task invoked!");
             next();
-            context.Trace.Information("Startup Pipeline2 task ended!");
+            context.Trace.Information("Startup Pipeline2 task ended!"); 
         }
     }
 
@@ -27,9 +27,9 @@ namespace ABus
     {
         public void Invoke(MessageContext context, Action next)
         { 
-            context.Trace.Information("Message Pipeline1 task invoked!");
+            context.PipelineContext.Trace.Information("Message Pipeline1 task invoked!");
             next();
-            context.Trace.Information("Message Pipeline1 task ended!");
+            context.PipelineContext.Trace.Information("Message Pipeline1 task ended!");
         }
     }
 

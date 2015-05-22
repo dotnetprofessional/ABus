@@ -1,7 +1,7 @@
 ﻿using System;
 using ABus.Contracts;
 
-namespace ABus.Tasks
+namespace ABus.Tasks.Startup
 {
     class InitializeTransportsTask : IPipelineStartupTask
     {
@@ -18,8 +18,8 @@ namespace ABus.Tasks
             }
              
             next();
-        }
+        } 
 
-
+         
     }
 } 
