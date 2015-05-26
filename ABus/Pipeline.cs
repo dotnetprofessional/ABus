@@ -5,6 +5,7 @@ using System.Diagnostics;
 using ABus.Contracts;
 using ABus.Tasks;
 using ABus.Tasks.Inbound;
+using ABus.Tasks.Outbound;
 using ABus.Tasks.Startup;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity.Configuration;
@@ -19,6 +20,12 @@ namespace ABus
         public const string MapHandler = "MapHandler";
         public const string ExecuteHandler = "ExecuteHandler";
         public const string PostHandlerExecution = "PostHandlerExecution";
+    }
+
+    public class OutboundMessageStages
+    {
+        public const string Serialize = "Serialize";
+        public const string SendMessage = "SendMessage";
     }
 
     public class StartupStages
@@ -48,6 +55,7 @@ namespace ABus
 
             this.StartupPipeline= new StartupPipelineGrammer(this, "Startup");
             this.InboundMessagePipeline = new InboundMessagePipelineGrammer(this, "InboundMessage");
+            this.OutboundMessagePipeline = new OutboundMessagePipelineGrammer(this, "OutboundMessage");
 
             //this.Tasks = new BlockingCollection<IPipelineTask>();
 
@@ -62,6 +70,9 @@ namespace ABus
             this.InboundMessagePipelineTasks.AddStage(InboundMessageStages.ExecuteHandler);
             this.InboundMessagePipelineTasks.AddStage(InboundMessageStages.PostHandlerExecution);
 
+            this.OutboundMessagePipelineTasks.AddStage(OutboundMessageStages.Serialize);
+            this.OutboundMessagePipelineTasks.AddStage(OutboundMessageStages.SendMessage);
+
             // Register the known startup stage tasks
             this.StartupPipeline.Initialize.Register("TransportDefinitions", typeof (DefineTransportDefinitionsTask))
                 .Then("ScanMessageTypes", typeof(ScanMessageTypesTask))
@@ -73,8 +84,11 @@ namespace ABus
                 
                 .Then("Task2", typeof(InitailizePipeline2));
 
-            this.InboundMessagePipeline.Deserialize.Register("DeserializeMessage", typeof (DeserializeMessageTask));
+            this.InboundMessagePipeline.Deserialize.Register("DeserializeMessage", typeof (DeserializeMessageFromJsonTask));
             this.InboundMessagePipeline.ExecuteHandler.Register("InvokeHandler", typeof (InvokeHandlerTask));
+
+            this.OutboundMessagePipeline.Serialize.Register("SerializeMessage", typeof (SerializeMessageToJsonTask));
+            this.OutboundMessagePipeline.SendMessage.Register("SendMessage", typeof (SendMessageTask));
 
         }
 
@@ -94,16 +108,35 @@ namespace ABus
         void InboundMessageReceived(object sender, RawMessage e)
         {
             // Initialize the message context
-            var inboundMessageContext = new MessageContext(sender as string, e, this.PipelineContext);
+            var inboundMessageContext = new InboundMessageContext(sender as string, e, this.PipelineContext);
+            var bus = new Bus(inboundMessageContext, this);
+            inboundMessageContext.Bus = bus;
 
             // Start the inbound message pipeline
             var tasks = this.InboundMessagePipelineTasks.GetTasks();
             if (tasks.Count > 0)
-                this.ExecuteMessageTask(inboundMessageContext, tasks.First);
+                this.ExecuteInboundMessageTask(inboundMessageContext, tasks.First);
+        }
+
+        public void SendOutboundMessage(OutboundMessageContext.ActionType action, object messageInstance)
+        {
+            // Initialize the message context
+            var registeredType = this.PipelineContext.RegisteredMessageTypes[messageInstance.GetType().FullName];
+
+            var outBoundMessageContext = new OutboundMessageContext(new QueueEndpoint { Host = registeredType.Transport.Uri, Name = registeredType.Queue }, messageInstance, this.PipelineContext);
+            // Record the action type
+            outBoundMessageContext.RawMessage.MetaData.Add(new MetaData { Name = StandardMetaData.ActionType, Value = action.ToString() });
+
+            // Start the inbound message pipeline
+            var tasks = this.OutboundMessagePipelineTasks.GetTasks();
+            if (tasks.Count > 0)
+                this.ExecuteOutboundMessageTask(outBoundMessageContext, tasks.First);
         }
 
         public StartupPipelineGrammer StartupPipeline { get; private set; } 
         public InboundMessagePipelineGrammer InboundMessagePipeline { get; private set; }
+
+        public OutboundMessagePipelineGrammer OutboundMessagePipeline { get; private set; }
 
         Pipeline RegisterStartupTask(string stage, PipelineTask task)
         {
@@ -158,14 +191,24 @@ namespace ABus
             });
         }
 
-        void ExecuteMessageTask(MessageContext context, LinkedListNode<PipelineTask> task)
+        void ExecuteInboundMessageTask(InboundMessageContext context, LinkedListNode<PipelineTask> task)
         {
 
-            var taskInstance = this.ServiceLocator.GetInstance(task.Value.Task) as IPipelineMessageTask;
+            var taskInstance = this.ServiceLocator.GetInstance(task.Value.Task) as IPipelineInboundMessageTask;
             taskInstance.Invoke(context, () =>
             { 
                 if (task.Next != null)
-                    this.ExecuteMessageTask(context, task.Next);
+                    this.ExecuteInboundMessageTask(context, task.Next);
+            });
+        }
+        void ExecuteOutboundMessageTask(OutboundMessageContext context, LinkedListNode<PipelineTask> task)
+        {
+
+            var taskInstance = this.ServiceLocator.GetInstance(task.Value.Task) as IPipelineOutboundMessageTask;
+            taskInstance.Invoke(context, () =>
+            {
+                if (task.Next != null)
+                    this.ExecuteOutboundMessageTask(context, task.Next);
             });
         }
     }
@@ -204,6 +247,24 @@ namespace ABus
         }
 
         public InboundMessagePipelineGrammer(Pipeline associatedPipeline, string pipelineName) : base(associatedPipeline, pipelineName)
+        {
+        }
+    }
+
+    public class OutboundMessagePipelineGrammer : PipelineGrammar
+    {
+        public PipelineStageGrammar Serialize
+        {
+            get { return new PipelineStageGrammar(this, OutboundMessageStages.Serialize); }
+        }
+
+        public PipelineStageGrammar SendMessage
+        {
+            get { return new PipelineStageGrammar(this, OutboundMessageStages.SendMessage); }
+        }
+
+        public OutboundMessagePipelineGrammer(Pipeline associatedPipeline, string pipelineName)
+            : base(associatedPipeline, pipelineName)
         {
         }
     }

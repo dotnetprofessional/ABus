@@ -16,28 +16,34 @@ namespace ABus
 {
     public class Bus  :IBus
     {
-        public Bus()
+        InboundMessageContext Context { get; set; }
+        Pipeline Pipeline { get; set; }
+
+        public Bus(InboundMessageContext context, Pipeline pipeline)
         {
+            this.Context = context;
+            this.Pipeline = pipeline;
         }
 
         public RawMessage CurrentMessage
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Context.RawMessage; }
         }
 
-        public void Publish(IEvent message)
+        public void Publish(object message)
         {
-            throw new NotImplementedException();
+            this.Pipeline.SendOutboundMessage(OutboundMessageContext.ActionType.Publish, message);
         }
 
-        public void Send(ICommand message)
+
+        public void Send(object message)
         {
-            throw new NotImplementedException();
+            this.Pipeline.SendOutboundMessage(OutboundMessageContext.ActionType.Send, message);
         }
 
-        public void Reply(ICommand message)
+        public void Reply(object message)
         {
-            throw new NotImplementedException();
+            this.Pipeline.SendOutboundMessage(OutboundMessageContext.ActionType.Reply, message);
         }
 
         public void TerminateMessagePipeline()

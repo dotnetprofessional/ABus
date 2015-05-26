@@ -23,9 +23,9 @@ namespace ABus
         }
     }
 
-    public class InboundMessageTask : IPipelineMessageTask
+    public class InboundMessageTask : IPipelineInboundMessageTask
     {
-        public void Invoke(MessageContext context, Action next)
+        public void Invoke(InboundMessageContext context, Action next)
         { 
             context.PipelineContext.Trace.Information("Message Pipeline1 task invoked!");
             next();

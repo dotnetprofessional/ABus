@@ -15,19 +15,19 @@ namespace ABus.Contracts
         /// Publishes an event message to the active transport
         /// </summary>
         /// <param name="message"></param>
-        void Publish(IEvent message);
+        void Publish(object message);
 
         /// <summary>
         /// Sends a command message to the active transport
         /// </summary>
         /// <param name="message"></param>
-        void Send(ICommand message);
+        void Send(object message);
 
         /// <summary>
         /// Sends a reply to a command message on the active transport
         /// </summary>
         /// <param name="message"></param>
-        void Reply(ICommand message);
+        void Reply(object message);
 
         /// <summary>
         /// Terminates processing of this message by other plugins within the pipeline

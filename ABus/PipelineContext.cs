@@ -11,6 +11,8 @@ namespace ABus
     /// </summary>
     public class PipelineContext
     {
+        public event EventHandler<RawMessage> MessageReceivedHandler;
+
         public PipelineContext(IServiceLocator serviceLocator, ABusTraceSource traceListener)
         {
             this.ServiceLocator = serviceLocator;
@@ -38,8 +40,6 @@ namespace ABus
 
         public ABusTraceSource Trace { get; private set; }
 
-        public event EventHandler<RawMessage> MessageReceivedHandler;
-         
         public void RaiseMessageReceivedEvent(object sender, RawMessage e)
         {
             if (this.MessageReceivedHandler != null)

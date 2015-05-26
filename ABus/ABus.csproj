@@ -65,6 +65,7 @@
     <Compile Include="BusProcessHost.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="InitailizePipeline.cs" />
+    <Compile Include="IPipelineOutboundMessageTask.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="PipelineConfiguration.cs" />
     <Compile Include="PipelineContext.cs">
@@ -76,15 +77,22 @@
     <Compile Include="RegisteredMessageType.cs" />
     <Compile Include="StageCollection.cs" />
     <Compile Include="IPipelineStartupTask.cs" />
-    <Compile Include="IPipelineMessageTask.cs" />
-    <Compile Include="MessageContext.cs" />
+    <Compile Include="IPipelineInboundMessageTask.cs" />
+    <Compile Include="InBoundMessageContext.cs" />
     <Compile Include="PipelineStageGrammar.cs" />
     <Compile Include="PipelineTask.cs" />
     <Compile Include="PipelineTasks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stage.cs" />
-    <Compile Include="Tasks\Inbound\DeserializeMessageTask.cs" />
+    <Compile Include="Tasks\Inbound\DeserializeMessageFromJsonTask.cs" />
     <Compile Include="Tasks\Inbound\InvokeHandlerTask.cs" />
+    <Compile Include="Tasks\Outbound\AppendCommonMetaDataTask.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tasks\Outbound\SendMessageTask.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tasks\Outbound\SerializeMessageToJsonTask.cs" />
     <Compile Include="Tasks\Startup\AssignTransportToMessageTypesTask.cs" />
     <Compile Include="Tasks\Startup\DefineTransportDefinitionsTask.cs">
       <SubType>Code</SubType>
