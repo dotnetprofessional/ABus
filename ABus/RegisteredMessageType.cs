@@ -34,5 +34,7 @@ namespace ABus
         /// </summary>
         public TransportDefinition Transport { get;set; }
 
+        public QueueEndpoint QueueEndpoint { get { return new QueueEndpoint {Host = this.Transport.Uri, Name = this.Queue}; } }
+
     } 
 }

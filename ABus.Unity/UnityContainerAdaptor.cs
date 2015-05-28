@@ -21,6 +21,7 @@ namespace ABus.Unity
         void RegisterTypes()
         {
             this.container.RegisterType<IAssemblyResolver, AssemblyResolver>(new ContainerControlledLifetimeManager());
+            this.container.RegisterType<IManageTransactions, DefaultTransactionManager>();
         }
     }
 

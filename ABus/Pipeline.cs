@@ -85,7 +85,10 @@ namespace ABus
                 .Then("Task2", typeof(InitailizePipeline2));
 
             this.InboundMessagePipeline.Deserialize.Register("DeserializeMessage", typeof (DeserializeMessageFromJsonTask));
-            this.InboundMessagePipeline.ExecuteHandler.Register("InvokeHandler", typeof (InvokeHandlerTask));
+            this.InboundMessagePipeline.ExecuteHandler
+                .Register("EnableTransactionManagement", typeof (EnableTransactionManagementTask))
+                .Then("ExceptionHander", typeof(ExceptionHanderTask))
+                .Then("InvokeHandler", typeof (InvokeHandlerTask));
 
             this.OutboundMessagePipeline.Serialize.Register("SerializeMessage", typeof (SerializeMessageToJsonTask));
             this.OutboundMessagePipeline.SendMessage.Register("SendMessage", typeof (SendMessageTask));

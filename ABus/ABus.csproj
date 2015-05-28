@@ -85,6 +85,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stage.cs" />
     <Compile Include="Tasks\Inbound\DeserializeMessageFromJsonTask.cs" />
+    <Compile Include="Tasks\Inbound\EnableTransactionManagementTask.cs" />
+    <Compile Include="Tasks\Inbound\ExceptionHanderTask.cs" />
     <Compile Include="Tasks\Inbound\InvokeHandlerTask.cs" />
     <Compile Include="Tasks\Outbound\AppendCommonMetaDataTask.cs">
       <SubType>Code</SubType>

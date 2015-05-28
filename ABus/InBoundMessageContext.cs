@@ -24,6 +24,8 @@ namespace ABus
         public PipelineContext PipelineContext { get; private set; }
 
         public IBus Bus { get; set; }
+
+        public IManageOutboundMessages TransactionManager { get; set; }
     }
 
     /// <summary>
