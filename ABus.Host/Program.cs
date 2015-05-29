@@ -22,7 +22,7 @@ namespace ABus.Host
             }
             var consoleTracer = new ColorConsoleTraceListener();
             Trace.Listeners.Add(consoleTracer);
-
+             
             var p = new Pipeline(new UnityBootstraper());
 
             p.StartupPipeline 
@@ -30,7 +30,7 @@ namespace ABus.Host
                 .Then("task1", typeof(InitailizePipeline4))
                 .And()
                 .InboundMessagePipeline  
-                .Authenticate.Register("task1", typeof(InboundMessageTask));
+                .Security.Register("task1", typeof(InboundMessageTask));
              
             p.Start();
 

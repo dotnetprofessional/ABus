@@ -32,18 +32,18 @@ namespace ABus
 
         public void Publish(object message)
         {
-            this.Pipeline.SendOutboundMessage(OutboundMessageContext.ActionType.Publish, message);
+            this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Publish, message);
         }
-
+         
 
         public void Send(object message)
         {
-            this.Pipeline.SendOutboundMessage(OutboundMessageContext.ActionType.Send, message);
+            this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Send, message);
         }
 
         public void Reply(object message)
         {
-            this.Pipeline.SendOutboundMessage(OutboundMessageContext.ActionType.Reply, message);
+            this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Reply, message);
         }
 
         public void TerminateMessagePipeline()

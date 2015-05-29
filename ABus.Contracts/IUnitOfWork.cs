@@ -179,14 +179,14 @@ namespace ABus.Contracts
                 if (Repository.ContainsKey(inboundMessageId))
                     throw new ArgumentException("Duplicate messageId: " + inboundMessageId);
 
-                Repository.Add(inboundMessageId, messages.ToDictionary(m => m.MessageId));
+                Repository.Add(inboundMessageId, messages.ToDictionary(m => m.MessageId, m => m));
             }
         }
 
         public IEnumerable<RawMessage> GetMessages(string inboundMessageId)
         {
             if (Repository.ContainsKey(inboundMessageId))
-                return Repository[inboundMessageId].Values.ToList();
+                return Repository[inboundMessageId].Values.ToList();  
 
             return null;
         }

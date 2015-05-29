@@ -17,7 +17,7 @@ namespace ABus
          
         public RawMessage RawMessage { get; private set; }
 
-        public string SubscriptionName{ get; private set; }
+        public string SubscriptionName{ get; private set; } 
 
         public object TypeInstance { get; set; }
 
@@ -33,18 +33,19 @@ namespace ABus
     /// </summary>
     public class OutboundMessageContext
     {
-        public enum ActionType
+        public enum MessageIntent
         {
             Send,
             Reply,
             Publish
         }
 
-        public OutboundMessageContext(QueueEndpoint queue, object messageInstance, PipelineContext pipelineContext)
+        public OutboundMessageContext(QueueEndpoint queue, object messageInstance, PipelineContext pipelineContext, InboundMessageContext inboundMessageContext)
         {
             this.Queue = queue;
             this.MessageInstance = messageInstance;
             this.PipelineContext = pipelineContext;
+            this.InboundMessageContext = inboundMessageContext;
             this.RawMessage = new RawMessage();
         }
 
@@ -55,5 +56,7 @@ namespace ABus
         public object MessageInstance { get; set; }
 
         public PipelineContext PipelineContext { get; private set; }
+
+        public InboundMessageContext InboundMessageContext { get; private set; }
     }
 }

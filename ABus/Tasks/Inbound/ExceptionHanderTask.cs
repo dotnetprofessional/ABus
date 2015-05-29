@@ -19,10 +19,13 @@ namespace ABus.Tasks.Inbound
             }
             catch (Exception)
             {
-                if(this.RetryCount <= 5)
+                if (this.RetryCount <= 5)
                     this.Invoke(context, next);
                 else
+                {
+                    this.RetryCount ++;
                     throw;
+                } 
             }
         }
     }

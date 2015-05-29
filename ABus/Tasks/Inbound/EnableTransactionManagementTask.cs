@@ -1,13 +1,22 @@
 ﻿using System;
 using ABus.Contracts;
+using System.Transactions;
 
 namespace ABus.Tasks.Inbound
 {
+    /// <summary>
+    /// Provides implementation of the outbox pattern
+    /// </summary>
+    /// <remarks>
+    /// Based on these references:
+    /// http://blogs.msdn.com/b/clemensv/archive/2012/07/30/transactions-in-windows-azure-with-service-bus-an-email-discussion.aspx
+    /// http://docs.particular.net/nservicebus/outbox/
+    /// </remarks>
     class EnableTransactionManagementTask : IPipelineInboundMessageTask
     {
         public void Invoke(InboundMessageContext context, Action next)
         {
-            var messageManager = context.PipelineContext.ServiceLocator.GetInstance<IManageOutboundMessages>();
+            var messageManager = context.PipelineContext.ServiceLocator.GetInstance<OutboundMessageManager>();
             using (messageManager as IDisposable)
             {
                 messageManager.InboundMessageId = context.RawMessage.MessageId;
@@ -25,24 +34,24 @@ namespace ABus.Tasks.Inbound
                     // Persist outbound messages with any database transactions in an ACID transaction (if supported by transaciton manager)
                     messageManager.Commit();
                 }
+            }
 
-                // Now need to dispatch the outbound messages to their respective queues using the appropriate transport
-                foreach (var m in messageManager.TransactionManager.GetMessages(messageManager.InboundMessageId))
-                {
-                    var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
-                    var messageType = context.PipelineContext.RegisteredMessageTypes[messageTypeName];
-                    var transport = context.PipelineContext.TransportInstances[messageType.Transport.Name];
-                    var actionType = context.RawMessage.MetaData[StandardMetaData.ActionType].Value;
+            // Now need to dispatch the outbound messages to their respective queues using the appropriate transport
+            foreach (var m in messageManager.TransactionManager.GetMessages(messageManager.InboundMessageId))
+            {
+                var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
+                var messageType = context.PipelineContext.RegisteredMessageTypes[messageTypeName];
+                var transport = context.PipelineContext.TransportInstances[messageType.Transport.Name];
+                var messageIntent = m.MetaData[StandardMetaData.MessageIntent].Value;
 
-                    if (actionType == OutboundMessageContext.ActionType.Send.ToString())
-                        transport.Send(messageType.QueueEndpoint, context.RawMessage);
-                    else if (actionType == OutboundMessageContext.ActionType.Publish.ToString())
-                        transport.Publish(messageType.QueueEndpoint, context.RawMessage);
-                    else if (actionType == OutboundMessageContext.ActionType.Reply.ToString())
-                        transport.Send(messageType.QueueEndpoint, context.RawMessage);
+                if (messageIntent == OutboundMessageContext.MessageIntent.Send.ToString())
+                    transport.Send(messageType.QueueEndpoint, m);
+                else if (messageIntent == OutboundMessageContext.MessageIntent.Publish.ToString())
+                    transport.Publish(messageType.QueueEndpoint, m);
+                else if (messageIntent == OutboundMessageContext.MessageIntent.Reply.ToString())
+                    transport.Send(messageType.QueueEndpoint, m);
 
-                    messageManager.TransactionManager.MarkAsComplete(messageManager.InboundMessageId, m.MessageId);
-                }
+                messageManager.TransactionManager.MarkAsComplete(messageManager.InboundMessageId, m.MessageId); 
             }
         }
     }
