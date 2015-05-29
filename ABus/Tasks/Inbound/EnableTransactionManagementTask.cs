@@ -41,9 +41,7 @@ namespace ABus.Tasks.Inbound
             // Now need to dispatch the outbound messages to their respective queues using the appropriate transport
             foreach (var m in messageManager.TransactionManager.GetMessages(messageManager.InboundMessageId))
             {
-                if(f)
-                    throw new Exception();
-
+               
                 var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
                 var messageType = context.PipelineContext.RegisteredMessageTypes[messageTypeName];
                 var transport = context.PipelineContext.TransportInstances[messageType.Transport.Name];
