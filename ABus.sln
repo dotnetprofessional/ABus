@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus", "ABus\ABus.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Unity", "ABus.Unity\ABus.Unity.csproj", "{CDB63549-9343-483C-9009-57155799CEAF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.TransactionManagement.SQLServer", "ABus.TransactionManagement.SQLServer\ABus.TransactionManagement.SQLServer.csproj", "{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,8 +101,21 @@ Global
 		{CDB63549-9343-483C-9009-57155799CEAF}.Release|ARM.ActiveCfg = Release|Any CPU
 		{CDB63549-9343-483C-9009-57155799CEAF}.Release|x64.ActiveCfg = Release|Any CPU
 		{CDB63549-9343-483C-9009-57155799CEAF}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Release|ARM.ActiveCfg = Release|Any CPU
+		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Release|x64.ActiveCfg = Release|Any CPU
+		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Data.6.0.1304.0\lib\NET45
 	EndGlobalSection
 EndGlobal

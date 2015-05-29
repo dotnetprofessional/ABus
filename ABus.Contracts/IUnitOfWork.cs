@@ -117,7 +117,8 @@ namespace ABus.Contracts
 
         public void Dispose()
         {
-            this.Tx.Dispose();
+            var transactionScope = this.Tx;
+            if (transactionScope != null) transactionScope.Dispose();
         }
     }
 

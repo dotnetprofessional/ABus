@@ -10,6 +10,8 @@ namespace ABus.Tasks.Inbound
     /// <remarks>
     /// Based on these references:
     /// http://blogs.msdn.com/b/clemensv/archive/2012/07/30/transactions-in-windows-azure-with-service-bus-an-email-discussion.aspx
+    /// http://gistlabs.com/2014/05/the-outbox/
+    /// http://www.eaipatterns.com/GuaranteedMessaging.html
     /// http://docs.particular.net/nservicebus/outbox/
     /// </remarks>
     class EnableTransactionManagementTask : IPipelineInboundMessageTask
@@ -35,10 +37,13 @@ namespace ABus.Tasks.Inbound
                     messageManager.Commit();
                 }
             }
-
+            var f = true;
             // Now need to dispatch the outbound messages to their respective queues using the appropriate transport
             foreach (var m in messageManager.TransactionManager.GetMessages(messageManager.InboundMessageId))
             {
+                if(f)
+                    throw new Exception();
+
                 var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
                 var messageType = context.PipelineContext.RegisteredMessageTypes[messageTypeName];
                 var transport = context.PipelineContext.TransportInstances[messageType.Transport.Name];
@@ -52,6 +57,7 @@ namespace ABus.Tasks.Inbound
                     transport.Send(messageType.QueueEndpoint, m);
 
                 messageManager.TransactionManager.MarkAsComplete(messageManager.InboundMessageId, m.MessageId); 
+                
             }
         }
     }
