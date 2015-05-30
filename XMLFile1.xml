@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+
+Configure
+  .UseTransport<T>()
+    .WithName("xx")
+    .WithConnectionString("Endpoint=sb://{yournamespace}.servicebus.windows.net/;SharedSecretIssuer=owner;SharedSecretValue={yourkey}")
+    .And()
+  .WithMessageEndpoint.UseTransport("name")
+    .WithTypePattern("xxx")
+    .WithEndpoint("xxx")
+    .AndAlso
+    .UseTransport(...)
+  
+  .Transactions.Disable (enabled by default)
+    .WithTransactionManager<T>(connectionString)
+  
+  TypePattern
+  QueueEndPoint
+  Transport
+  
