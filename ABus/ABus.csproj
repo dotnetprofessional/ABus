@@ -64,16 +64,32 @@
   <ItemGroup>
     <Compile Include="ABusTraceSource.cs" />
     <Compile Include="AssemblyResolver.cs" />
+    <Compile Include="Bus.cs" />
     <Compile Include="BusProcessHost.cs" />
     <Compile Include="Config\Configuration.cs" />
-    <Compile Include="Config\Transport\TransportGrammar.cs" />
+    <Compile Include="Config\ConfigurationGrammar.cs" />
+    <Compile Include="Config\MessageEndpoint\MessageEndpointDefinition.cs" />
+    <Compile Include="Config\MessageEndpoint\MessageEndpointDefinitionGrammar.cs" />
+    <Compile Include="Config\MessageEndpoint\MessageEndpointGrammar.cs" />
+    <Compile Include="Config\Pipeline\PipelineConfigurationGrammar.cs" />
+    <Compile Include="Config\Transactions\TransactionsGrammar.cs" />
+    <Compile Include="Config\Transactions\TransactionOptions.cs" />
+    <Compile Include="Config\Transport\TransportDefinitionGrammar.cs" />
+    <Compile Include="CustomSecurityTask.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Config\Pipeline\InboundMessagePipelineGrammer.cs" />
     <Compile Include="Config\Pipeline\InboundMessageStages.cs" />
+    <Compile Include="HandlerInstance.cs" />
+    <Compile Include="InboundMessageTask.cs" />
     <Compile Include="InitailizePipeline.cs" />
+    <Compile Include="InitailizePipeline2.cs" />
+    <Compile Include="InitailizePipeline3.cs" />
+    <Compile Include="InitailizePipeline4.cs" />
     <Compile Include="IPipelineOutboundMessageTask.cs" />
     <Compile Include="Config\Pipeline\OutboundMessagePipelineGrammer.cs" />
     <Compile Include="Config\Pipeline\OutboundMessageStages.cs" />
+    <Compile Include="MessageTransportFactory.cs" />
+    <Compile Include="OutboundMessageContext.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="Config\Pipeline\PipelineConfiguration.cs" />
     <Compile Include="PipelineContext.cs">
@@ -83,7 +99,9 @@
     <Compile Include="RegisteredHandler.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RegisteredHandlerCollection.cs" />
     <Compile Include="RegisteredMessageType.cs" />
+    <Compile Include="RegisteredMessageTypeCollection.cs" />
     <Compile Include="StageCollection.cs" />
     <Compile Include="IPipelineStartupTask.cs" />
     <Compile Include="IPipelineInboundMessageTask.cs" />
@@ -94,6 +112,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stage.cs" />
     <Compile Include="Config\Pipeline\StartupPipelineGrammer.cs" />
+    <Compile Include="StartupStages.cs" />
     <Compile Include="Tasks\Inbound\DeserializeMessageFromJsonTask.cs" />
     <Compile Include="Tasks\Inbound\EnableTransactionManagementTask.cs" />
     <Compile Include="Tasks\Inbound\ExceptionHanderTask.cs" />

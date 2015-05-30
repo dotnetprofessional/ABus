@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UnityBootstraper.cs" />
     <Compile Include="UnityContainerAdaptor.cs" />
     <Compile Include="IABusContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

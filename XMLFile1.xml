@@ -2,15 +2,15 @@
 
 
 Configure
-  .UseTransport<T>()
-    .WithName("xx")
-    .WithConnectionString("Endpoint=sb://{yournamespace}.servicebus.windows.net/;SharedSecretIssuer=owner;SharedSecretValue={yourkey}")
-    .And()
-  .WithMessageEndpoint.UseTransport("name")
-    .WithTypePattern("xxx")
-    .WithEndpoint("xxx")
-    .AndAlso
-    .UseTransport(...)
+x  .UseTransport<T>()
+-    .WithName("xx")
+x    .WithConnectionString("Endpoint=sb://{yournamespace}.servicebus.windows.net/;SharedSecretIssuer=owner;SharedSecretValue={yourkey}")
+x    .And()
+x  .WithMessageEndpoint.UseTransport("name")
+x   .WithTypePattern("xxx")
+x   .WithEndpoint("xxx")
+x    .AndAlso
+x    .UseTransport(...)
   
   .Transactions.Disable (enabled by default)
     .WithTransactionManager<T>(connectionString)

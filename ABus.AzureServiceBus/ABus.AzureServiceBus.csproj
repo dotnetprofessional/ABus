@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="AzureBusTransport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TransportInstance.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

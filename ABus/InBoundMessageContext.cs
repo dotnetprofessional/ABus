@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ABus.Contracts;
 
 namespace ABus
@@ -13,6 +14,7 @@ namespace ABus
             this.SubscriptionName = subscriptionName;
             this.RawMessage = rawMessage;
             this.PipelineContext = pipelineContext;
+            this.OutboundMessages = new List<RawMessage>();
         }
          
         public RawMessage RawMessage { get; private set; }
@@ -25,38 +27,6 @@ namespace ABus
 
         public IBus Bus { get; set; }
 
-        public IManageOutboundMessages TransactionManager { get; set; }
-    }
-
-    /// <summary>
-    /// Contains the state of the message
-    /// </summary>
-    public class OutboundMessageContext
-    {
-        public enum MessageIntent
-        {
-            Send,
-            Reply,
-            Publish
-        }
-
-        public OutboundMessageContext(QueueEndpoint queue, object messageInstance, PipelineContext pipelineContext, InboundMessageContext inboundMessageContext)
-        {
-            this.Queue = queue;
-            this.MessageInstance = messageInstance;
-            this.PipelineContext = pipelineContext;
-            this.InboundMessageContext = inboundMessageContext;
-            this.RawMessage = new RawMessage();
-        }
-
-        public RawMessage RawMessage { get; private set; }
-
-        public QueueEndpoint Queue { get; private set; }
-
-        public object MessageInstance { get; set; }
-
-        public PipelineContext PipelineContext { get; private set; }
-
-        public InboundMessageContext InboundMessageContext { get; private set; }
+        public List<RawMessage> OutboundMessages { get; set; }
     }
 }

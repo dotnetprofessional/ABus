@@ -7,7 +7,7 @@ namespace ABus.Tasks.Outbound
     {
         public void Invoke(OutboundMessageContext context, Action next)
         {
-            context.InboundMessageContext.TransactionManager.AddItem(context.RawMessage);
+            context.InboundMessageContext.OutboundMessages.Add(context.RawMessage);
              
             next();
         }

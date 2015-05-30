@@ -25,18 +25,20 @@ namespace ABus.Host
              
             var p = new Pipeline(new UnityBootstraper());
 
-            p.Configure.Pipeline.Startup
-                .Initialize.Register<InitailizePipeline3>()
-                .Then<InitailizePipeline4>()
-                .AndAlso()
-                .InboundMessage
-                .Security.Register<InboundMessageTask>();
-            
-            p.Configure.EnsureQueueExists();
-
-            p.Configure.UseTransport<AzureBusTransport>("CustomerBC")
+            p.Configure.Pipeline
+                .InboundMessage.Security.Register<CustomSecurityTask>()
+                .And()
+                .EnsureQueueExists()
+                .UseTransport<AzureBusTransport>("CustomerBC")
                 .WithConnectionString("Endpoint=sb://abus-dev.servicebus.windows.net;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uyauQw6sme25rx0EzLc/2VSWafIF6PROzdkZ9A4N918=");
-             
+
+            p.Configure.WithMessageEndpoint
+                .UseTransport("CustomerBC").WithPattern("ABus.Sample")
+                .AndAlso
+                .UseTransport("CustomerBC").WithDefaultPattern();
+
+            p.Configure.Transactions.WithTransactionManager<DefaultTransactionManager>("connection string");
+
             p.Start();
 
             Console.ReadLine();  

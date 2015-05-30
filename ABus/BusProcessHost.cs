@@ -14,46 +14,6 @@ using Newtonsoft.Json;
 
 namespace ABus
 {
-    public class Bus  :IBus
-    {
-        InboundMessageContext Context { get; set; }
-        Pipeline Pipeline { get; set; }
-
-        public Bus(InboundMessageContext context, Pipeline pipeline)
-        {
-            this.Context = context;
-            this.Pipeline = pipeline;
-        }
-
-        public RawMessage CurrentMessage
-        {
-            get { return this.Context.RawMessage; }
-        }
-
-        public void Publish(object message)
-        {
-            this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Publish, message);
-        }
-         
-
-        public void Send(object message)
-        {
-            this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Send, message);
-        }
-
-        public void Reply(object message)
-        {
-            this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Reply, message);
-        }
-
-        public void TerminateMessagePipeline()
-        {
-            throw new NotImplementedException();
-        }
-
-
-    }
-
     public class BusProcessHost
     {
         IUnityContainer Container { get; set; }
@@ -216,12 +176,12 @@ namespace ABus
             foreach (var m in messageTypes)
             {
                 var queue = this.GetQueueEndpointFromType(m);
-                if(await this.Transport.QueueExists(queue))
+                if(await this.Transport.QueueExistsAsync(queue))
                     Trace.WriteLine(string.Format("Queue: {0} exists.", queue.Name));
                 else
                 {
                     Trace.Write(string.Format("Queue: {0} creating...", queue.Name));
-                    await this.Transport.CreateQueue(queue);
+                    await this.Transport.CreateQueueAsync(queue);
                     Trace.WriteLine("complete.");
                 }
             }
@@ -236,40 +196,5 @@ namespace ABus
             return endpoint;
         }
 
-    }
-
-    public class MessageTransportFactory
-    {
-        Dictionary<string, IMessageTransport> HostInstances = new Dictionary<string, IMessageTransport>(); 
-        public IMessageTransport GetTransport(TransportDefinition transport)
-        {
-            if (!this.HostInstances.ContainsKey(transport.TransportObsolete.FullName))
-            {
-                var hostInstance = Activator.CreateInstance(transport.TransportObsolete) as IMessageTransport;
-                if (hostInstance != null)
-                {
-                    hostInstance.ConfigureHost(transport);
-                    this.HostInstances.Add(transport.TransportObsolete.FullName, hostInstance);
-                }
-            }
-
-            return this.HostInstances[transport.TransportObsolete.FullName];
-        }
-    }
-
-    public class HandlerInstance
-    {
-        public string MessageTypeName { get; set; }
-        public MethodInfo Method { get; set; }
-
-        /// <summary>
-        /// Holds a reference to the method handler instance
-        /// </summary>
-        /// <remarks>
-        /// A weak reference is used to ensure memory leaks are prevented.
-        /// </remarks>
-        public object TypeInstance { get; set; }
-
-        public Type MessageType { get; set; }
     }
 }

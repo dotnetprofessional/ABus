@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using ABus.Config.MessageEndpoint;
 using ABus.Config.Pipeline;
-using ABus.Config.Transport;
+using ABus.Config.Transactions;
 using ABus.Contracts;
 
 namespace ABus.Config
@@ -11,38 +12,18 @@ namespace ABus.Config
         {
             this.Pipeline = new PipelineConfiguration();
             this.AvailableTransports = new List<TransportDefinition>();
+            this.MessageEndpointDefinitions = new List<MessageEndpointDefinition>();
+            this.Transactions = new TransactionOptions();
         }
 
         public PipelineConfiguration Pipeline { get; private set; }
 
-        public List<TransportDefinition> AvailableTransports { get; set; }
+        public List<TransportDefinition> AvailableTransports { get; private set; }
+
+        public List<MessageEndpointDefinition> MessageEndpointDefinitions { get; private set; }
+
+        public TransactionOptions Transactions { get; private set; }
  
         public bool EnsureQueuesExist { get; set; }
-    }
-
-    public class ConfigurationGrammar
-    {
-        internal Configuration Configuration = new Configuration();
-
-        public ConfigurationGrammar()
-        {
-            this.Pipeline = new PipelineConfigurationGrammar(this);
-        }
-
-        public PipelineConfigurationGrammar Pipeline { get; private set; }
-
-        public TransportDefinitionGrammar UseTransport<T>(string name)
-        {
-            var definition = new TransportDefinition { TransportType = typeof(T).AssemblyQualifiedName, Name = name };
-            this.Configuration.AvailableTransports.Add(definition);
-
-            return new TransportDefinitionGrammar(this, definition);
-        }
-
-        public Configuration EnsureQueueExists()
-        {
-            this.Configuration.EnsureQueuesExist = true;
-            return this.Configuration;
-        }
     }
 }

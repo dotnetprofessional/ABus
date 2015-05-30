@@ -5,10 +5,6 @@ using Microsoft.Practices.ServiceLocation;
 
 namespace ABus
 {
-    public class StartupStages
-    {
-        public const string Initialize = "Initialize";
-    }
     public class Pipeline
     {
         IServiceLocator ServiceLocator { get; set; }

@@ -25,18 +25,4 @@ namespace ABus.Sample
             Console.WriteLine(string.Format("Received test message 2 with name {0} and address {1}", message.Name, message.Addresss));
         }
     }
-
-    public class TestMessageCommand
-    {
-        public string Name { get; set; }
-
-        public string Addresss { get; set; }
-    }
-
-    public class TestMessage2Event
-    {
-        public string Name { get; set; }
-
-        public string Addresss { get; set; }
-    }
 }

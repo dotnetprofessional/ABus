@@ -38,12 +38,12 @@ namespace ABus.AzureServiceBus
             }
         }
 
-        public Task DeleteQueue(QueueEndpoint endpoint)
+        public Task DeleteQueueAsync(QueueEndpoint endpoint)
         {
             return this.HostInstances[endpoint.Host].Namespace.DeleteTopicAsync(endpoint.Name);
         }
 
-        public Task CreateQueue(QueueEndpoint endpoint)
+        public Task CreateQueueAsync(QueueEndpoint endpoint)
         {
             return this.HostInstances[endpoint.Host].Namespace.CreateTopicAsync(endpoint.Name);
         }
@@ -172,7 +172,7 @@ namespace ABus.AzureServiceBus
                 // Verify that the error queue exists before setting up the subscription
                 var errorQueue = "errors";
                 if (!ns.TopicExists(errorQueue))
-                    await this.CreateQueue(new QueueEndpoint { Host = endpoint.Host, Name = errorQueue });
+                    await this.CreateQueueAsync(new QueueEndpoint { Host = endpoint.Host, Name = errorQueue });
 
                 // Now check if the subscription already exists if not create it
                 if (!ns.SubscriptionExists(topic, subscription))
@@ -228,17 +228,14 @@ namespace ABus.AzureServiceBus
         }
 
 
-        public Task<bool> QueueExists(QueueEndpoint endpoint)
+        public Task<bool> QueueExistsAsync(QueueEndpoint endpoint)
         {
             return this.HostInstances[endpoint.Host].Namespace.TopicExistsAsync(endpoint.Name);
         }
-    }
 
-    internal class TransportInstance : TransportDefinition
-    {
-        public NamespaceManager Namespace { get; set; }
-
-        public string ConnectionString { get { return string.Format("Endpoint={0};{1}", this.Uri, this.Credentials); } }
-
+        public Task DeferAsync(RawMessage message, TimeSpan timeToDelay)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

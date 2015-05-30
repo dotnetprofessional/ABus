@@ -18,8 +18,17 @@ namespace ABus.Tasks.Inbound
     { 
         public void Invoke(InboundMessageContext context, Action next)
         {
+            if (!context.PipelineContext.Configuration.Transactions.TransactionsEnabled)
+            {
+                context.PipelineContext.Trace.Warning("Transaction support disabled!");
+                // Effectively by-pass this task and go to the next one.
+                next();
+                
+                return;
+            }
+
             var messageManager = context.PipelineContext.ServiceLocator.GetInstance<OutboundMessageManager>();
-            using (messageManager as IDisposable)
+            using (messageManager)
             {
                 messageManager.InboundMessageId = context.RawMessage.MessageId;
 
@@ -28,16 +37,16 @@ namespace ABus.Tasks.Inbound
                 {
                     messageManager.Begin();
 
-                    // Set the transaction manager on the context so that messages can be added by other tasks
-                    context.TransactionManager = messageManager;
-
                     next();
+
+                    // Transfer all outbound messages to the transaction manager
+                    messageManager.AddRangeItems(context.OutboundMessages);
 
                     // Persist outbound messages with any database transactions in an ACID transaction (if supported by transaciton manager)
                     messageManager.Commit();
                 }
             }
-            var f = true;
+
             // Now need to dispatch the outbound messages to their respective queues using the appropriate transport
             foreach (var m in messageManager.TransactionManager.GetMessages(messageManager.InboundMessageId))
             {
