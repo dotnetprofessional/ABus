@@ -15,7 +15,7 @@ namespace ABus.Tasks.Inbound
     /// http://docs.particular.net/nservicebus/outbox/
     /// </remarks>
     class EnableTransactionManagementTask : IPipelineInboundMessageTask
-    {
+    { 
         public void Invoke(InboundMessageContext context, Action next)
         {
             var messageManager = context.PipelineContext.ServiceLocator.GetInstance<OutboundMessageManager>();

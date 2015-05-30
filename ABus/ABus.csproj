@@ -65,14 +65,21 @@
     <Compile Include="ABusTraceSource.cs" />
     <Compile Include="AssemblyResolver.cs" />
     <Compile Include="BusProcessHost.cs" />
+    <Compile Include="Config\Configuration.cs" />
+    <Compile Include="Config\Transport\TransportGrammar.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Config\Pipeline\InboundMessagePipelineGrammer.cs" />
+    <Compile Include="Config\Pipeline\InboundMessageStages.cs" />
     <Compile Include="InitailizePipeline.cs" />
     <Compile Include="IPipelineOutboundMessageTask.cs" />
+    <Compile Include="Config\Pipeline\OutboundMessagePipelineGrammer.cs" />
+    <Compile Include="Config\Pipeline\OutboundMessageStages.cs" />
     <Compile Include="Pipeline.cs" />
-    <Compile Include="PipelineConfiguration.cs" />
+    <Compile Include="Config\Pipeline\PipelineConfiguration.cs" />
     <Compile Include="PipelineContext.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Config\Pipeline\PipelineGrammar.cs" />
     <Compile Include="RegisteredHandler.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -81,11 +88,12 @@
     <Compile Include="IPipelineStartupTask.cs" />
     <Compile Include="IPipelineInboundMessageTask.cs" />
     <Compile Include="InBoundMessageContext.cs" />
-    <Compile Include="PipelineStageGrammar.cs" />
+    <Compile Include="Config\Pipeline\PipelineStageGrammar.cs" />
     <Compile Include="PipelineTask.cs" />
     <Compile Include="PipelineTasks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stage.cs" />
+    <Compile Include="Config\Pipeline\StartupPipelineGrammer.cs" />
     <Compile Include="Tasks\Inbound\DeserializeMessageFromJsonTask.cs" />
     <Compile Include="Tasks\Inbound\EnableTransactionManagementTask.cs" />
     <Compile Include="Tasks\Inbound\ExceptionHanderTask.cs" />

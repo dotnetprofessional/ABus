@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30324.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Contracts", "ABus.Contracts\ABus.Contracts.csproj", "{BB4F786C-2966-4E73-91BB-6775CF177CF7}"
 EndProject
@@ -18,6 +18,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Unity", "ABus.Unity\ABus.Unity.csproj", "{CDB63549-9343-483C-9009-57155799CEAF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.TransactionManagement.SQLServer", "ABus.TransactionManagement.SQLServer\ABus.TransactionManagement.SQLServer.csproj", "{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScratchPad", "ScratchPad", "{E9FD1E97-0012-458D-9F5A-6CB4C145002C}"
+	ProjectSection(SolutionItems) = preProject
+		XMLFile1.xml = XMLFile1.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

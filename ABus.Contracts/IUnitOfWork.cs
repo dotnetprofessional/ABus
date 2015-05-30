@@ -19,7 +19,7 @@ namespace ABus.Contracts
     /// AzureBasicTransaction
     /// 
     /// incomming message: new AzureSQLTransaction
-    /// 
+    ///  
     /// 
     /// Logic
     /// Unit of Work handler is generic and not specific to a persistence layer so is part of the IncommingMessageContext

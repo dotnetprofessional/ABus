@@ -12,7 +12,7 @@ using Topshelf;
 namespace ABus.Host
 {
     public class Program
-    {
+    { 
         public static void Main()
         {
             for (int i = 1; i < 2; i++)
@@ -25,16 +25,21 @@ namespace ABus.Host
              
             var p = new Pipeline(new UnityBootstraper());
 
-            p.StartupPipeline 
-                .Initialize.Register("task1", typeof(InitailizePipeline3))
-                .Then("task1", typeof(InitailizePipeline4))
-                .And()
-                .InboundMessagePipeline  
-                .Security.Register("task1", typeof(InboundMessageTask));
+            p.Configure.Pipeline.Startup
+                .Initialize.Register<InitailizePipeline3>()
+                .Then<InitailizePipeline4>()
+                .AndAlso()
+                .InboundMessage
+                .Security.Register<InboundMessageTask>();
+            
+            p.Configure.EnsureQueueExists();
+
+            p.Configure.UseTransport<AzureBusTransport>("CustomerBC")
+                .WithConnectionString("Endpoint=sb://abus-dev.servicebus.windows.net;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uyauQw6sme25rx0EzLc/2VSWafIF6PROzdkZ9A4N918=");
              
             p.Start();
 
-            Console.ReadLine();
+            Console.ReadLine();  
         }
 
 
