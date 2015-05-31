@@ -57,7 +57,7 @@ namespace ABus.Host
             {
                 Uri = "sb://abus-dev.servicebus.windows.net",
                 Credentials = "SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uyauQw6sme25rx0EzLc/2VSWafIF6PROzdkZ9A4N918=",
-                TransportObsolete = typeof (AzureBusTransport)
+                TransportType = typeof (AzureBusTransport).FullName
             };
 
             t.ConfigureHost(host);

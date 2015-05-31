@@ -74,11 +74,8 @@
     <Compile Include="Config\Transactions\TransactionsGrammar.cs" />
     <Compile Include="Config\Transactions\TransactionOptions.cs" />
     <Compile Include="Config\Transport\TransportDefinitionGrammar.cs" />
-    <Compile Include="CustomSecurityTask.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="Config\Pipeline\InboundMessagePipelineGrammer.cs" />
     <Compile Include="Config\Pipeline\InboundMessageStages.cs" />
-    <Compile Include="HandlerInstance.cs" />
     <Compile Include="IPipelineOutboundMessageTask.cs" />
     <Compile Include="Config\Pipeline\OutboundMessagePipelineGrammer.cs" />
     <Compile Include="Config\Pipeline\OutboundMessageStages.cs" />

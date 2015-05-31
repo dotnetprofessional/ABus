@@ -19,9 +19,6 @@ namespace ABus.Contracts
         /// </summary>
         public string Credentials { get; set; }
 
-        [Obsolete("Handled elsewhere - delete once transports have been initialized.")]
-        public Type TransportObsolete { get; set; }
-
         /// <summary>
         /// A fully qualified definition of the transport class to use
         /// </summary> 
