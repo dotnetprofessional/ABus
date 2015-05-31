@@ -37,7 +37,7 @@ namespace ABus.Host
                 .AndAlso
                 .UseTransport("CustomerBC").WithDefaultPattern();
 
-            p.Configure.Transactions.WithTransactionManager<DefaultTransactionManager>("connection string");
+            p.Configure.Transactions.WithTransactionManager<DefaultTransactionManager>("connection string").Disable();
 
             p.Start();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ABus.Contracts;
 using System.Transactions;
 
@@ -14,43 +15,51 @@ namespace ABus.Tasks.Inbound
     /// http://www.eaipatterns.com/GuaranteedMessaging.html
     /// http://docs.particular.net/nservicebus/outbox/
     /// </remarks>
-    class EnableTransactionManagementTask : IPipelineInboundMessageTask
-    { 
+    internal class EnableTransactionManagementTask : IPipelineInboundMessageTask
+    {
         public void Invoke(InboundMessageContext context, Action next)
         {
-            if (!context.PipelineContext.Configuration.Transactions.TransactionsEnabled)
+            var transactionsEnabled = context.PipelineContext.Configuration.Transactions.TransactionsEnabled;
+            IEnumerable<RawMessage> outboundMessages = null;
+            OutboundMessageManager messageManager = null;
+
+            if (!transactionsEnabled)
             {
-                context.PipelineContext.Trace.Warning("Transaction support disabled!");
-                // Effectively by-pass this task and go to the next one.
                 next();
-                
-                return;
+
+                // Assign messages directly from context
+                outboundMessages = context.OutboundMessages;
             }
-
-            var messageManager = context.PipelineContext.ServiceLocator.GetInstance<OutboundMessageManager>();
-            using (messageManager)
+            else
             {
-                messageManager.InboundMessageId = context.RawMessage.MessageId;
-
-                // check if we've already done this work before
-                if (!messageManager.AlreadyProcessed())
+                // If using transactions then record the oubound messages before processing them
+                // Also the transaction manager will start a new TransactionScope ambient transaction
+                messageManager = context.PipelineContext.ServiceLocator.GetInstance<OutboundMessageManager>();
+                using (messageManager)
                 {
-                    messageManager.Begin();
+                    messageManager.InboundMessageId = context.RawMessage.MessageId;
 
-                    next();
+                    // check if we've already done this work before
+                    if (!messageManager.AlreadyProcessed())
+                    {
+                        messageManager.Begin();
 
-                    // Transfer all outbound messages to the transaction manager
-                    messageManager.AddRangeItems(context.OutboundMessages);
+                        next();
 
-                    // Persist outbound messages with any database transactions in an ACID transaction (if supported by transaciton manager)
-                    messageManager.Commit();
+                        // Transfer all outbound messages to the transaction manager
+                        messageManager.AddRangeItems(context.OutboundMessages);
+
+                        // Persist outbound messages with any database transactions in an ACID transaction (if supported by transaciton manager)
+                        messageManager.Commit();
+                    }
+
+                    outboundMessages = messageManager.TransactionManager.GetMessages(messageManager.InboundMessageId);
                 }
             }
 
             // Now need to dispatch the outbound messages to their respective queues using the appropriate transport
-            foreach (var m in messageManager.TransactionManager.GetMessages(messageManager.InboundMessageId))
+            foreach (var m in outboundMessages)
             {
-               
                 var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
                 var messageType = context.PipelineContext.RegisteredMessageTypes[messageTypeName];
                 var transport = context.PipelineContext.TransportInstances[messageType.Transport.Name];
@@ -63,8 +72,8 @@ namespace ABus.Tasks.Inbound
                 else if (messageIntent == OutboundMessageContext.MessageIntent.Reply.ToString())
                     transport.Send(messageType.QueueEndpoint, m);
 
-                messageManager.TransactionManager.MarkAsComplete(messageManager.InboundMessageId, m.MessageId); 
-                
+                if (messageManager != null && transactionsEnabled)
+                    messageManager.TransactionManager.MarkAsComplete(messageManager.InboundMessageId, m.MessageId);
             }
         }
     }

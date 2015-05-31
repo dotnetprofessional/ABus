@@ -9,6 +9,10 @@ namespace ABus.Tasks.Startup
     {
         public void Invoke(PipelineContext context, Action next)
         {
+            // Check if transactions have been disabled and output
+            if(!context.Configuration.Transactions.TransactionsEnabled)
+                context.Trace.Warning("Transaction support disabled!");
+
             var tasks = new List<Task>();
             foreach (var h in context.RegisteredHandlers)
             {
