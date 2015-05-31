@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DefaultTransactionManager.cs" />
     <Compile Include="IAssemblyResolver.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -49,7 +48,6 @@
     <Compile Include="IManageOutboundMessages.cs" />
     <Compile Include="IManageTransactions.cs" />
     <Compile Include="IMessageTransport.cs" />
-    <Compile Include="OutboundMessageManager.cs" />
     <Compile Include="MetaData.cs" />
     <Compile Include="MetaDataCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

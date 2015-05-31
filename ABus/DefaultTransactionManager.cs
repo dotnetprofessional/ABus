@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ABus.Contracts;
 
-namespace ABus.Contracts
+namespace ABus
 {
     /// <summary>
     /// This transaction manager provides an in memory record of which messages have been

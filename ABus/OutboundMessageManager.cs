@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using System.Transactions;
+using ABus.Contracts;
 
-namespace ABus.Contracts
+namespace ABus
 {
     public class OutboundMessageManager : IManageOutboundMessages, IDisposable
     {

@@ -76,10 +76,12 @@
     <Compile Include="Config\Transport\TransportDefinitionGrammar.cs" />
     <Compile Include="Config\Pipeline\InboundMessagePipelineGrammer.cs" />
     <Compile Include="Config\Pipeline\InboundMessageStages.cs" />
+    <Compile Include="DefaultTransactionManager.cs" />
     <Compile Include="IPipelineOutboundMessageTask.cs" />
     <Compile Include="Config\Pipeline\OutboundMessagePipelineGrammer.cs" />
     <Compile Include="Config\Pipeline\OutboundMessageStages.cs" />
     <Compile Include="OutboundMessageContext.cs" />
+    <Compile Include="OutboundMessageManager.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="Config\Pipeline\PipelineConfiguration.cs" />
     <Compile Include="PipelineContext.cs">
