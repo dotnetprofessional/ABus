@@ -24,9 +24,7 @@ namespace ABus.Config.Pipeline
                 .Then<AssignTransportToMessageTypesTask>()
                 .Then<InitializeTransportsTask>()
                 .Then<ValidateQueuesTask>()
-                .Then<InitializeHandlersTask>()
-
-                .Then<InitailizePipeline2>();
+                .Then<InitializeHandlersTask>();
 
             // Inbound Message Tasks
             this.InboundMessage.TransactionManagement

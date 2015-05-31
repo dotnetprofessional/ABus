@@ -69,21 +69,21 @@ namespace ABus.Host
             var endpoint = new QueueEndpoint { Host = host.Uri, Name = "abus.sample.testmessage" };
             t.Send(endpoint, raw);
             return;
-            var busProcess = new BusProcessHost();
-            HostFactory.Run(x =>
-            {
-                x.Service<BusProcessHost>(s =>
-                {
-                    s.ConstructUsing(name => busProcess);
-                    s.WhenStarted(tc => tc.Start());
-                    s.WhenStopped(tc => tc.Stop());
-                });
-                x.RunAsLocalSystem();
+            //var busProcess = new BusProcessHost();
+            //HostFactory.Run(x =>
+            //{
+            //    x.Service<BusProcessHost>(s =>
+            //    {
+            //        s.ConstructUsing(name => busProcess);
+            //        s.WhenStarted(tc => tc.Start());
+            //        s.WhenStopped(tc => tc.Stop());
+            //    });
+            //    x.RunAsLocalSystem();
 
-                x.SetDescription("ABus Service Host");
-                x.SetDisplayName("ABus");
-                x.SetServiceName("ABus");
-            });                                             
+            //    x.SetDescription("ABus Service Host");
+            //    x.SetDisplayName("ABus");
+            //    x.SetServiceName("ABus");
+            //});                                             
         }
 
         static MetaDataCollection CreateConfiguration()

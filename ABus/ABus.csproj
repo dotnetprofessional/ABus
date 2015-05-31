@@ -65,7 +65,6 @@
     <Compile Include="ABusTraceSource.cs" />
     <Compile Include="AssemblyResolver.cs" />
     <Compile Include="Bus.cs" />
-    <Compile Include="BusProcessHost.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\ConfigurationGrammar.cs" />
     <Compile Include="Config\MessageEndpoint\MessageEndpointDefinition.cs" />
@@ -80,15 +79,9 @@
     <Compile Include="Config\Pipeline\InboundMessagePipelineGrammer.cs" />
     <Compile Include="Config\Pipeline\InboundMessageStages.cs" />
     <Compile Include="HandlerInstance.cs" />
-    <Compile Include="InboundMessageTask.cs" />
-    <Compile Include="InitailizePipeline.cs" />
-    <Compile Include="InitailizePipeline2.cs" />
-    <Compile Include="InitailizePipeline3.cs" />
-    <Compile Include="InitailizePipeline4.cs" />
     <Compile Include="IPipelineOutboundMessageTask.cs" />
     <Compile Include="Config\Pipeline\OutboundMessagePipelineGrammer.cs" />
     <Compile Include="Config\Pipeline\OutboundMessageStages.cs" />
-    <Compile Include="MessageTransportFactory.cs" />
     <Compile Include="OutboundMessageContext.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="Config\Pipeline\PipelineConfiguration.cs" />
