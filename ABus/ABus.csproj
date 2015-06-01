@@ -77,6 +77,7 @@
     <Compile Include="Config\Pipeline\InboundMessagePipelineGrammer.cs" />
     <Compile Include="Config\Pipeline\InboundMessageStages.cs" />
     <Compile Include="DefaultTransactionManager.cs" />
+    <Compile Include="IConfigureHost.cs" />
     <Compile Include="IPipelineOutboundMessageTask.cs" />
     <Compile Include="Config\Pipeline\OutboundMessagePipelineGrammer.cs" />
     <Compile Include="Config\Pipeline\OutboundMessageStages.cs" />
@@ -113,6 +114,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tasks\Outbound\CreateOutboundMessageTask.cs" />
+    <Compile Include="Tasks\Inbound\DispatchOuboundMessagesTask.cs" />
     <Compile Include="Tasks\Outbound\SendMessageTask.cs">
       <SubType>Code</SubType>
     </Compile>

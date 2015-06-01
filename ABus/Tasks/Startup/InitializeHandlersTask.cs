@@ -28,6 +28,7 @@ namespace ABus.Tasks.Startup
             try
             {
                 Task.WaitAll(tasks.ToArray());
+                context.Trace.Verbose("All handlers initialized.");
             } 
             catch (AggregateException ex)
             {

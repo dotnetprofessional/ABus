@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Threading;
 using ABus.AzureServiceBus;
 using ABus.Contracts;
 using ABus.Sample;
 using ABus.Unity;
 using Newtonsoft.Json;
-using Topshelf;
 
 namespace ABus.Host
 {
@@ -15,11 +16,11 @@ namespace ABus.Host
     { 
         public static void Main()
         {
-            for (int i = 1; i < 2; i++)
-            {
-                Main3(i);
-               
-            }
+
+
+            var executionPath = Directory.GetCurrentDirectory();
+
+
             var consoleTracer = new ColorConsoleTraceListener();
             Trace.Listeners.Add(consoleTracer);
              
@@ -37,15 +38,22 @@ namespace ABus.Host
                 .AndAlso
                 .UseTransport("CustomerBC").WithDefaultPattern();
 
-            p.Configure.Transactions.WithTransactionManager<DefaultTransactionManager>("connection string").Disable();
+            p.Configure.Transactions.WithTransactionManager<DefaultTransactionManager>("connection string");
 
             p.Start();
+
+            //Thread.Sleep(3000);
+            for (int i = 1; i < 2; i++)
+            {
+                Main3(i, p.GetDefaultBusInstance());
+
+            }
 
             Console.ReadLine();  
         }
 
 
-        public static void Main3(int count)
+        public static void Main3(int count, IBus bus)
         {
             var consoleTracer = new ConsoleTraceListener();
             
@@ -63,11 +71,14 @@ namespace ABus.Host
             t.ConfigureHost(host);
 
             var entity = new TestMessageCommand { Name = "Sample Message", Addresss = count + " Way" };
-            var json = JsonConvert.SerializeObject(entity);
-            var raw = new RawMessage { Body = Encoding.Unicode.GetBytes(json) };
-            raw.MetaData.Add(new MetaData{Name = StandardMetaData.MessageType, Value = entity.GetType().FullName});
-            var endpoint = new QueueEndpoint { Host = host.Uri, Name = "abus.sample.testmessage" };
-            t.Send(endpoint, raw);
+
+            bus.Send(entity);
+
+            //var json = JsonConvert.SerializeObject(entity);
+            //var raw = new RawMessage { Body = Encoding.Unicode.GetBytes(json) };
+            //raw.MetaData.Add(new MetaData { Name = StandardMetaData.MessageType, Value = entity.GetType().FullName });
+            //var endpoint = new QueueEndpoint { Host = host.Uri, Name = "abus.sample.testmessage" };
+            //t.Send(endpoint, raw);
             return;
             //var busProcess = new BusProcessHost();
             //HostFactory.Run(x =>

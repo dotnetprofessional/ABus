@@ -51,6 +51,14 @@ namespace ABus
                 this.ExecuteInboundMessageTask(inboundMessageContext, tasks.First);
         }
 
+        public IBus GetDefaultBusInstance()
+        {
+            var inboundMessageContext = new InboundMessageContext("", new RawMessage(), this.PipelineContext);
+            var bus = new Bus(inboundMessageContext, this);
+            inboundMessageContext.Bus = bus;
+            return bus;
+        }
+
         public void SendOutboundMessage(InboundMessageContext inboundMessageContext, OutboundMessageContext.MessageIntent messageIntent, object messageInstance)
         {
             // Initialize the message context
@@ -84,8 +92,8 @@ namespace ABus
 
             var taskInstance = this.ServiceLocator.GetInstance(task.Value.Task) as IPipelineInboundMessageTask;
             taskInstance.Invoke(context, () =>
-            { 
-                if (task.Next != null)
+            {
+                if (task.Next != null && !context.ShouldTerminatePipeline)
                     this.ExecuteInboundMessageTask(context, task.Next);
             });
         }
@@ -95,7 +103,7 @@ namespace ABus
             var taskInstance = this.ServiceLocator.GetInstance(task.Value.Task) as IPipelineOutboundMessageTask;
             taskInstance.Invoke(context, () =>
             {
-                if (task.Next != null) 
+                if (task.Next != null && !context.InboundMessageContext.ShouldTerminatePipeline) 
                     this.ExecuteOutboundMessageTask(context, task.Next);
             });
         }

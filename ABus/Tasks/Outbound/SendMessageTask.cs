@@ -1,5 +1,4 @@
 ﻿using System;
-using ABus.Contracts;
 
 namespace ABus.Tasks.Outbound
 {

@@ -37,9 +37,8 @@ namespace ABus
 
         public void TerminateMessagePipeline()
         {
-            throw new NotImplementedException();
+            this.Context.ShouldTerminatePipeline = true;
         }
-
 
     }
 }

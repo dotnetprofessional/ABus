@@ -15,6 +15,7 @@ namespace ABus
             this.RawMessage = rawMessage;
             this.PipelineContext = pipelineContext;
             this.OutboundMessages = new List<RawMessage>();
+            this.ShouldTerminatePipeline = false;
         }
          
         public RawMessage RawMessage { get; private set; }
@@ -28,5 +29,7 @@ namespace ABus
         public IBus Bus { get; set; }
 
         public List<RawMessage> OutboundMessages { get; set; }
+
+        public bool ShouldTerminatePipeline { get; set; }
     }
 }

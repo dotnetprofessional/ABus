@@ -39,8 +39,9 @@ namespace ABus
 
         public IEnumerable<RawMessage> GetMessages(string inboundMessageId)
         {
-            if (Repository.ContainsKey(inboundMessageId))
-                return Repository[inboundMessageId].Values.ToList();  
+            if (inboundMessageId != null)
+                if (Repository.ContainsKey(inboundMessageId))
+                    return Repository[inboundMessageId].Values.ToList();
 
             return null;
         }

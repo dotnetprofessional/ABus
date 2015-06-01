@@ -57,24 +57,24 @@ namespace ABus.Tasks.Inbound
                 }
             }
 
-            // Now need to dispatch the outbound messages to their respective queues using the appropriate transport
-            foreach (var m in outboundMessages)
-            {
-                var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
-                var messageType = context.PipelineContext.RegisteredMessageTypes[messageTypeName];
-                var transport = context.PipelineContext.TransportInstances[messageType.Transport.Name];
-                var messageIntent = m.MetaData[StandardMetaData.MessageIntent].Value;
+            //// Now need to dispatch the outbound messages to their respective queues using the appropriate transport
+            //foreach (var m in outboundMessages)
+            //{
+            //    var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
+            //    var messageType = context.PipelineContext.RegisteredMessageTypes[messageTypeName];
+            //    var transport = context.PipelineContext.TransportInstances[messageType.Transport.Name];
+            //    var messageIntent = m.MetaData[StandardMetaData.MessageIntent].Value;
 
-                if (messageIntent == OutboundMessageContext.MessageIntent.Send.ToString())
-                    transport.Send(messageType.QueueEndpoint, m);
-                else if (messageIntent == OutboundMessageContext.MessageIntent.Publish.ToString())
-                    transport.Publish(messageType.QueueEndpoint, m);
-                else if (messageIntent == OutboundMessageContext.MessageIntent.Reply.ToString())
-                    transport.Send(messageType.QueueEndpoint, m);
+            //    if (messageIntent == OutboundMessageContext.MessageIntent.Send.ToString())
+            //        transport.Send(messageType.QueueEndpoint, m);
+            //    else if (messageIntent == OutboundMessageContext.MessageIntent.Publish.ToString())
+            //        transport.Publish(messageType.QueueEndpoint, m);
+            //    else if (messageIntent == OutboundMessageContext.MessageIntent.Reply.ToString())
+            //        transport.Send(messageType.QueueEndpoint, m);
 
-                if (messageManager != null && transactionsEnabled)
-                    messageManager.TransactionManager.MarkAsComplete(messageManager.InboundMessageId, m.MessageId);
-            }
+            //    if (messageManager != null && transactionsEnabled)
+            //        messageManager.TransactionManager.MarkAsComplete(messageManager.InboundMessageId, m.MessageId);
+            //}
         }
     }
 }

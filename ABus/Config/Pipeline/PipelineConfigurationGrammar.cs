@@ -29,6 +29,7 @@ namespace ABus.Config.Pipeline
             // Inbound Message Tasks
             this.InboundMessage.TransactionManagement
                 .Register<ExceptionHanderTask>()
+                .Then<DispatchOuboundMessagesTask>()
                 .Then<EnableTransactionManagementTask>();
 
             this.InboundMessage.Deserialize
@@ -38,6 +39,8 @@ namespace ABus.Config.Pipeline
                 .Register<InvokeHandlerTask>();
 
             // Outbound Message Tasks
+            //this.OutboundMessage.SendMessage
+            
             this.OutboundMessage.CreateRawMessage
                 .Register<CreateOutboundMessageTask>()
                 .Then<AppendCommonMetaDataTask>();
