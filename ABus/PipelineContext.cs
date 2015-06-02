@@ -43,5 +43,23 @@ namespace ABus
             if (this.MessageReceivedHandler != null)
                 this.MessageReceivedHandler(sender, e);
         }
+
+        public void DispatchMessage(RawMessage m)
+        {
+            var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
+            var messageType = this.RegisteredMessageTypes[messageTypeName];
+            var transport = this.TransportInstances[messageType.Transport.Name];
+            var messageIntent = m.MetaData[StandardMetaData.MessageIntent].Value;
+
+            if (messageIntent == OutboundMessageContext.MessageIntent.Send.ToString())
+                transport.Send(messageType.QueueEndpoint, m);
+            else if (messageIntent == OutboundMessageContext.MessageIntent.Publish.ToString())
+                transport.Publish(messageType.QueueEndpoint, m);
+            else if (messageIntent == OutboundMessageContext.MessageIntent.Reply.ToString())
+                transport.Send(messageType.QueueEndpoint, m);
+
+            this.Trace.Verbose(string.Format("Dispatched message {0}", m.MessageId));
+        }
+
     }
 }

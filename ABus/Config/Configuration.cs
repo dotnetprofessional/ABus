@@ -3,6 +3,7 @@ using ABus.Config.MessageEndpoint;
 using ABus.Config.Pipeline;
 using ABus.Config.Transactions;
 using ABus.Contracts;
+using Microsoft.Practices.ServiceLocation;
 
 namespace ABus.Config
 {
@@ -15,6 +16,8 @@ namespace ABus.Config
             this.MessageEndpointDefinitions = new List<MessageEndpointDefinition>();
             this.Transactions = new TransactionOptions();
         }
+
+        public IServiceLocator Container { get; set; }
 
         public PipelineConfiguration Pipeline { get; private set; }
 

@@ -2,6 +2,6 @@
 {
     public interface IConfigureHost
     {
-        void Configure(Config.Configuration configure);
+        void Configure(Config.ConfigurationGrammar configure);
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace ABus.Host
+namespace ABus.Sample
 {
     public class CustomSecurityTask: IPipelineInboundMessageTask
     {

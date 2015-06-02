@@ -54,7 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorConsoleTraceListener.cs" />
-    <Compile Include="CustomSecurityTask.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -65,17 +64,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ABus.AzureServiceBus\ABus.AzureServiceBus.csproj">
-      <Project>{f8c6d3b9-51cd-4701-b353-a648cc0fcf16}</Project>
-      <Name>ABus.AzureServiceBus</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ABus.Contracts\ABus.Contracts.csproj">
       <Project>{bb4f786c-2966-4e73-91bb-6775cf177cf7}</Project>
       <Name>ABus.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ABus.Sample\ABus.Sample.csproj">
-      <Project>{4073ad6a-33ab-471a-a2f1-fe8c68b3798c}</Project>
-      <Name>ABus.Sample</Name>
     </ProjectReference>
     <ProjectReference Include="..\ABus.Unity\ABus.Unity.csproj">
       <Project>{cdb63549-9343-483c-9009-57155799ceaf}</Project>

@@ -3,6 +3,7 @@ using ABus.Config.Pipeline;
 using ABus.Config.Transactions;
 using ABus.Config.Transport;
 using ABus.Contracts;
+using Microsoft.Practices.ServiceLocation;
 
 namespace ABus.Config
 {
@@ -32,6 +33,13 @@ namespace ABus.Config
         public ConfigurationGrammar EnsureQueueExists()
         {
             this.Configuration.EnsureQueuesExist = true;
+            return this;
+        }
+
+        public ConfigurationGrammar UseContainer(IServiceLocator container)
+        {
+            this.Configuration.Container = container;
+
             return this;
         }
     }
