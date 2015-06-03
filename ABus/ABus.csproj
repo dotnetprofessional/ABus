@@ -62,7 +62,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ABusTraceSource.cs" />
     <Compile Include="AssemblyResolver.cs" />
     <Compile Include="Bus.cs" />
     <Compile Include="Config\Configuration.cs" />

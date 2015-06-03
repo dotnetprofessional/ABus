@@ -15,17 +15,15 @@ namespace ABus.Host
 
             var consoleTracer = new ColorConsoleTraceListener();
             Trace.Listeners.Add(consoleTracer);
-             
-            var p = new Pipeline();
-
+            IBus bus = null; 
             try
             {
-                p.StartUsingConfigureHost();
+                bus = Pipeline.StartUsingConfigureHost();
 
             }
             catch (Exception ex)
             {
-                p.Trace.Critical(ex.Message);
+                bus.Trace.Critical(ex.Message);
             }
 
 

@@ -11,10 +11,11 @@ namespace ABus
     {
         public List<Assembly> GetAssemblies()
         {
-            var binDirectory = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath);
+            var binDirectory = Directory.GetCurrentDirectory();
+            //var binDirectory = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath);
 
             var assemblyList = from f in Directory.GetFiles(binDirectory)
-                               where f.EndsWith(".dll") && !(f.Contains("Microsoft.") || f.Contains("System."))
+                               where (f.EndsWith(".dll") | f.EndsWith(".exe")) && !(f.Contains("Microsoft.") || f.Contains("System."))
                                select f;
 
             var resolveAssemblies = new List<Assembly>();

@@ -1,6 +1,8 @@
+using System;
+
 namespace ABus.Contracts
 {
-    public interface IBus
+    public interface IBus : IDisposable
     {
 
         /// <summary>
@@ -36,5 +38,7 @@ namespace ABus.Contracts
         /// This method is useful to terminate processing of messages during authentication or authorization
         /// </remarks>
         void TerminateMessagePipeline();
+
+        ABusTraceSource Trace { get; }
     }
 }

@@ -47,9 +47,27 @@ namespace ABus
         /// <summary>
         /// Start the pipeline and configure by searching for an implementation of IConfigureHost
         /// </summary>
-        public void StartUsingConfigureHost()
+        public static IBus StartUsingConfigureHost()
         {
+            var p = new Pipeline();
             // Locate class to call
+            p.ExecuteIConfigureHostIfAvailable();
+
+            p.Start();
+
+            return p.GetDefaultBusInstance();
+        }
+
+
+        IBus GetDefaultBusInstance()
+        {
+            var inboundMessageContext = new InboundMessageContext("", new RawMessage(), this.PipelineContext);
+            var bus = new Bus(inboundMessageContext, this);
+            inboundMessageContext.Bus = bus;
+            return bus;
+        }
+        void ExecuteIConfigureHostIfAvailable()
+        {
             // TODO: Had to hardcode Assembly resolver here to avoid having to specify the IoC container
             //       Need to think about how the AssemblyResolver should be leveraged.
 
@@ -78,14 +96,11 @@ namespace ABus
             var method = interfaceImplementation.GetTypeInfo().DeclaredMethods.First();
 
             // Need to create a new instance of the class that has the handler
-            var typeInstance = (IConfigureHost) Activator.CreateInstance(handler);
+            var typeObject = Activator.CreateInstance(handler);
+            //var typeInstance = (IConfigureHost) typeObject;
 
-            method.Invoke(typeInstance, new object[] {this.Configure});
-
-            this.Start();
+            method.Invoke(typeObject, new object[] {(object)this.Configure});
         }
-
-
 
 
         void InboundMessageReceived(object sender, RawMessage e)
@@ -101,13 +116,6 @@ namespace ABus
                 this.ExecuteInboundMessageTask(inboundMessageContext, tasks.First);
         }
 
-        public IBus GetDefaultBusInstance()
-        {
-            var inboundMessageContext = new InboundMessageContext("", new RawMessage(), this.PipelineContext);
-            var bus = new Bus(inboundMessageContext, this);
-            inboundMessageContext.Bus = bus;
-            return bus;
-        }
 
         
         public void SendOutboundMessage(InboundMessageContext inboundMessageContext, OutboundMessageContext.MessageIntent messageIntent, object messageInstance)

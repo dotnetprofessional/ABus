@@ -40,5 +40,14 @@ namespace ABus
             this.Context.ShouldTerminatePipeline = true;
         }
 
+        public ABusTraceSource Trace
+        {
+            get { return this.Pipeline.Trace; }
+        }
+
+        public void Dispose()
+        {
+            
+        }
     }
 }

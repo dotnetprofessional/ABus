@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
 
-namespace ABus
+namespace ABus.Contracts
 {
     public class ABusTraceSource
     {
