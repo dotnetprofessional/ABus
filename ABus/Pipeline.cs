@@ -50,6 +50,7 @@ namespace ABus
         public static IBus StartUsingConfigureHost()
         {
             var p = new Pipeline();
+            p.Trace.Verbose("Initializing pipeline");
             // Locate class to call
             p.ExecuteIConfigureHostIfAvailable();
 
@@ -77,12 +78,18 @@ namespace ABus
 
             var hostConfigHandlers = (from a in assemblies
                 from t in a.GetTypes()
+                where !a.IsDynamic
                 // Get a list of all types within each assembly
                 from i in t.GetTypeInfo().ImplementedInterfaces
                 // Check TypeInfo for type 
                 where i.Name == "IConfigureHost"
                 //and only select those that implement IHandler(T message)
                 select t).Distinct().ToList();
+
+            //var hostConfigHandlers = assemblies.SelectMany(assembly => assembly.GetTypes().Where(
+            //    t => typeof (IConfigureHost).IsAssignableFrom(t)
+            //         && !t.IsAbstract)).ToList();
+
 
             if (hostConfigHandlers.Count > 1)
                 throw new ArgumentException("IConfigureHost may only be specified once per host.");
@@ -99,7 +106,7 @@ namespace ABus
             var typeObject = Activator.CreateInstance(handler);
             //var typeInstance = (IConfigureHost) typeObject;
 
-            method.Invoke(typeObject, new object[] {(object)this.Configure});
+            method.Invoke(typeObject, new object[] {this.Configure});
         }
 
 

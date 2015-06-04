@@ -4,7 +4,7 @@ using ABus.Unity;
 
 namespace ABus.Sample.Client
 {
-    class StartupClient: IConfigureHost
+    public class StartupClient: IConfigureHost
     {
         public void Configure(ConfigurationGrammar configure)
         {

@@ -10,11 +10,8 @@ namespace ABus.Host
     { 
         public static void Main()
         {
-            var executionPath = Directory.GetCurrentDirectory();
-
-
-            var consoleTracer = new ColorConsoleTraceListener();
-            Trace.Listeners.Add(consoleTracer);
+            //var consoleTracer = new ColorConsoleTraceListener();
+            //Trace.Listeners.Add(consoleTracer);
             IBus bus = null; 
             try
             {

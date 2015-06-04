@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ABus.Sample.Client
+namespace ABus
 {
     public class ColorConsoleTraceListener : TraceListener
     {

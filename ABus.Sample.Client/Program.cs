@@ -1,17 +1,22 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace ABus.Sample.Client
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            var consoleTracer = new ColorConsoleTraceListener();
-            Trace.Listeners.Add(consoleTracer);
+            Console.WriteLine("Client started - press enter to send messages");
+            Console.ReadLine();
             var bus = Pipeline.StartUsingConfigureHost();
             {
-                bus.Send(new TestMessageCommand());
+                bus.Trace.Information("About to send some messages!!!");
+
+                do
+                {
+                    bus.Send(new TestMessageCommand());
+
+                } while (Console.ReadLine() != "x");
             }
 
             Console.ReadLine();
