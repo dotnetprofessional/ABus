@@ -58,6 +58,7 @@
     <Compile Include="TransportInstance.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ABus.AzureServiceBus.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

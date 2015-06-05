@@ -28,6 +28,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Sample.Client", "ABus.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Sample.Contracts", "ABus.Sample.Contracts\ABus.Sample.Contracts.csproj", "{B0424B6D-E089-4444-8F48-D86BA043BA86}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Files", "{8A80A1DF-92FD-433C-9185-1954A60D226E}"
+	ProjectSection(SolutionItems) = preProject
+		nugetbuild.bat = nugetbuild.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
