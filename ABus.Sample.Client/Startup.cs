@@ -1,7 +1,7 @@
 ﻿using ABus.AzureServiceBus;
 using ABus.Config;
 using ABus.Unity;
-
+ 
 namespace ABus.Sample.Client
 {
     public class StartupClient: IConfigureHost

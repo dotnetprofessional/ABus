@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ABus.Contracts;
-
+ 
 namespace ABus
 {
     public class AssemblyResolver : IAssemblyResolver

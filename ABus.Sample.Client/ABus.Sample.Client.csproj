@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ABus.Sample.Client</RootNamespace>
-    <AssemblyName>ABus.Sample.Client</AssemblyName>
+    <AssemblyName>ABus.Sample.Client</AssemblyName> 
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -1,5 +1,5 @@
 ﻿using System;
-
+ 
 namespace ABus.Sample.Client
 {
     public class Program

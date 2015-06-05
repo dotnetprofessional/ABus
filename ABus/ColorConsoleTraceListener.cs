@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
+ 
 namespace ABus
 {
     public class ColorConsoleTraceListener : TraceListener
