@@ -71,7 +71,7 @@ namespace ABus.AzureServiceBus
             foreach(var raw in messages)
                 waitingTasks.Add(client.SendAsync(this.ConvertToBrokeredMessage(raw)));
 
-            Task.WaitAll(waitingTasks.ToArray());
+            await Task.WhenAll(waitingTasks.ToArray());
         }
 
         public Task SendAsync(QueueEndpoint endpoint, RawMessage message)
@@ -143,18 +143,19 @@ namespace ABus.AzureServiceBus
             var ns = host.Namespace;
             var topic = endpoint.Name;
 
-            if (!this.CreatedTopicClients.ContainsKey(topic))
+            TopicClient topicClient;
+            if(!this.CreatedTopicClients.TryGetValue(topic, out topicClient))
             {
                 if (!ns.TopicExists(topic))
                     ns.CreateTopic(topic);
 
-                var topicClient = TopicClient.CreateFromConnectionString(host.ConnectionString, topic);
+                topicClient = TopicClient.CreateFromConnectionString(host.ConnectionString, topic);
 
                 this.CreatedTopicClients.Add(topic, topicClient);
             }
 
             // return the topic client that has been stored
-            return this.CreatedTopicClients[topic];
+            return topicClient;
         }
 
         async Task<SubscriptionClient> GetSubscriptionClient(QueueEndpoint endpoint, string subscription)
@@ -164,7 +165,8 @@ namespace ABus.AzureServiceBus
 
             var topic = endpoint.Name;
 
-            if (!this.CreatedSubscriptionClients.ContainsKey(subscription))
+            SubscriptionClient subscriptionClient;
+            if (!this.CreatedSubscriptionClients.TryGetValue(subscription, out subscriptionClient))
             {
                 if (!ns.TopicExists(topic))
                     throw new ArgumentException(string.Format("Unable to subscribe to topic {0} as it does not exist.", topic));
@@ -185,16 +187,16 @@ namespace ABus.AzureServiceBus
                         EnableDeadLetteringOnFilterEvaluationExceptions = true,
                         ForwardDeadLetteredMessagesTo = errorQueue,
                     };
-                    ns.CreateSubscriptionAsync(subscriptionConfig).Wait();
+                    await ns.CreateSubscriptionAsync(subscriptionConfig);
                 }
 
-                var subscriptionClient = SubscriptionClient.CreateFromConnectionString(host.ConnectionString, topic, subscription, ReceiveMode.PeekLock);
+                subscriptionClient = SubscriptionClient.CreateFromConnectionString(host.ConnectionString, topic, subscription, ReceiveMode.PeekLock);
 
                 this.CreatedSubscriptionClients.Add(subscription, subscriptionClient);
             }
 
             // return the topic client that has been stored
-            return this.CreatedSubscriptionClients[subscription];
+            return subscriptionClient;
         }
 
         BrokeredMessage ConvertToBrokeredMessage(RawMessage rawMessage)
