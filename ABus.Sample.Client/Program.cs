@@ -8,7 +8,7 @@ namespace ABus.Sample.Client
         {
             Console.WriteLine("Client started - press enter to send messages");
             Console.ReadLine();
-            var bus = Pipeline.StartUsingConfigureHost();
+            var bus = new Pipeline().StartUsingConfigureHost();
             {
                 bus.Trace.Information("About to send some messages!!!");
 
@@ -18,8 +18,6 @@ namespace ABus.Sample.Client
 
                 } while (Console.ReadLine() != "x");
             }
-
-            Console.ReadLine();
         }
     }
 }

@@ -44,19 +44,23 @@ namespace ABus
                 this.ExecuteStartupTask(this.PipelineContext, tasks.First);
         }
 
+        public void Stop()
+        {
+            // Need to determine if any resources need to be shut down gracefully here.
+        }
+
         /// <summary>
         /// Start the pipeline and configure by searching for an implementation of IConfigureHost
         /// </summary>
-        public static IBus StartUsingConfigureHost()
+        public IBus StartUsingConfigureHost()
         {
-            var p = new Pipeline();
-            p.Trace.Verbose("Initializing pipeline");
+            this.Trace.Verbose("Initializing pipeline");
             // Locate class to call
-            p.ExecuteIConfigureHostIfAvailable();
+            this.ExecuteIConfigureHostIfAvailable();
 
-            p.Start();
+            this.Start();
 
-            return p.GetDefaultBusInstance();
+            return this.GetDefaultBusInstance();
         }
 
 
