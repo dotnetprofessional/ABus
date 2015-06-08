@@ -30,6 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Sample.Contracts", "AB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Files", "{8A80A1DF-92FD-433C-9185-1954A60D226E}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		nugetbuild.bat = nugetbuild.bat
 	EndProjectSection
 EndProject

@@ -10,6 +10,11 @@ namespace ABus
 
         public ColorConsoleTraceListener()
         {
+            this.InitializeColors();
+        }
+
+        void InitializeColors()
+        {
             this.eventColor.Add(TraceEventType.Verbose, ConsoleColor.DarkGray);
 
             this.eventColor.Add(TraceEventType.Information, ConsoleColor.Gray);
@@ -19,10 +24,15 @@ namespace ABus
             this.eventColor.Add(TraceEventType.Error, ConsoleColor.DarkRed);
 
             this.eventColor.Add(TraceEventType.Critical, ConsoleColor.Red);
-             
+
             this.eventColor.Add(TraceEventType.Start, ConsoleColor.DarkCyan);
 
             this.eventColor.Add(TraceEventType.Stop, ConsoleColor.DarkCyan);
+        }
+
+        public ColorConsoleTraceListener(string name) : base(name)
+        {
+            this.InitializeColors();
         }
 
         public override void Write(string message)
