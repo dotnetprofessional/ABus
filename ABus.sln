@@ -19,6 +19,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Unity", "ABus.Unity\AB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.TransactionManagement.SQLServer", "ABus.TransactionManagement.SQLServer\ABus.TransactionManagement.SQLServer.csproj", "{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScratchPad", "ScratchPad", "{E9FD1E97-0012-458D-9F5A-6CB4C145002C}"
+	ProjectSection(SolutionItems) = preProject
+		XMLFile1.xml = XMLFile1.xml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Sample.Client", "ABus.Sample.Client\ABus.Sample.Client.csproj", "{7798C453-9CC7-44CF-A73C-E6F04EF3A555}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Sample.Contracts", "ABus.Sample.Contracts\ABus.Sample.Contracts.csproj", "{B0424B6D-E089-4444-8F48-D86BA043BA86}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Files", "{8A80A1DF-92FD-433C-9185-1954A60D226E}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		nugetbuild.bat = nugetbuild.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +126,26 @@ Global
 		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Release|ARM.ActiveCfg = Release|Any CPU
 		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Release|x64.ActiveCfg = Release|Any CPU
 		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Release|x86.ActiveCfg = Release|Any CPU
+		{7798C453-9CC7-44CF-A73C-E6F04EF3A555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7798C453-9CC7-44CF-A73C-E6F04EF3A555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7798C453-9CC7-44CF-A73C-E6F04EF3A555}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{7798C453-9CC7-44CF-A73C-E6F04EF3A555}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7798C453-9CC7-44CF-A73C-E6F04EF3A555}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7798C453-9CC7-44CF-A73C-E6F04EF3A555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7798C453-9CC7-44CF-A73C-E6F04EF3A555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7798C453-9CC7-44CF-A73C-E6F04EF3A555}.Release|ARM.ActiveCfg = Release|Any CPU
+		{7798C453-9CC7-44CF-A73C-E6F04EF3A555}.Release|x64.ActiveCfg = Release|Any CPU
+		{7798C453-9CC7-44CF-A73C-E6F04EF3A555}.Release|x86.ActiveCfg = Release|Any CPU
+		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Release|ARM.ActiveCfg = Release|Any CPU
+		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Release|x64.ActiveCfg = Release|Any CPU
+		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

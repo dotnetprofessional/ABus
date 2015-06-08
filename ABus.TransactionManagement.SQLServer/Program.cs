@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using xpf.Scripting;
 using xpf.Scripting.SQLServer;
 
@@ -14,7 +10,7 @@ namespace ABus.TransactionManagement.SQLServer
     /// for SQL Server
     /// </summary>
     class Program
-    {
+    { 
         static string ConnectinString = "";
 
         static void Main(string[] args)
@@ -102,7 +98,7 @@ namespace ABus.TransactionManagement.SQLServer
 
         static void PrintHelpPage()
         {
-            var appName = System.AppDomain.CurrentDomain.FriendlyName;
+            var appName = AppDomain.CurrentDomain.FriendlyName;
             Console.WriteLine("*****************************************");
             Console.WriteLine("** Transaction Management - SQL Server **");
             Console.WriteLine("*****************************************");

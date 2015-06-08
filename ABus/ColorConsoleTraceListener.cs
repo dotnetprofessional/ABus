@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
-namespace ABus.Host
+ 
+namespace ABus
 {
     public class ColorConsoleTraceListener : TraceListener
     {
         readonly Dictionary<TraceEventType, ConsoleColor> eventColor = new Dictionary<TraceEventType, ConsoleColor>();
 
         public ColorConsoleTraceListener()
+        {
+            this.InitializeColors();
+        }
+
+        void InitializeColors()
         {
             this.eventColor.Add(TraceEventType.Verbose, ConsoleColor.DarkGray);
 
@@ -19,10 +24,15 @@ namespace ABus.Host
             this.eventColor.Add(TraceEventType.Error, ConsoleColor.DarkRed);
 
             this.eventColor.Add(TraceEventType.Critical, ConsoleColor.Red);
-             
+
             this.eventColor.Add(TraceEventType.Start, ConsoleColor.DarkCyan);
 
             this.eventColor.Add(TraceEventType.Stop, ConsoleColor.DarkCyan);
+        }
+
+        public ColorConsoleTraceListener(string name) : base(name)
+        {
+            this.InitializeColors();
         }
 
         public override void Write(string message)

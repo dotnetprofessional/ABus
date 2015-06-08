@@ -30,20 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Unity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.2\lib\portable-windows8+net40+sl5+windowsphone8\Microsoft.Practices.ServiceLocation.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -62,30 +50,50 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ABusTraceSource.cs" />
     <Compile Include="AssemblyResolver.cs" />
-    <Compile Include="BusProcessHost.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="InitailizePipeline.cs" />
+    <Compile Include="Bus.cs" />
+    <Compile Include="ColorConsoleTraceListener.cs" />
+    <Compile Include="Config\Configuration.cs" />
+    <Compile Include="Config\ConfigurationGrammar.cs" />
+    <Compile Include="Config\MessageEndpoint\MessageEndpointDefinition.cs" />
+    <Compile Include="Config\MessageEndpoint\MessageEndpointDefinitionGrammar.cs" />
+    <Compile Include="Config\MessageEndpoint\MessageEndpointGrammar.cs" />
+    <Compile Include="Config\Pipeline\PipelineConfigurationGrammar.cs" />
+    <Compile Include="Config\Transactions\TransactionsGrammar.cs" />
+    <Compile Include="Config\Transactions\TransactionOptions.cs" />
+    <Compile Include="Config\Transport\TransportDefinitionGrammar.cs" />
+    <Compile Include="Config\Pipeline\InboundMessagePipelineGrammer.cs" />
+    <Compile Include="Config\Pipeline\InboundMessageStages.cs" />
+    <Compile Include="DefaultTransactionManager.cs" />
+    <Compile Include="IConfigureHost.cs" />
     <Compile Include="IPipelineOutboundMessageTask.cs" />
+    <Compile Include="Config\Pipeline\OutboundMessagePipelineGrammer.cs" />
+    <Compile Include="Config\Pipeline\OutboundMessageStages.cs" />
+    <Compile Include="OutboundMessageContext.cs" />
+    <Compile Include="OutboundMessageManager.cs" />
     <Compile Include="Pipeline.cs" />
-    <Compile Include="PipelineConfiguration.cs" />
+    <Compile Include="Config\Pipeline\PipelineConfiguration.cs" />
     <Compile Include="PipelineContext.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Config\Pipeline\PipelineGrammar.cs" />
     <Compile Include="RegisteredHandler.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RegisteredHandlerCollection.cs" />
     <Compile Include="RegisteredMessageType.cs" />
+    <Compile Include="RegisteredMessageTypeCollection.cs" />
     <Compile Include="StageCollection.cs" />
     <Compile Include="IPipelineStartupTask.cs" />
     <Compile Include="IPipelineInboundMessageTask.cs" />
     <Compile Include="InBoundMessageContext.cs" />
-    <Compile Include="PipelineStageGrammar.cs" />
+    <Compile Include="Config\Pipeline\PipelineStageGrammar.cs" />
     <Compile Include="PipelineTask.cs" />
     <Compile Include="PipelineTasks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stage.cs" />
+    <Compile Include="Config\Pipeline\StartupPipelineGrammer.cs" />
+    <Compile Include="StartupStages.cs" />
     <Compile Include="Tasks\Inbound\DeserializeMessageFromJsonTask.cs" />
     <Compile Include="Tasks\Inbound\EnableTransactionManagementTask.cs" />
     <Compile Include="Tasks\Inbound\ExceptionHanderTask.cs" />
@@ -94,6 +102,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tasks\Outbound\CreateOutboundMessageTask.cs" />
+    <Compile Include="Tasks\Inbound\DispatchOuboundMessagesTask.cs" />
     <Compile Include="Tasks\Outbound\SendMessageTask.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -121,6 +130,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ABus.nuspec" />
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

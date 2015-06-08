@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using ABus.Config;
 using ABus.Contracts;
 using Microsoft.Practices.ServiceLocation;
 
@@ -13,26 +14,23 @@ namespace ABus
     {
         public event EventHandler<RawMessage> MessageReceivedHandler;
 
-        public PipelineContext(IServiceLocator serviceLocator, ABusTraceSource traceListener)
+        public PipelineContext(IServiceLocator serviceLocator, Configuration configuration, ABusTraceSource traceListener)
         {
             this.ServiceLocator = serviceLocator;
-            this.AvailableTransports = new List<TransportDefinition>();
+            this.Configuration = configuration;
             this.RegisteredMessageTypes = new RegisteredMessageTypeCollection();
             this.RegisteredHandlers = new RegisteredHandlerCollection();
-            this.Configuration = new PipelineConfiguration();
             this.TransportInstances = new Dictionary<string, IMessageTransport>();
 
             // Used to output trace information
             this.Trace = traceListener;
         }
 
-        public List<TransportDefinition> AvailableTransports { get; set; }
-
         public RegisteredMessageTypeCollection RegisteredMessageTypes { get; set; }
 
         public RegisteredHandlerCollection RegisteredHandlers { get; set; } 
          
-        public PipelineConfiguration Configuration { get; set; }
+        public Configuration Configuration { get; set; }
 
         public IServiceLocator ServiceLocator { get; private set; }
 
@@ -45,5 +43,23 @@ namespace ABus
             if (this.MessageReceivedHandler != null)
                 this.MessageReceivedHandler(sender, e);
         }
+
+        public void DispatchMessage(RawMessage m)
+        {
+            var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
+            var messageType = this.RegisteredMessageTypes[messageTypeName];
+            var transport = this.TransportInstances[messageType.Transport.Name];
+            var messageIntent = m.MetaData[StandardMetaData.MessageIntent].Value;
+
+            if (messageIntent == OutboundMessageContext.MessageIntent.Send.ToString())
+                transport.Send(messageType.QueueEndpoint, m);
+            else if (messageIntent == OutboundMessageContext.MessageIntent.Publish.ToString())
+                transport.Publish(messageType.QueueEndpoint, m);
+            else if (messageIntent == OutboundMessageContext.MessageIntent.Reply.ToString())
+                transport.Send(messageType.QueueEndpoint, m);
+
+            this.Trace.Verbose(string.Format("Dispatched message {0}", m.MessageId));
+        }
+
     }
 }

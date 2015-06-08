@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ABus.Contracts;
 using System.Transactions;
 
@@ -14,49 +15,66 @@ namespace ABus.Tasks.Inbound
     /// http://www.eaipatterns.com/GuaranteedMessaging.html
     /// http://docs.particular.net/nservicebus/outbox/
     /// </remarks>
-    class EnableTransactionManagementTask : IPipelineInboundMessageTask
+    internal class EnableTransactionManagementTask : IPipelineInboundMessageTask
     {
         public void Invoke(InboundMessageContext context, Action next)
         {
-            var messageManager = context.PipelineContext.ServiceLocator.GetInstance<OutboundMessageManager>();
-            using (messageManager as IDisposable)
+            var transactionsEnabled = context.PipelineContext.Configuration.Transactions.TransactionsEnabled;
+            IEnumerable<RawMessage> outboundMessages = null;
+            OutboundMessageManager messageManager = null;
+
+            if (!transactionsEnabled)
             {
-                messageManager.InboundMessageId = context.RawMessage.MessageId;
+                next();
 
-                // check if we've already done this work before
-                if (!messageManager.AlreadyProcessed())
+                // Assign messages directly from context
+                outboundMessages = context.OutboundMessages;
+            }
+            else
+            {
+                // If using transactions then record the oubound messages before processing them
+                // Also the transaction manager will start a new TransactionScope ambient transaction
+                messageManager = context.PipelineContext.ServiceLocator.GetInstance<OutboundMessageManager>();
+                using (messageManager)
                 {
-                    messageManager.Begin();
+                    messageManager.InboundMessageId = context.RawMessage.MessageId;
 
-                    // Set the transaction manager on the context so that messages can be added by other tasks
-                    context.TransactionManager = messageManager;
+                    // check if we've already done this work before
+                    if (!messageManager.AlreadyProcessed())
+                    {
+                        messageManager.Begin();
 
-                    next();
+                        next();
 
-                    // Persist outbound messages with any database transactions in an ACID transaction (if supported by transaciton manager)
-                    messageManager.Commit();
+                        // Transfer all outbound messages to the transaction manager
+                        messageManager.AddRangeItems(context.OutboundMessages);
+
+                        // Persist outbound messages with any database transactions in an ACID transaction (if supported by transaciton manager)
+                        messageManager.Commit();
+                    }
+
+                    outboundMessages = messageManager.TransactionManager.GetMessages(messageManager.InboundMessageId);
                 }
             }
-            var f = true;
-            // Now need to dispatch the outbound messages to their respective queues using the appropriate transport
-            foreach (var m in messageManager.TransactionManager.GetMessages(messageManager.InboundMessageId))
-            {
-               
-                var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
-                var messageType = context.PipelineContext.RegisteredMessageTypes[messageTypeName];
-                var transport = context.PipelineContext.TransportInstances[messageType.Transport.Name];
-                var messageIntent = m.MetaData[StandardMetaData.MessageIntent].Value;
 
-                if (messageIntent == OutboundMessageContext.MessageIntent.Send.ToString())
-                    transport.Send(messageType.QueueEndpoint, m);
-                else if (messageIntent == OutboundMessageContext.MessageIntent.Publish.ToString())
-                    transport.Publish(messageType.QueueEndpoint, m);
-                else if (messageIntent == OutboundMessageContext.MessageIntent.Reply.ToString())
-                    transport.Send(messageType.QueueEndpoint, m);
+            //// Now need to dispatch the outbound messages to their respective queues using the appropriate transport
+            //foreach (var m in outboundMessages)
+            //{
+            //    var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
+            //    var messageType = context.PipelineContext.RegisteredMessageTypes[messageTypeName];
+            //    var transport = context.PipelineContext.TransportInstances[messageType.Transport.Name];
+            //    var messageIntent = m.MetaData[StandardMetaData.MessageIntent].Value;
 
-                messageManager.TransactionManager.MarkAsComplete(messageManager.InboundMessageId, m.MessageId); 
-                
-            }
+            //    if (messageIntent == OutboundMessageContext.MessageIntent.Send.ToString())
+            //        transport.Send(messageType.QueueEndpoint, m);
+            //    else if (messageIntent == OutboundMessageContext.MessageIntent.Publish.ToString())
+            //        transport.Publish(messageType.QueueEndpoint, m);
+            //    else if (messageIntent == OutboundMessageContext.MessageIntent.Reply.ToString())
+            //        transport.Send(messageType.QueueEndpoint, m);
+
+            //    if (messageManager != null && transactionsEnabled)
+            //        messageManager.TransactionManager.MarkAsComplete(messageManager.InboundMessageId, m.MessageId);
+            //}
         }
     }
 }

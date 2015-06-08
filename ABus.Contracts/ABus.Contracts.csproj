@@ -40,18 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ABusTraceSource.cs" />
     <Compile Include="IAssemblyResolver.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IBus.cs" />
-    <Compile Include="ICommand.cs" />
-    <Compile Include="IConfigureHost.cs" />
-    <Compile Include="IEvent.cs" />
     <Compile Include="IHandleMessage.cs" />
-    <Compile Include="IMessage.cs" />
-    <Compile Include="IMessageQueue.cs" />
+    <Compile Include="IManageOutboundMessages.cs" />
+    <Compile Include="IManageTransactions.cs" />
     <Compile Include="IMessageTransport.cs" />
-    <Compile Include="IUnitOfWork.cs" />
     <Compile Include="MetaData.cs" />
     <Compile Include="MetaDataCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,12 +56,7 @@
     <Compile Include="RawMessage.cs" />
     <Compile Include="RawMessageReceivedEventArgs.cs" />
     <Compile Include="StandardMetaData.cs" />
-    <Compile Include="Transport.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TransportDefinition.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="TransportDefinition.cs" />
     <Compile Include="TransportException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
