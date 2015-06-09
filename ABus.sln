@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30324.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Contracts", "ABus.Contracts\ABus.Contracts.csproj", "{BB4F786C-2966-4E73-91BB-6775CF177CF7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.AzureServiceBus", "ABus.AzureServiceBus\ABus.AzureServiceBus.csproj", "{F8C6D3B9-51CD-4701-B353-A648CC0FCF16}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.AzureServiceBus.Test.Integration", "ABus.AzureServiceBus.Test.Integration\ABus.AzureServiceBus.Test.Integration.csproj", "{3F2E6191-91E1-46F6-9C13-A3E11D68502F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Host", "ABus.Host\ABus.Host.csproj", "{1E70FE4D-E996-4835-8532-EC46F69380B4}"
 EndProject
@@ -18,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Unity", "ABus.Unity\ABus.Unity.csproj", "{CDB63549-9343-483C-9009-57155799CEAF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.TransactionManagement.SQLServer", "ABus.TransactionManagement.SQLServer\ABus.TransactionManagement.SQLServer.csproj", "{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.InMemoryServiceBus", "ABus.InMemoryServiceBus\ABus.InMemoryServiceBus.csproj", "{9B0CBF33-D49B-4B7B-BCF8-FA8D20330992}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,16 +51,6 @@ Global
 		{F8C6D3B9-51CD-4701-B353-A648CC0FCF16}.Release|ARM.ActiveCfg = Release|Any CPU
 		{F8C6D3B9-51CD-4701-B353-A648CC0FCF16}.Release|x64.ActiveCfg = Release|Any CPU
 		{F8C6D3B9-51CD-4701-B353-A648CC0FCF16}.Release|x86.ActiveCfg = Release|Any CPU
-		{3F2E6191-91E1-46F6-9C13-A3E11D68502F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F2E6191-91E1-46F6-9C13-A3E11D68502F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F2E6191-91E1-46F6-9C13-A3E11D68502F}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{3F2E6191-91E1-46F6-9C13-A3E11D68502F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{3F2E6191-91E1-46F6-9C13-A3E11D68502F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3F2E6191-91E1-46F6-9C13-A3E11D68502F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F2E6191-91E1-46F6-9C13-A3E11D68502F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F2E6191-91E1-46F6-9C13-A3E11D68502F}.Release|ARM.ActiveCfg = Release|Any CPU
-		{3F2E6191-91E1-46F6-9C13-A3E11D68502F}.Release|x64.ActiveCfg = Release|Any CPU
-		{3F2E6191-91E1-46F6-9C13-A3E11D68502F}.Release|x86.ActiveCfg = Release|Any CPU
 		{1E70FE4D-E996-4835-8532-EC46F69380B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1E70FE4D-E996-4835-8532-EC46F69380B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E70FE4D-E996-4835-8532-EC46F69380B4}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -111,6 +101,16 @@ Global
 		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Release|ARM.ActiveCfg = Release|Any CPU
 		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Release|x64.ActiveCfg = Release|Any CPU
 		{EF29BB0D-6BCA-4348-8DF5-B8A7F8B59397}.Release|x86.ActiveCfg = Release|Any CPU
+		{9B0CBF33-D49B-4B7B-BCF8-FA8D20330992}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B0CBF33-D49B-4B7B-BCF8-FA8D20330992}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B0CBF33-D49B-4B7B-BCF8-FA8D20330992}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{9B0CBF33-D49B-4B7B-BCF8-FA8D20330992}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9B0CBF33-D49B-4B7B-BCF8-FA8D20330992}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9B0CBF33-D49B-4B7B-BCF8-FA8D20330992}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B0CBF33-D49B-4B7B-BCF8-FA8D20330992}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B0CBF33-D49B-4B7B-BCF8-FA8D20330992}.Release|ARM.ActiveCfg = Release|Any CPU
+		{9B0CBF33-D49B-4B7B-BCF8-FA8D20330992}.Release|x64.ActiveCfg = Release|Any CPU
+		{9B0CBF33-D49B-4B7B-BCF8-FA8D20330992}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

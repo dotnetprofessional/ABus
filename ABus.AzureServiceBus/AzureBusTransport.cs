@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.ServiceModel.Configuration;
-using System.Text;
 using System.Threading.Tasks;
 using ABus.Contracts;
 using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
-using Newtonsoft.Json;
 
 namespace ABus.AzureServiceBus
 {

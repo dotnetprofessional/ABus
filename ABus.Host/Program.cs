@@ -45,7 +45,7 @@ namespace ABus.Host
             Trace.Listeners.Add(consoleTracer);
 
             // Create the topic
-            var t = new AzureBusTransport();
+            IMessageTransport transport = new AzureBusTransport();
             var host = new TransportDefinition
             {
                 Uri = "sb://abus-dev.servicebus.windows.net",
@@ -53,14 +53,14 @@ namespace ABus.Host
                 TransportObsolete = typeof (AzureBusTransport)
             };
 
-            t.ConfigureHost(host);
+            transport.ConfigureHost(host);
 
             var entity = new TestMessageCommand { Name = "Sample Message", Addresss = count + " Way" };
             var json = JsonConvert.SerializeObject(entity);
             var raw = new RawMessage { Body = Encoding.Unicode.GetBytes(json) };
             raw.MetaData.Add(new MetaData{Name = StandardMetaData.MessageType, Value = entity.GetType().FullName});
             var endpoint = new QueueEndpoint { Host = host.Uri, Name = "abus.sample.testmessage" };
-            t.Send(endpoint, raw);
+            transport.Send(endpoint, raw);
             return;
             var busProcess = new BusProcessHost();
             HostFactory.Run(x =>
