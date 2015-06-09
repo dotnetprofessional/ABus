@@ -1,9 +1,10 @@
 ﻿using System;
 using ABus.Contracts;
+using ABus.Sample.Contracts.Payments;
 
 namespace ABus.Sample
 {
-    public class SampleMessageHandler : IHandleMessage<TestMessageCommand>, IHandleMessage<TestMessage2Event>
+    public class SampleMessageHandler : IHandleMessage<TestMessageCommand>, IHandleMessage<TestMessage2Event>, IHandleMessage<MakePaymentCommand>
     {
         public IBus Bus { get; set; }
 
@@ -23,6 +24,13 @@ namespace ABus.Sample
         public void Handler(TestMessage2Event message)
         {
             Console.WriteLine(string.Format("Received test message 2 with name {0} and address {1}", message.Name, message.Addresss));
+        }
+
+        public void Handler(MakePaymentCommand message)
+        {
+            Console.WriteLine(string.Format("Received message type {0} ", message.GetType().Name));
+
+            this.Bus.Send(new TestMessage2Event { Name = "Payment Received!", Addresss = "No return address.." });
         }
     }
 }
