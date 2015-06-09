@@ -1,5 +1,6 @@
 ﻿using System;
- 
+using ABus.Sample.Contracts.Payments;
+
 namespace ABus.Sample.Client
 {
     public class Program
@@ -14,7 +15,11 @@ namespace ABus.Sample.Client
 
                 do
                 {
+                    // Using CustomerBC
                     bus.Send(new TestMessageCommand());
+
+                    // Using PaymentsBC
+                    bus.Send(new MakePaymentCommand());
 
                 } while (Console.ReadLine() != "x");
             }
