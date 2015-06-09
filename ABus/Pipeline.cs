@@ -163,6 +163,7 @@ namespace ABus
             var taskInstance = this.ServiceLocator.GetInstance(task.Value.Task) as IPipelineInboundMessageTask;
             taskInstance.Invoke(context, () =>
             {
+                
                 if (task.Next != null && !context.ShouldTerminatePipeline)
                     this.ExecuteInboundMessageTask(context, task.Next);
             });

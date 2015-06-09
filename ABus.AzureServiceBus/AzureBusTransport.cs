@@ -17,6 +17,8 @@ namespace ABus.AzureServiceBus
 
         public event EventHandler<TransportException> ExceptionOccured;
 
+        object topicClientLock = new object();
+
         public AzureBusTransport()
         {
             this.HostInstances = new Dictionary<string, TransportInstance>();
@@ -143,16 +145,22 @@ namespace ABus.AzureServiceBus
             var ns = host.Namespace;
             var topic = endpoint.Name;
 
-            if (!this.CreatedTopicClients.ContainsKey(topic))
+            // As topic clients are not created during startup its possible for 
+            // multiple threads to request the same topic client while its being obtained.
+            // There will be a tempory slow down when a new topic client is requested for the first time.
+            // However this should not be noticable for most systems.
+            lock (topicClientLock)
             {
-                if (!ns.TopicExists(topic))
-                    ns.CreateTopic(topic);
+                if (!this.CreatedTopicClients.ContainsKey(topic))
+                {
+                    if (!ns.TopicExists(topic))
+                        ns.CreateTopic(topic);
 
-                var topicClient = TopicClient.CreateFromConnectionString(host.ConnectionString, topic);
+                    var topicClient = TopicClient.CreateFromConnectionString(host.ConnectionString, topic);
 
-                this.CreatedTopicClients.Add(topic, topicClient);
+                    this.CreatedTopicClients.Add(topic, topicClient);
+                }
             }
-
             // return the topic client that has been stored
             return this.CreatedTopicClients[topic];
         }
