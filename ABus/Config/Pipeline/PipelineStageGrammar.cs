@@ -19,7 +19,13 @@ namespace ABus.Config.Pipeline
             this.PipelineGrammar.PipelineConfiguration.Register(this.PipelineGrammar.PipelineName, this.Name, new PipelineTask(task.Name, task));
             return this;
         }
-
+        public PipelineStageGrammar RegisterBefore<TExisting, T>()
+        {
+            var task = typeof(T);
+            var exisintTask = typeof (TExisting);
+            this.PipelineGrammar.PipelineConfiguration.RegisterBefore(this.PipelineGrammar.PipelineName, this.Name, new PipelineTask(exisintTask.Name, exisintTask), new PipelineTask(task.Name, task));
+            return this;
+        }
         public PipelineConfigurationGrammar AndAlso()
         {
             return this.Parent.Pipeline;
@@ -33,6 +39,12 @@ namespace ABus.Config.Pipeline
         public PipelineStageGrammar Then<T>()
         {
             return this.Register<T>();
-        } 
+        }
+
+        public PipelineStageGrammar ThenBefore<TExisting, T>()
+        {
+            return this.RegisterBefore<TExisting, T>();
+        }
     }
 }
+

@@ -40,46 +40,104 @@ namespace ABus.Config.Pipeline
            
         }
 
-        PipelineConfiguration RegisterStartupTask(string stage, PipelineTask task)
+        PipelineConfiguration RegisterTask(PipelineTasks pipelineTasks, string stage, PipelineTask task)
         {
-            if (!this.StartupPipelineTasks.StageExists(stage))
+            if (!pipelineTasks.StageExists(stage))
                 throw new ArgumentException("There is no stage named: " + stage);
 
-            this.StartupPipelineTasks.AddTask(stage, task);
+            pipelineTasks.AddTask(stage, task);
             return this;
         }
 
-        PipelineConfiguration RegisterInboundMessageTask(string stage, PipelineTask task)
+        PipelineConfiguration RegisterTaskBefore(PipelineTasks pipelineTasks, string stage, PipelineTask existingTask, PipelineTask task)
         {
-            if (!this.InboundMessagePipelineTasks.StageExists(stage))
+            if (!pipelineTasks.StageExists(stage))
                 throw new ArgumentException("There is no stage named: " + stage);
 
-            this.InboundMessagePipelineTasks.AddTask(stage, task);
+            pipelineTasks.AddTaskBefore(stage, existingTask, task);
             return this;
         }
 
-        PipelineConfiguration RegisterOutboundMessageTask(string stage, PipelineTask task)
+        PipelineConfiguration RegisterTaskAfter(PipelineTasks pipelineTasks, string stage, PipelineTask existingTask, PipelineTask task)
         {
-            if (!this.OutboundMessagePipelineTasks.StageExists(stage))
+            if (!pipelineTasks.StageExists(stage))
                 throw new ArgumentException("There is no stage named: " + stage);
 
-            this.OutboundMessagePipelineTasks.AddTask(stage, task);
+            pipelineTasks.AddTaskAfter(stage, existingTask, task);
             return this;
         }
 
+        PipelineConfiguration RegisterReplaceTask(PipelineTasks pipelineTasks, string stage, PipelineTask existingTask, PipelineTask task)
+        {
+            if (!pipelineTasks.StageExists(stage))
+                throw new ArgumentException("There is no stage named: " + stage);
+
+            pipelineTasks.ReplaceTask(stage, existingTask, task);
+            return this;
+        }
         internal PipelineConfiguration Register(string pipeline, string stage, PipelineTask task)
         {
+            PipelineTasks pipelineTasks;
             switch (pipeline)
             {
                 case "Startup":
-                    return this.RegisterStartupTask(stage, task);
+                    pipelineTasks = this.StartupPipelineTasks;
+                    break;
                 case "InboundMessage":
-                    return this.RegisterInboundMessageTask(stage, task);
+                    pipelineTasks = this.InboundMessagePipelineTasks;
+                    break;
                 case "OutboundMessage":
-                    return this.RegisterOutboundMessageTask(stage, task);
+                    pipelineTasks = this.OutboundMessagePipelineTasks;
+                    break;
                 default:
                     throw new ArgumentException("Unknown pipeline " + pipeline);
             }
+
+            return this.RegisterTask(pipelineTasks, stage, task);
+        }
+
+        internal PipelineConfiguration RegisterBefore(string pipeline, string stage, PipelineTask existingTask, PipelineTask task)
+        {
+            PipelineTasks pipelineTasks;
+            switch (pipeline)
+            {
+                case "Startup":
+                    pipelineTasks = this.StartupPipelineTasks;
+                    break;
+                case "InboundMessage":
+                    pipelineTasks = this.InboundMessagePipelineTasks;
+                    break;
+                case "OutboundMessage":
+                    pipelineTasks = this.OutboundMessagePipelineTasks;
+                    break;
+                default:
+                    throw new ArgumentException("Unknown pipeline " + pipeline);
+            }
+
+            return this.RegisterTaskBefore(pipelineTasks, stage, existingTask, task);
+
+        }
+
+        internal PipelineConfiguration RegisterAfter(string pipeline, string stage, PipelineTask existingTask, PipelineTask task)
+        {
+            PipelineTasks pipelineTasks;
+            switch (pipeline)
+            {
+                case "Startup":
+                    pipelineTasks = this.StartupPipelineTasks;
+                    break;
+                case "InboundMessage":
+                    pipelineTasks = this.InboundMessagePipelineTasks;
+                    break;
+                case "OutboundMessage":
+                    pipelineTasks = this.OutboundMessagePipelineTasks;
+                    break;
+                default:
+                    throw new ArgumentException("Unknown pipeline " + pipeline);
+            }
+
+            return this.RegisterTaskAfter(pipelineTasks, stage, existingTask, task);
+
         }
     }
 }
