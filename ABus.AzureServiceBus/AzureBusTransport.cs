@@ -105,7 +105,8 @@ namespace ABus.AzureServiceBus
                     // publish the message to the lister
                     if (this.MessageReceived != null)
                     {
-                        this.MessageReceived(subscriptionName, this.ConvertFromBrokeredMessage(message));
+                        var source = string.Format("{0}:{1}", endpoint.Name, subscriptionName);
+                        this.MessageReceived(source, this.ConvertFromBrokeredMessage(message));
                     }
 
                     // Remove message from subscription

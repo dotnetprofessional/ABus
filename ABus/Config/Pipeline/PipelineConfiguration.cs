@@ -139,5 +139,26 @@ namespace ABus.Config.Pipeline
             return this.RegisterTaskAfter(pipelineTasks, stage, existingTask, task);
 
         }
+        internal PipelineConfiguration RegisterReplace(string pipeline, string stage, PipelineTask existingTask, PipelineTask task)
+        {
+            PipelineTasks pipelineTasks;
+            switch (pipeline)
+            {
+                case "Startup":
+                    pipelineTasks = this.StartupPipelineTasks;
+                    break;
+                case "InboundMessage":
+                    pipelineTasks = this.InboundMessagePipelineTasks;
+                    break;
+                case "OutboundMessage":
+                    pipelineTasks = this.OutboundMessagePipelineTasks;
+                    break;
+                default:
+                    throw new ArgumentException("Unknown pipeline " + pipeline);
+            }
+
+            return this.RegisterReplaceTask(pipelineTasks, stage, existingTask, task);
+
+        }
     }
 }

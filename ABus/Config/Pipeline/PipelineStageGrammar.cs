@@ -26,6 +26,21 @@ namespace ABus.Config.Pipeline
             this.PipelineGrammar.PipelineConfiguration.RegisterBefore(this.PipelineGrammar.PipelineName, this.Name, new PipelineTask(exisintTask.Name, exisintTask), new PipelineTask(task.Name, task));
             return this;
         }
+
+        public PipelineStageGrammar RegisterAfter<TExisting, T>()
+        {
+            var task = typeof(T);
+            var exisintTask = typeof(TExisting);
+            this.PipelineGrammar.PipelineConfiguration.RegisterAfter(this.PipelineGrammar.PipelineName, this.Name, new PipelineTask(exisintTask.Name, exisintTask), new PipelineTask(task.Name, task));
+            return this;
+        }
+        public PipelineStageGrammar RegisterReplace<TExisting, T>()
+        {
+            var task = typeof(T);
+            var exisintTask = typeof(TExisting);
+            this.PipelineGrammar.PipelineConfiguration.RegisterReplace(this.PipelineGrammar.PipelineName, this.Name, new PipelineTask(exisintTask.Name, exisintTask), new PipelineTask(task.Name, task));
+            return this;
+        }
         public PipelineConfigurationGrammar AndAlso()
         {
             return this.Parent.Pipeline;
@@ -44,6 +59,14 @@ namespace ABus.Config.Pipeline
         public PipelineStageGrammar ThenBefore<TExisting, T>()
         {
             return this.RegisterBefore<TExisting, T>();
+        }
+        public PipelineStageGrammar ThenAfter<TExisting, T>()
+        {
+            return this.RegisterAfter<TExisting, T>();
+        }
+        public PipelineStageGrammar ThenReplace<TExisting, T>()
+        {
+            return this.RegisterReplace<TExisting, T>();
         }
     }
 }

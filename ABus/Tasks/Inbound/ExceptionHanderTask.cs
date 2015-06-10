@@ -1,4 +1,7 @@
 ﻿using System;
+using ABus.Contracts;
+using ABus.Exceptions;
+using Newtonsoft.Json;
 
 namespace ABus.Tasks.Inbound
 {
@@ -16,6 +19,15 @@ namespace ABus.Tasks.Inbound
             try
             {
                 next();
+            }
+            catch (MessageDeserializationException ex)
+            {
+                // Unable to recover from this message so record the exception
+                context.RawMessage.MetaData.Add(new MetaData{Name = StandardMetaData.ContentType, Value = JsonConvert.SerializeObject(ex)});
+
+                context.PipelineContext.Trace.Error("MessageDeserializationException: " + ex.Message);
+                context.PipelineContext.Trace.Warning("Message has been consumed as error queue has yet to be implemented!");
+                // TODO: Need to transfer this message to the error queue in a transactionally safe way
             }
             catch (Exception)
             {

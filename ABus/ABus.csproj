@@ -65,6 +65,7 @@
     <Compile Include="Config\Pipeline\InboundMessagePipelineGrammer.cs" />
     <Compile Include="Config\Pipeline\InboundMessageStages.cs" />
     <Compile Include="DefaultTransactionManager.cs" />
+    <Compile Include="Exceptions\MessageDeserializationException.cs" />
     <Compile Include="IConfigureHost.cs" />
     <Compile Include="IPipelineOutboundMessageTask.cs" />
     <Compile Include="Config\Pipeline\OutboundMessagePipelineGrammer.cs" />
