@@ -9,9 +9,15 @@ namespace ABus
     /// </summary>
     public class InboundMessageContext
     {
-        public InboundMessageContext(string subscriptionName, RawMessage rawMessage, PipelineContext pipelineContext)
+        public InboundMessageContext(string source, RawMessage rawMessage, PipelineContext pipelineContext)
         {
-            this.SubscriptionName = subscriptionName;
+            if (!string.IsNullOrEmpty(source))
+            {
+                // Source should have the format [queue]:[subscription]
+                var sourceParts = source.Split(':');
+                this.Queue = sourceParts[0];
+                this.SubscriptionName = sourceParts[1];
+            }
             this.RawMessage = rawMessage;
             this.PipelineContext = pipelineContext;
             this.OutboundMessages = new List<RawMessage>();
@@ -19,6 +25,8 @@ namespace ABus
         }
          
         public RawMessage RawMessage { get; private set; }
+
+        public string Queue { get; set; }
 
         public string SubscriptionName{ get; private set; } 
 

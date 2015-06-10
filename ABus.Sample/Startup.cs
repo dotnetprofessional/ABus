@@ -1,5 +1,6 @@
 ﻿using ABus.AzureServiceBus;
 using ABus.Config;
+using ABus.Tasks.Startup;
 using ABus.Unity;
  
 namespace ABus.Sample
@@ -10,6 +11,8 @@ namespace ABus.Sample
         {
             configure.Pipeline
                 .InboundMessage.Security.Register<CustomSecurityTask>()
+                .AndAlso().InboundMessage.TransformInboundRawMessage.Register<AddMetaDataToPaymentMessagesTask>()
+                .And().Pipeline.Startup.Initialize.RegisterBefore<ValidateQueuesTask, CustomStartupTask>()
                 .And()
                 .EnsureQueueExists()
                 .UseTransport<AzureBusTransport>("CustomerBC")

@@ -3,7 +3,7 @@ using ABus.Contracts;
 
 namespace ABus.Tasks.Startup
 {
-    class ValidateQueuesTask : IPipelineStartupTask
+    public class ValidateQueuesTask : IPipelineStartupTask
     {
         public void Invoke(PipelineContext context, Action next)
         {

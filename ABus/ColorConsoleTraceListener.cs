@@ -21,7 +21,7 @@ namespace ABus
 
             this.eventColor.Add(TraceEventType.Warning, ConsoleColor.Yellow);
 
-            this.eventColor.Add(TraceEventType.Error, ConsoleColor.DarkRed);
+            this.eventColor.Add(TraceEventType.Error, ConsoleColor.Magenta);
 
             this.eventColor.Add(TraceEventType.Critical, ConsoleColor.Red);
 

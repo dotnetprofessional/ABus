@@ -11,7 +11,7 @@
     <AssemblyName>ABus.Sample</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-  </PropertyGroup> 
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddMetaDataToPaymentMessagesTask.cs" />
     <Compile Include="CustomSecurityTask.cs" />
     <Compile Include="SampleMessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

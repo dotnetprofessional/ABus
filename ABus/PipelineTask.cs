@@ -2,7 +2,7 @@ using System;
 
 namespace ABus
 {
-    public class PipelineTask
+    public class PipelineTask : IComparable
     {
         public PipelineTask(string name, Type task)
         {
@@ -14,5 +14,24 @@ namespace ABus
 
         public Type Task { get; private set; }
 
+        public int CompareTo(object obj)
+        {
+            return String.Compare(this.Name, obj.ToString(), StringComparison.Ordinal);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Name.Equals(obj.ToString());
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Name.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }

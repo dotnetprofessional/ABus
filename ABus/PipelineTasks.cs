@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ABus
 {
@@ -60,6 +61,38 @@ namespace ABus
         {
             var stage = this.Stages[stageName];
             stage.Tasks.AddLast(task);
+        }
+
+        public void AddTaskBefore(string stageName, PipelineTask existingTask, PipelineTask task)
+        {
+            var stage = this.Stages[stageName];
+            var existintNode = stage.Tasks.Find(existingTask);
+            if (existintNode == null)
+                throw new ArgumentException(string.Format("Unable to locate tyep {0} in stage {1}", existingTask.Name, stageName));
+
+            stage.Tasks.AddBefore(existintNode, task);
+        }
+
+        public void AddTaskAfter(string stageName, PipelineTask existingTask, PipelineTask task)
+        {
+            var stage = this.Stages[stageName];
+            var existintNode = stage.Tasks.Find(existingTask);
+            if (existintNode == null)
+                throw new ArgumentException(string.Format("Unable to locate tyep {0} in stage {1}", existingTask.Name, stageName));
+
+            stage.Tasks.AddAfter(existintNode, task);
+        }
+
+        public void ReplaceTask(string stageName, PipelineTask existingTask, PipelineTask task)
+        {
+            var stage = this.Stages[stageName];
+            var existintNode = stage.Tasks.Find(existingTask);
+            if (existintNode == null)
+                throw new ArgumentException(string.Format("Unable to locate tyep {0} in stage {1}", existingTask.Name, stageName));
+
+            this.AddTaskBefore(stageName, existingTask, task);
+            // Now remove the existing task
+            stage.Tasks.Remove(existintNode);
         }
     }
 

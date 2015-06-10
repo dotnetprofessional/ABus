@@ -10,4 +10,13 @@ namespace ABus.Sample
             next();
         }
     }
+
+    public class CustomStartupTask : IPipelineStartupTask
+    {
+        public void Invoke(PipelineContext context, Action next)
+        {
+            context.Trace.Information("Custom Startup Task");
+            next();
+        }
+    }
 }
