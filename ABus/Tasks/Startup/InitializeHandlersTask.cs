@@ -5,7 +5,7 @@ using ABus.Contracts;
 
 namespace ABus.Tasks.Startup
 {
-    class InitializeHandlersTask : IPipelineStartupTask
+    public class InitializeHandlersTask : IPipelineStartupTask
     {
         public void Invoke(PipelineContext context, Action next)
         {

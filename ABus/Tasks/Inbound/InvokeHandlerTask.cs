@@ -13,8 +13,15 @@ namespace ABus.Tasks.Inbound
             // this ensures that if one handler fails it doesn't impact the ability for other handlers
             // to process the message.
 
+            
             // Get the handler for this message based on the subscription
-            var handler = context.PipelineContext.RegisteredHandlers[context.SubscriptionName];
+            var messageTypeFulllname = context.RawMessage.MetaData[StandardMetaData.MessageType].Value;
+
+            // Search for the correct handler based on the message type and the queue
+            // This is necessary as a queue may support many message types.
+            var handler = context.PipelineContext.RegisteredHandlers.SingleOrDefault(h => h.SubscriptionName ==
+                                                                                          context.SubscriptionName &&
+                                                                                          h.MessageType.MessageType.FullName == messageTypeFulllname);
 
             // Need to create a new instance of the class that has the handler
             var typeInstance = context.PipelineContext.ServiceLocator.GetInstance(handler.ClassType);

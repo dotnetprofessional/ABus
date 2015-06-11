@@ -30,6 +30,11 @@ namespace ABus.Sample
 
             configure.Transactions.WithTransactionManager<DefaultTransactionManager>("connection string");
             configure.UseContainer(new UnityBootstraper());
+
+            // Add custom task to redefine the default subscription name for a given handler
+            // needs to be done prior to initialization of the handlers
+            configure.Pipeline.Startup.Initialize.RegisterBefore<InitializeHandlersTask, ConfigureHandlerSubscriptionNameTask>();
+
         }
     }
 }

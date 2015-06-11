@@ -31,7 +31,6 @@ namespace ABus.Tasks.Startup
                 var interfaces = handlerInterfaces.Where(i => i.Name == "IHandleMessage`1");
                 foreach (var interfaceImplementation in interfaces)
                 {
-                    var registeredHandler = new RegisteredHandler();
 
                     // Get the message type used
                     var argumentType = interfaceImplementation.GenericTypeArguments[0];
@@ -40,11 +39,14 @@ namespace ABus.Tasks.Startup
                     // Find the already found MessageType
                     var messageType = context.RegisteredMessageTypes.FirstOrDefault(t => t.MessageType.FullName == argumentType.FullName);
 
+                    var handlerKey = string.Format("{0}.{1}", handler.Name, messageType.MessageType.Name);
+                    var registeredHandler = new RegisteredHandler(handlerKey);
                     registeredHandler.MessageType = messageType;
                     registeredHandler.Method = method;
                     registeredHandler.ClassType = handler;
-
                     context.RegisteredHandlers.Add(registeredHandler);
+
+                    registeredHandler.SubscriptionName = handlerKey;
 
                     context.Trace.Verbose(string.Format("Class: {0} handles {1} message type.", registeredHandler.ClassType.Name, registeredHandler.MessageType.FullName));
                 }

@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddMetaDataToPaymentMessagesTask.cs" />
+    <Compile Include="ConfigureHandlerSubscriptionNameTask.cs" />
     <Compile Include="CustomSecurityTask.cs" />
     <Compile Include="SampleMessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

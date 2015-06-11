@@ -1,5 +1,6 @@
 ﻿using ABus.AzureServiceBus;
 using ABus.Config;
+using ABus.Tasks.Startup;
 using ABus.Unity;
  
 namespace ABus.Sample.Client
