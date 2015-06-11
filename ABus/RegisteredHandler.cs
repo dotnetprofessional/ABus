@@ -5,6 +5,11 @@ namespace ABus
 {
     public class RegisteredHandler
     {
+        public RegisteredHandler(string handlerKey)
+        {
+            this.HandlerKey = handlerKey;
+        }
+
         /// <summary>
         /// The message type to be handled
         /// </summary>
@@ -26,6 +31,11 @@ namespace ABus
         /// <remarks>
         /// This subscription is associated with the queue defined by <see cref="MessageType"/>
         /// </remarks>
-        public string SubscriptionName { get { return string.Format("{0}.{1}", this.ClassType.Name, this.MessageType.MessageType.Name); } }
+        public string SubscriptionName { get;set; }
+
+        /// <summary>
+        /// This value uniquely identifies the handler for this message
+        /// </summary>
+        public string HandlerKey { get; private set; }
     }
 } 

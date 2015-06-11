@@ -6,7 +6,7 @@ namespace ABus
     {
         protected override string GetKeyForItem(RegisteredHandler item)
         {
-            return item.SubscriptionName;
+            return item.HandlerKey;
         }
     }
 }

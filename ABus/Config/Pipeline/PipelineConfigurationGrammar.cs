@@ -39,8 +39,6 @@ namespace ABus.Config.Pipeline
                 .Register<InvokeHandlerTask>();
 
             // Outbound Message Tasks
-            //this.OutboundMessage.SendMessage
-            
             this.OutboundMessage.CreateRawMessage
                 .Register<CreateOutboundMessageTask>()
                 .Then<AppendCommonMetaDataTask>();
