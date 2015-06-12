@@ -78,11 +78,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Config\Pipeline\PipelineGrammar.cs" />
-    <Compile Include="RegisteredHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="RegisteredHandlerCollection.cs" />
-    <Compile Include="RegisteredMessageType.cs" />
     <Compile Include="RegisteredMessageTypeCollection.cs" />
     <Compile Include="StageCollection.cs" />
     <Compile Include="IPipelineStartupTask.cs" />
@@ -116,6 +112,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tasks\Startup\InitializeTransportsTask.cs" />
+    <Compile Include="Tasks\Startup\InvokeIConfigureHandlerTask.cs" />
     <Compile Include="Tasks\Startup\ScanMessageTypesTask.cs" />
     <Compile Include="Tasks\Startup\ScanMessageHandlersTask.cs" />
     <Compile Include="Tasks\Startup\ValidateQueuesTask.cs" />

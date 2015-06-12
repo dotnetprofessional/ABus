@@ -4,7 +4,7 @@ using ABus.Sample.Contracts.Payments;
 
 namespace ABus.Sample
 {
-    public class SampleMessageHandler : IHandleMessage<TestMessageCommand>, IHandleMessage<TestMessage2Event>, IHandleMessage<MakePaymentCommand>
+    public class SampleMessageHandler : IHandleMessage<TestMessageCommand>, IHandleMessage<TestMessage2Event>, IHandleMessage<MakePaymentCommand>, IConfigureHandler<MakePaymentCommand>
     {
         public IBus Bus { get; set; }
 
@@ -31,6 +31,11 @@ namespace ABus.Sample
             Console.WriteLine(string.Format("Received message type {0} ", message.GetType().Name));
 
             this.Bus.Send(new TestMessage2Event { Name = "Payment Received!", Addresss = "No return address.." });
+        }
+
+        public void HandlerConfig(RegisteredHandler handler)
+        {
+            handler.SubscriptionName = "MyCustomSubscriptionName";
         }
     }
 }

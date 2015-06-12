@@ -9,8 +9,14 @@ namespace ABus
 {
     public class AssemblyResolver : IAssemblyResolver
     {
+        static List<Assembly> foundAssemblies;
+
         public List<Assembly> GetAssemblies()
         {
+            if (foundAssemblies != null)
+                return foundAssemblies;
+
+
             var binDirectory = AppDomain.CurrentDomain.BaseDirectory;
             //var binDirectory = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath);
 
@@ -33,6 +39,10 @@ namespace ABus
                 else
                     resolveAssemblies.Add(knownAssemblies[a]);
             }
+
+            // Cahce assemblies so we dont have to do it again
+            foundAssemblies = resolveAssemblies;
+
             return resolveAssemblies;
         }
     }

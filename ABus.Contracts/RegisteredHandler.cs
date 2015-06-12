@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace ABus
+namespace ABus.Contracts
 {
     public class RegisteredHandler
     {

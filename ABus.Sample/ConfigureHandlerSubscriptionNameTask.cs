@@ -17,11 +17,11 @@ namespace ABus.Sample
         /// <param name="next"></param>
         public void Invoke(PipelineContext context, Action next)
         {
-            // Locate the handler to change from context by its key
-            var key = string.Format("{0}.{1}", "SampleMessageHandler", typeof(MakePaymentCommand).Name);
-            var handler = context.RegisteredHandlers[key];
+            //// Locate the handler to change from context by its key
+            //var key = string.Format("{0}.{1}", "SampleMessageHandler", typeof(MakePaymentCommand).Name);
+            //var handler = context.RegisteredHandlers[key];
 
-            handler.SubscriptionName = "MyCustomSubscriptionName";
+            //handler.SubscriptionName = "MyCustomSubscriptionName";
 
             next();
         }

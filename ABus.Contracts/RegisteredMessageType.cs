@@ -1,7 +1,6 @@
 using System;
-using ABus.Contracts;
 
-namespace ABus
+namespace ABus.Contracts
 {
     public class RegisteredMessageType
     {

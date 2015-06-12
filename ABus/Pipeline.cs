@@ -71,29 +71,14 @@ namespace ABus
             inboundMessageContext.Bus = bus;
             return bus;
         }
+
+        /// <summary>
+        /// This method would ideally be part of the pipeline however as this is the first
+        /// thing that must happen to configure the pipeline it can't itself be part of the pipeline
+        /// </summary>
         void ExecuteIConfigureHostIfAvailable()
         {
-            // TODO: Had to hardcode Assembly resolver here to avoid having to specify the IoC container
-            //       Need to think about how the AssemblyResolver should be leveraged.
-
-            //var assemblyResolver = this.ServiceLocator.GetInstance<IAssemblyResolver>();
-            var assemblyResolver = new AssemblyResolver();
-            var assemblies = assemblyResolver.GetAssemblies();
-
-            var hostConfigHandlers = (from a in assemblies
-                from t in a.GetTypes()
-                where !a.IsDynamic
-                // Get a list of all types within each assembly
-                from i in t.GetTypeInfo().ImplementedInterfaces
-                // Check TypeInfo for type 
-                where i.Name == "IConfigureHost"
-                //and only select those that implement IHandler(T message)
-                select t).Distinct().ToList();
-
-            //var hostConfigHandlers = assemblies.SelectMany(assembly => assembly.GetTypes().Where(
-            //    t => typeof (IConfigureHost).IsAssignableFrom(t)
-            //         && !t.IsAbstract)).ToList();
-
+            var hostConfigHandlers = GetTypesImplementingInterface(typeof(IConfigureHost));
 
             if (hostConfigHandlers.Count > 1)
                 throw new ArgumentException("IConfigureHost may only be specified once per host.");
@@ -111,6 +96,22 @@ namespace ABus
             //var typeInstance = (IConfigureHost) typeObject;
 
             method.Invoke(typeObject, new object[] {this.Configure});
+        }
+
+        static List<Type> GetTypesImplementingInterface(Type type)
+        {
+            // TODO: Had to hardcode Assembly resolver here to avoid having to specify the IoC container
+            //       Need to think about how the AssemblyResolver should be leveraged.
+
+            //var assemblyResolver = this.ServiceLocator.GetInstance<IAssemblyResolver>();
+            var assemblyResolver = new AssemblyResolver();
+            var assemblies = assemblyResolver.GetAssemblies();
+
+            var typesFound = assemblies.SelectMany(assembly => assembly.GetTypes().Where(
+                t => type.IsAssignableFrom(t)
+                     && !t.IsAbstract)).ToList();
+
+            return typesFound;
         }
 
 

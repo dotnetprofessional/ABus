@@ -45,6 +45,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IBus.cs" />
+    <Compile Include="IConfigureHandler.cs" />
     <Compile Include="IHandleMessage.cs" />
     <Compile Include="IManageOutboundMessages.cs" />
     <Compile Include="IManageTransactions.cs" />
@@ -55,6 +56,8 @@
     <Compile Include="QueueEndpoint.cs" />
     <Compile Include="RawMessage.cs" />
     <Compile Include="RawMessageReceivedEventArgs.cs" />
+    <Compile Include="RegisteredHandler.cs" />
+    <Compile Include="RegisteredMessageType.cs" />
     <Compile Include="StandardMetaData.cs" />
     <Compile Include="TransportDefinition.cs" />
     <Compile Include="TransportException.cs" />

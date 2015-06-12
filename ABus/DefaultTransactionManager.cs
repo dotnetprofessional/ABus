@@ -33,7 +33,15 @@ namespace ABus
                 if (Repository.ContainsKey(inboundMessageId))
                     throw new ArgumentException("Duplicate messageId: " + inboundMessageId);
 
-                Repository.Add(inboundMessageId, messages.ToDictionary(m => m.MessageId, m => m));
+                try
+                {
+                    Repository.Add(inboundMessageId, messages.ToDictionary(m => m.MessageId, m => m));
+                }
+                catch (Exception)
+                {
+                    // PUtting this here to identify a rare bug that reprots a duplicate key
+                    throw;
+                }
             }
         }
 

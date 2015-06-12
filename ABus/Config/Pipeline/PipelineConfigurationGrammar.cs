@@ -21,6 +21,7 @@ namespace ABus.Config.Pipeline
             this.Startup.Initialize.Register<DefineTransportDefinitionsTask>()
                 .Then<ScanMessageTypesTask>()
                 .Then<ScanMessageHandlersTask>()
+                .Then<InvokeIConfigureHandlerTask>()
                 .Then<AssignTransportToMessageTypesTask>()
                 .Then<InitializeTransportsTask>()
                 .Then<ValidateQueuesTask>()
