@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30324.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.Contracts", "ABus.Contracts\ABus.Contracts.csproj", "{BB4F786C-2966-4E73-91BB-6775CF177CF7}"
 EndProject
@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Fi
 		.gitignore = .gitignore
 		nugetbuild.bat = nugetbuild.bat
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.MemoryBusTransport", "ABus.MemoryBusTransport\ABus.MemoryBusTransport.csproj", "{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -146,6 +148,16 @@ Global
 		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Release|ARM.ActiveCfg = Release|Any CPU
 		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Release|x64.ActiveCfg = Release|Any CPU
 		{B0424B6D-E089-4444-8F48-D86BA043BA86}.Release|x86.ActiveCfg = Release|Any CPU
+		{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}.Release|ARM.ActiveCfg = Release|Any CPU
+		{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}.Release|x64.ActiveCfg = Release|Any CPU
+		{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
