@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ABus.MemoryBusTransport.MemoryHost
+namespace ABus.MemoryServiceBus.ServiceBus
 {
-    class BrokeredMessage
+    public class BrokeredMessage
     {
         public string Host { get; private set; }
         public string Topic { get; private set; }
         public RawMessage Message { get; private set; }
+
         public BrokeredMessage(string host, string topic, RawMessage message)
         {
             Host = host;

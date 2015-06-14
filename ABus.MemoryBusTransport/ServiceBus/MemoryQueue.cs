@@ -7,18 +7,24 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ABus.MemoryBusTransport.MemoryHost
+namespace ABus.MemoryServiceBus.ServiceBus
 {
     class MemoryQueue
     {
-        public MemoryQueue()
+        Action<BrokeredMessage> OnMessageReceived;
+        public MemoryQueue(Action<BrokeredMessage> onMessageReceived)
         {
+            Queue = new BlockingCollection<BrokeredMessage>();
+            OnMessageReceived = onMessageReceived;
             QueueTask = new Task(() => Loop(), TaskCreationOptions.LongRunning);
+            QueueTask.Start();
         }
 
-        public MemoryQueue(CancellationToken token)
+        public MemoryQueue(Func<BrokeredMessage,Task> onMessageReceived, CancellationToken token)
         {
+            Queue = new BlockingCollection<BrokeredMessage>();
             QueueTask = new Task(() => Loop(token), TaskCreationOptions.LongRunning);
+            QueueTask.Start();
         }
 
         BlockingCollection<BrokeredMessage> Queue;
@@ -32,10 +38,6 @@ namespace ABus.MemoryBusTransport.MemoryHost
         public void Publish(BrokeredMessage message)
         {
             Queue.Add(message);
-        }
-
-        public void OnMessageAync(Func<BrokeredMessage, Task> onMessage)
-        {
         }
 
         // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -68,17 +70,9 @@ namespace ABus.MemoryBusTransport.MemoryHost
                 if (addingCompleted)
                     break;
 
-                DistributeMessage(enumerator.Current);
+                OnMessageReceived(enumerator.Current);
             }
             while (!Queue.IsCompleted);
         }
-
-        void DistributeMessage(BrokeredMessage rawMessage)
-        {
-            throw new NotImplementedException();
-        }
-
-        public event EventHandler MessageReceived;
-
     }
 }

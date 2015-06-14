@@ -40,11 +40,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MemoryBusTransport.cs" />
-    <Compile Include="MemoryHost\BrokeredMessage.cs" />
-    <Compile Include="MemoryHost\MemoryHost.cs" />
-    <Compile Include="MemoryHost\MemoryQueue.cs" />
-    <Compile Include="MemoryHost\Subscription.cs" />
-    <Compile Include="MemoryHost\Topic.cs" />
+    <Compile Include="ServiceBus\BrokeredMessage.cs" />
+    <Compile Include="ServiceBus\MemoryHost.cs" />
+    <Compile Include="ServiceBus\MemoryQueue.cs" />
+    <Compile Include="ServiceBus\Subscription.cs" />
+    <Compile Include="ServiceBus\Topic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

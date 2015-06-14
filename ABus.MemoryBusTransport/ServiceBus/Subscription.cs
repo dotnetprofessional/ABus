@@ -1,19 +1,18 @@
-﻿using System;
+﻿using ABus.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ABus.MemoryBusTransport.MemoryHost
+namespace ABus.MemoryServiceBus.ServiceBus
 {
-    /*
-    class SubscriptionOptions
+    public class SubscriptionOptions
     {
         public QueueEndpoint Endpoint { get; set; }
         public int MaxConcurrentCalls { get; set; }
         public Func<BrokeredMessage, Task> OnMessage;
     }
-    */
 
     public class Subscription
     {
@@ -24,8 +23,13 @@ namespace ABus.MemoryBusTransport.MemoryHost
             Name = subscriptionName;
         }
 
-        string HostUri;
-        string TopicName;
-        string Name;
+        public void Subscribe(SubscriptionOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string HostUri { get; private set; }
+        public string TopicName { get; private set; }
+        public string Name { get; private set; }
     }
 }

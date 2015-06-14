@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ABus.MemoryBusTransport.MemoryHost
+namespace ABus.MemoryServiceBus.ServiceBus
 {
     public class Topic
     {
@@ -14,6 +14,8 @@ namespace ABus.MemoryBusTransport.MemoryHost
         {
             HostUri = hostUri;
             Name = topicName;
+            Subscriptions = new ConcurrentDictionary<string, Subscription>();
+            Queue = queue;
         }
 
         internal void Send(BrokeredMessage message)
@@ -37,9 +39,9 @@ namespace ABus.MemoryBusTransport.MemoryHost
         }
 
 
-        ConcurrentDictionary<string, Subscription> Subscriptions;
+        public ConcurrentDictionary<string, Subscription> Subscriptions { get; private set; }
         MemoryQueue Queue;
-        string HostUri;
-        string Name;
+        public string HostUri { get; private set; }
+        public string Name { get; private set; }
     }
 }

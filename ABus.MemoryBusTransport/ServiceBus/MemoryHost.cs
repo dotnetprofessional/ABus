@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ABus.MemoryBusTransport.MemoryHost
+namespace ABus.MemoryServiceBus.ServiceBus
 {
     public class MemoryHost
     {
@@ -15,7 +15,17 @@ namespace ABus.MemoryBusTransport.MemoryHost
         public MemoryHost(TransportDefinition transport)
         {
             HostUri = transport.Uri;
-            Queue = new MemoryQueue();
+            Queue = new MemoryQueue(message =>
+            {
+                if (message.Host != HostUri)
+                    throw new Exception("Invalid message routing");
+                GetTopic(message.Topic).Subscriptions.AsParallel().ForAll(pair =>
+                    {
+                        var subscription = pair.Value;
+                        var rawMessage = message.Message;
+                    });
+            });
+            Topics = new ConcurrentDictionary<string, Topic>();
         }
 
         public Topic GetTopic(string topicName)
@@ -35,6 +45,8 @@ namespace ABus.MemoryBusTransport.MemoryHost
 
         public void DeleteTopic(string topicName)
         {
+            Topic topic;
+            Topics.TryRemove(topicName, out topic);
         }
 
         public bool TopicExists(string topicName)

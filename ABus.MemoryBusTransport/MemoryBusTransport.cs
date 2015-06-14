@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
-using ABus.MemoryBusTransport.MemoryHost;
+using ABus.MemoryServiceBus.ServiceBus;
 
 namespace ABus.MemoryServiceBus
 {
@@ -48,27 +48,47 @@ namespace ABus.MemoryServiceBus
 
         public async Task SendAsync(QueueEndpoint endpoint, IEnumerable<RawMessage> messages)
         {
-            await Task.Run(() => Send(endpoint, messages));
+            await Task.Run(() => Send(endpoint, messages)).ConfigureAwait(false);
         }
 
         public async Task SubscribeAsync(QueueEndpoint endpoint, string subscriptionName)
         {
-            await Task.Run(() => HostInstances[endpoint.Host].GetTopic(endpoint.Name).CreateSubscription(subscriptionName));
+            await Task.Run(() => HostInstances[endpoint.Host].GetTopic(endpoint.Name).CreateSubscription(subscriptionName)).ConfigureAwait(false);
+        }
+
+        public void Subscribe(QueueEndpoint endpoint, string subscriptionName)
+        {
+            HostInstances[endpoint.Host].GetTopic(endpoint.Name).CreateSubscription(subscriptionName);
         }
 
         public async Task CreateQueueAsync(QueueEndpoint endpoint)
         {
-            await Task.Run(() => HostInstances[endpoint.Host].CreateTopic(endpoint.Name));
+            await Task.Run(() => HostInstances[endpoint.Host].CreateTopic(endpoint.Name)).ConfigureAwait(false);
+        }
+
+        public void CreateQueue(QueueEndpoint endpoint)
+        {
+            HostInstances[endpoint.Host].CreateTopic(endpoint.Name);
         }
 
         public async Task DeleteQueueAsync(QueueEndpoint endpoint)
         {
-            await Task.Run(() => HostInstances[endpoint.Host].DeleteTopic(endpoint.Name));
+            await Task.Run(() => HostInstances[endpoint.Host].DeleteTopic(endpoint.Name)).ConfigureAwait(false);
+        }
+
+        public void DeleteQueue(QueueEndpoint endpoint)
+        {
+            HostInstances[endpoint.Host].DeleteTopic(endpoint.Name);
         }
 
         public async Task<bool> QueueExistsAsync(QueueEndpoint endpoint)
         {
-            return await Task<bool>.Run(() => HostInstances[endpoint.Host].TopicExists(endpoint.Name));
+            return await Task<bool>.Run(() => HostInstances[endpoint.Host].TopicExists(endpoint.Name)).ConfigureAwait(false);
+        }
+
+        public bool QueueExists(QueueEndpoint endpoint)
+        {
+            return HostInstances[endpoint.Host].TopicExists(endpoint.Name);
         }
 
         public Task DeferAsync(RawMessage message, TimeSpan timeToDelay)

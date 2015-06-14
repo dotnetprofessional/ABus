@@ -80,6 +80,10 @@
       <Project>{bb4f786c-2966-4e73-91bb-6775cf177cf7}</Project>
       <Name>ABus.Contracts</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ABus.MemoryBusTransport\ABus.MemoryServiceBus.csproj">
+      <Project>{db5612f0-37cc-4161-8e9e-4a13ed8f3f10}</Project>
+      <Name>ABus.MemoryServiceBus</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ABus.Sample.Contracts\ABus.Sample.Contracts.csproj">
       <Project>{b0424b6d-e089-4444-8f48-d86ba043ba86}</Project>
       <Name>ABus.Sample.Contracts</Name>
