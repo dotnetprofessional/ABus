@@ -5,6 +5,7 @@ using ABus.Contracts;
 using ABus.Sample.Contracts.Payments;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Collections.Generic;
 using ABus.MemoryServiceBus;
 
 namespace ABus.Sample.Client
@@ -33,19 +34,76 @@ namespace ABus.Sample.Client
             var transport = new MemoryBusTransport();
             var host = new TransportDefinition
             {
-                Uri = "host1",
+                Uri = "host 1",
             };
             //Run(transport, host);
 
             transport.ConfigureHost(host);
 
-            QueueEndpoint topicEndpoint = new QueueEndpoint { Host = "host1", Name = "topic1" };
+            QueueEndpoint topicEndpoint = new QueueEndpoint { Host = "host 1", Name = "topic 1" };
             transport.CreateQueue(topicEndpoint);
+            QueueEndpoint topic2Endpoint = new QueueEndpoint { Host = "host 1", Name = "topic 2" };
+            transport.CreateQueue(topic2Endpoint);
 
-            transport.Subscribe(topicEndpoint, "subscription1");
+            transport.Subscribe(topicEndpoint, "sub 1 1");
+            transport.Subscribe(topicEndpoint, "sub 1 2");
+            transport.Subscribe(topic2Endpoint, "sub 2 1");
+            transport.Subscribe(topic2Endpoint, "sub 2 2");
 
-            RawMessage message = new RawMessage { Body = new byte[] { 97 } };
-            transport.Send(topicEndpoint, message);
+            const string help = "x, Esc - exit\r\n"
+                + "s   - send message\r\n"
+                + "p   - publish message\r\n"
+                + "h,? - help message\r\n";
+            ConsoleKeyInfo key;
+            int messageNo = 0;
+            Console.WriteLine(help);
+            do
+            {
+                key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.S)
+                {
+                    RawMessage message = new RawMessage { Body = Encoding.Unicode.GetBytes("message" + (++messageNo).ToString()) };
+                    Console.WriteLine("Sending message " + messageNo);
+                    transport.Send(topicEndpoint, message);
+                }
+                else if (key.Key == ConsoleKey.D)
+                {
+                    List<RawMessage> messages = new List<RawMessage>();
+                    int startMessageNo = messageNo;
+                    for (int i = 0; i < 20; i++)
+                        messages.Add(new RawMessage { Body = Encoding.Unicode.GetBytes("message" + (++messageNo).ToString()) });
+                    Console.WriteLine("Sending messages " + startMessageNo + " to " + messageNo);
+                    transport.Send(topicEndpoint, messages);
+                }
+                else if (key.Key == ConsoleKey.P)
+                {
+                    RawMessage message = new RawMessage { Body = Encoding.Unicode.GetBytes("message" + (++messageNo).ToString()) };
+                    Console.WriteLine("Sending message " + messageNo);
+                    transport.Send(topicEndpoint, message);
+                }
+                else if (key.Key == ConsoleKey.E)
+                {
+                    List<RawMessage> messages = new List<RawMessage>();
+                    int startMessageNo = messageNo;
+                    for (int i = 0; i < 20; i++)
+                        messages.Add(new RawMessage { Body = Encoding.Unicode.GetBytes("message" + (++messageNo).ToString()) });
+                    Console.WriteLine("Sending messages " + startMessageNo + " to " + messageNo);
+                    transport.Send(topic2Endpoint, messages);
+                }
+                else if (key.Key == ConsoleKey.R)
+                {
+                    RawMessage message = new RawMessage { Body = Encoding.Unicode.GetBytes("message" + (++messageNo).ToString()) };
+                    Console.WriteLine("Sending message " + messageNo);
+                    transport.Send(topic2Endpoint, message);
+                }
+                else if (key.Key == ConsoleKey.H || key.KeyChar == '?')
+                {
+                    Console.WriteLine(help);
+                }
+
+            }
+            while (key.Key != ConsoleKey.Escape && key.Key != ConsoleKey.X);
         }
 
         static void MainAzure(string[] args)

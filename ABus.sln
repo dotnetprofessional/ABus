@@ -34,7 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Fi
 		nugetbuild.bat = nugetbuild.bat
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.MemoryBusTransport", "ABus.MemoryBusTransport\ABus.MemoryBusTransport.csproj", "{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABus.MemoryServiceBus", "ABus.MemoryServiceBus\ABus.MemoryServiceBus.csproj", "{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

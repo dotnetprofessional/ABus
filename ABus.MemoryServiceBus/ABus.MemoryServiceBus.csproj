@@ -7,8 +7,8 @@
     <ProjectGuid>{DB5612F0-37CC-4161-8E9E-4A13ED8F3F10}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ABus.MemoryBusTransport</RootNamespace>
-    <AssemblyName>ABus.MemoryBusTransport</AssemblyName>
+    <RootNamespace>ABus.MemoryServiceBus</RootNamespace>
+    <AssemblyName>ABus.MemoryServiceBus</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

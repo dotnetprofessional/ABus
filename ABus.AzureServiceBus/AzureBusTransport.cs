@@ -87,7 +87,6 @@ namespace ABus.AzureServiceBus
         public async Task SubscribeAsync(QueueEndpoint endpoint, string subscriptionName)
         {
             var client = await this.GetSubscriptionClient(endpoint, subscriptionName);
-            TransportException transportException = null;
 
             // Configure the callback options
             var options = new OnMessageOptions
@@ -99,6 +98,7 @@ namespace ABus.AzureServiceBus
             client.PrefetchCount = 100;
             client.OnMessageAsync(async message =>
             {
+                TransportException transportException = null;
                 bool shouldAbandon = false;
                 try
                 {

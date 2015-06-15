@@ -31,10 +31,10 @@ namespace ABus.MemoryServiceBus.ServiceBus
             return subscription;
         }
 
-        internal Subscription CreateSubscription(string subscriptionName)
+        internal Subscription CreateSubscription(string subscriptionName, SubscriptionOptions options)
         {
             Subscription subscription = null;
-            Subscriptions.AddOrUpdate(subscriptionName, key => subscription = new Subscription(HostUri, Name, subscriptionName), (key, oldValue) => subscription = oldValue);
+            Subscriptions.AddOrUpdate(subscriptionName, key => subscription = new Subscription(HostUri, Name, subscriptionName, options), (key, oldValue) => subscription = oldValue);
             return subscription;
         }
 

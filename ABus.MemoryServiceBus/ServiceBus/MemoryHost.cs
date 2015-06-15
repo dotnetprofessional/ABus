@@ -15,17 +15,31 @@ namespace ABus.MemoryServiceBus.ServiceBus
         public MemoryHost(TransportDefinition transport)
         {
             HostUri = transport.Uri;
-            Queue = new MemoryQueue(message =>
-            {
-                if (message.Host != HostUri)
-                    throw new Exception("Invalid message routing");
-                GetTopic(message.Topic).Subscriptions.AsParallel().ForAll(pair =>
-                    {
-                        var subscription = pair.Value;
-                        var rawMessage = message.Message;
-                    });
-            });
+            Queue = new MemoryQueue(MessageReceived);
             Topics = new ConcurrentDictionary<string, Topic>();
+        }
+
+        void MessageReceived(BrokeredMessage message)
+        {
+            if (message.Host != HostUri)
+                throw new ArgumentException("Invalid message host");
+
+            GetTopic(message.Topic).Subscriptions.AsParallel().ForAll(pair =>
+            {
+                var subscription = pair.Value;
+                Console.WriteLine("Rvcd: H::" + message.Host + "  T::" + message.Topic + "  S::" + subscription.Name
+                    + "  M::" + Encoding.Unicode.GetString(message.Message.Body));
+                try
+                {
+                    if(subscription.OnMessageReceived != null)
+                        subscription.OnMessageReceived(message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception: {0}", ex.Message);
+                    // TODO: handle failed messages
+                }
+            });
         }
 
         public Topic GetTopic(string topicName)

@@ -9,27 +9,25 @@ namespace ABus.MemoryServiceBus.ServiceBus
 {
     public class SubscriptionOptions
     {
-        public QueueEndpoint Endpoint { get; set; }
-        public int MaxConcurrentCalls { get; set; }
-        public Func<BrokeredMessage, Task> OnMessage;
+        //public int MaxConcurrentCalls { get; set; }
+        //public Func<BrokeredMessage, Task> OnMessageReceivedAsync;
+        public Action<BrokeredMessage> OnMessageReceived;
     }
 
     public class Subscription
     {
-        public Subscription(string hostUri, string topicName, string subscriptionName)
+        public Subscription(string hostUri, string topicName, string subscriptionName, SubscriptionOptions options)
         {
             HostUri = hostUri;
             TopicName = topicName;
             Name = subscriptionName;
-        }
-
-        public void Subscribe(SubscriptionOptions options)
-        {
-            throw new NotImplementedException();
+            Options = options;
         }
 
         public string HostUri { get; private set; }
         public string TopicName { get; private set; }
         public string Name { get; private set; }
+        public Action<BrokeredMessage> OnMessageReceived { get; set; }
+        SubscriptionOptions Options;
     }
 }

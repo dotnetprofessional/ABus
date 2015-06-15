@@ -70,7 +70,7 @@ namespace ABus.MemoryServiceBus.ServiceBus
                 if (addingCompleted)
                     break;
 
-                OnMessageReceived(enumerator.Current);
+                Task.Run(() => OnMessageReceived(enumerator.Current)).ConfigureAwait(false);
             }
             while (!Queue.IsCompleted);
         }

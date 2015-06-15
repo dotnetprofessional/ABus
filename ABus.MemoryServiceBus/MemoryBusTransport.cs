@@ -12,6 +12,7 @@ namespace ABus.MemoryServiceBus
     public class MemoryBusTransport : IMessageTransport
     {
         public event EventHandler<RawMessage> MessageReceived;
+        public event EventHandler<TransportException> ExceptionOccured;
         ConcurrentDictionary<string, MemoryHost> HostInstances;
 
         public MemoryBusTransport()
@@ -53,12 +54,36 @@ namespace ABus.MemoryServiceBus
 
         public async Task SubscribeAsync(QueueEndpoint endpoint, string subscriptionName)
         {
-            await Task.Run(() => HostInstances[endpoint.Host].GetTopic(endpoint.Name).CreateSubscription(subscriptionName)).ConfigureAwait(false);
+            await Task.Run(() => Subscribe(endpoint, subscriptionName)).ConfigureAwait(false);
         }
 
         public void Subscribe(QueueEndpoint endpoint, string subscriptionName)
         {
-            HostInstances[endpoint.Host].GetTopic(endpoint.Name).CreateSubscription(subscriptionName);
+            SubscriptionOptions options = new SubscriptionOptions
+            {
+                OnMessageReceived = (message) =>
+                {
+                    TransportException transportException = null;
+                    bool shouldAbandon = false;
+                    try
+                    {
+                        MessageReceived("", message.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        transportException = new TransportException("OnMessage pump", ex);
+                        shouldAbandon = true;
+                    }
+                    if (shouldAbandon)
+                    {
+                        // TODO: How to abandon message
+
+                        if (this.ExceptionOccured != null && transportException != null)
+                            this.ExceptionOccured(this, transportException);
+                    }
+                }
+            };
+            var subscription = HostInstances[endpoint.Host].GetTopic(endpoint.Name).CreateSubscription(subscriptionName, options);
         }
 
         public async Task CreateQueueAsync(QueueEndpoint endpoint)
@@ -73,7 +98,7 @@ namespace ABus.MemoryServiceBus
 
         public async Task DeleteQueueAsync(QueueEndpoint endpoint)
         {
-            await Task.Run(() => HostInstances[endpoint.Host].DeleteTopic(endpoint.Name)).ConfigureAwait(false);
+            await Task.Run(() => DeleteQueue(endpoint)).ConfigureAwait(false);
         }
 
         public void DeleteQueue(QueueEndpoint endpoint)
