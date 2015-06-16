@@ -27,7 +27,7 @@ namespace ABus.Sample.Client
                     //bus.Send(new MakePaymentCommand());
 
                     // Send without using the ABus infrastructure - to simulate a third party system sending a message
-                    SendPaymentCommandMessage();
+                    //SendPaymentCommandMessage();
                 } while (Console.ReadLine() != "x");
             }
         }

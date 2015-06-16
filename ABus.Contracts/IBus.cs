@@ -32,6 +32,11 @@ namespace ABus.Contracts
         void Reply(object message);
 
         /// <summary>
+        /// Forwards the current message to the error queue and removes it from the subscription queue
+        /// </summary>
+        void DeadLetterMessage();
+
+        /// <summary>
         /// Terminates processing of this message by other plugins within the pipeline
         /// </summary>
         /// <remarks>

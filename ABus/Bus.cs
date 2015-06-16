@@ -35,6 +35,11 @@ namespace ABus
             this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Reply, message);
         }
 
+        public void DeadLetterMessage()
+        {
+            this.CurrentMessage.MetaData.Add(new MetaData{Name = StandardMetaData.ShouldDeadLetterMessage, Value = ""});
+        }
+
         public void TerminateMessagePipeline()
         {
             this.Context.ShouldTerminatePipeline = true;

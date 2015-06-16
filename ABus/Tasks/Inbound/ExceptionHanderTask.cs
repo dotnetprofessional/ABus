@@ -16,6 +16,9 @@ namespace ABus.Tasks.Inbound
 
         public void Invoke(InboundMessageContext context, Action next)
         {
+            var deadLetterMessage = false;
+            Exception exceptionToAppend = null;
+
             try
             {
                 next();
@@ -23,21 +26,36 @@ namespace ABus.Tasks.Inbound
             catch (MessageDeserializationException ex)
             {
                 // Unable to recover from this message so record the exception
-                context.RawMessage.MetaData.Add(new MetaData{Name = StandardMetaData.ContentType, Value = JsonConvert.SerializeObject(ex)});
+                exceptionToAppend = ex;
 
                 context.PipelineContext.Trace.Error("MessageDeserializationException: " + ex.Message);
                 context.PipelineContext.Trace.Warning("Message has been consumed as error queue has yet to be implemented!");
                 // TODO: Need to transfer this message to the error queue in a transactionally safe way
+                deadLetterMessage = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                if (this.RetryCount <= 5)
+                // Retry 3 times then dead-letter
+                if (this.RetryCount <= 3)
                 {
                     this.RetryCount ++;
                     this.Invoke(context, next);
-                } 
+                }
                 else
-                    throw;
+                {
+                    exceptionToAppend = ex;
+                    deadLetterMessage = true;
+                }
+            }
+
+            if (exceptionToAppend != null)
+                context.RawMessage.MetaData.Add(new MetaData { Name = StandardMetaData.Exception, Value = JsonConvert.SerializeObject(exceptionToAppend) });
+
+            
+            if (deadLetterMessage)
+            {
+                context.PipelineContext.Trace.Error(string.Format("Transferring message from subscription {0} with Id {1} to error queue",context.SubscriptionName, context.RawMessage.MessageId));
+                context.Bus.DeadLetterMessage();
             }
         }
     }
