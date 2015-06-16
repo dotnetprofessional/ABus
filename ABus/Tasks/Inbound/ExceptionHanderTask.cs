@@ -36,8 +36,12 @@ namespace ABus.Tasks.Inbound
                 // Retry 3 times then dead-letter
                 if (this.RetryCount <= 3)
                 {
+                    // Need to reset the InBoundPipeline before retrying
+                    context.Reset();
+
                     context.PipelineContext.Trace.Error(string.Format("Error occured retry {0} attempt: ", this.RetryCount + 1));
                     this.RetryCount++;
+
                     this.Invoke(context, next);
                 }
                 else

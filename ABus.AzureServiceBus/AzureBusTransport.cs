@@ -227,7 +227,15 @@ namespace ABus.AzureServiceBus
         {
             var bm = new BrokeredMessage(new MemoryStream(rawMessage.Body), true);
             foreach (var m in rawMessage.MetaData)
-                bm.Properties.Add(m.Name, m.Value);
+            {
+                if (m.Name != StandardMetaData.ContentType)
+                    bm.Properties.Add(m.Name, m.Value);
+            }
+
+            // Transfer system properties
+            bm.MessageId = rawMessage.MessageId;
+            bm.CorrelationId = rawMessage.CorrelationId;
+            bm.ContentType = rawMessage.MetaData[StandardMetaData.ContentType].Value;
 
             return bm;
         }
@@ -236,6 +244,9 @@ namespace ABus.AzureServiceBus
         {
             var msg = new RawMessage();
             msg.MessageId = brokeredMessage.MessageId;
+            msg.CorrelationId = brokeredMessage.CorrelationId;
+            if(brokeredMessage.ContentType != null)
+                msg.MetaData.Add(new MetaData{Name = StandardMetaData.ContentType, Value = brokeredMessage.ContentType});
 
             // Transfer meta data
             foreach(var p in brokeredMessage.Properties)

@@ -12,12 +12,12 @@ namespace ABus.Tasks.Outbound
             if (context.InboundMessageContext.Bus.CurrentMessage != null)
             {
                 string currentCorrelationId = "";
-                if (context.InboundMessageContext.Bus.CurrentMessage.MetaData.Contains(StandardMetaData.CorrelationId))
-                    currentCorrelationId = context.InboundMessageContext.Bus.CurrentMessage.MetaData[StandardMetaData.CorrelationId].Value;
+                if (context.InboundMessageContext.Bus.CurrentMessage.CorrelationId != null)
+                    currentCorrelationId = context.InboundMessageContext.Bus.CurrentMessage.CorrelationId;
                 else
                     currentCorrelationId = Guid.NewGuid().ToString();
 
-                context.RawMessage.MetaData.Add(new MetaData { Name = StandardMetaData.CorrelationId, Value = currentCorrelationId });
+                context.RawMessage.CorrelationId = currentCorrelationId;
             }
             next();
         } 
