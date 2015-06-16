@@ -29,8 +29,6 @@ namespace ABus.Tasks.Inbound
                 exceptionToAppend = ex;
 
                 context.PipelineContext.Trace.Error("MessageDeserializationException: " + ex.Message);
-                context.PipelineContext.Trace.Warning("Message has been consumed as error queue has yet to be implemented!");
-                // TODO: Need to transfer this message to the error queue in a transactionally safe way
                 deadLetterMessage = true;
             }
             catch (Exception ex)
@@ -38,7 +36,8 @@ namespace ABus.Tasks.Inbound
                 // Retry 3 times then dead-letter
                 if (this.RetryCount <= 3)
                 {
-                    this.RetryCount ++;
+                    context.PipelineContext.Trace.Error(string.Format("Error occured retry {0} attempt: ", this.RetryCount + 1));
+                    this.RetryCount++;
                     this.Invoke(context, next);
                 }
                 else
