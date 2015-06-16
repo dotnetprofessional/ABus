@@ -10,7 +10,7 @@ namespace ABus.MemoryServiceBus.ServiceBus
 {
     public class Topic
     {
-        internal Topic(string hostUri, string topicName, MemoryQueue queue)
+        internal Topic(string hostUri, string topicName, MemoryQueue queue, Topic errorTopic = null)
         {
             HostUri = hostUri;
             Name = topicName;
@@ -34,7 +34,9 @@ namespace ABus.MemoryServiceBus.ServiceBus
         internal Subscription CreateSubscription(string subscriptionName, SubscriptionOptions options)
         {
             Subscription subscription = null;
-            Subscriptions.AddOrUpdate(subscriptionName, key => subscription = new Subscription(HostUri, Name, subscriptionName, options), (key, oldValue) => subscription = oldValue);
+            Subscriptions.AddOrUpdate(subscriptionName,
+                (key) => subscription = new Subscription(HostUri, Name, subscriptionName, options),
+                (key, oldValue) => subscription = oldValue);
             return subscription;
         }
 

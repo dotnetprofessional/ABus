@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="MemoryBusTransport.cs" />
     <Compile Include="ServiceBus\BrokeredMessage.cs" />
+    <Compile Include="ServiceBus\IMessagerBroker.cs" />
     <Compile Include="ServiceBus\MemoryHost.cs" />
     <Compile Include="ServiceBus\MemoryQueue.cs" />
     <Compile Include="ServiceBus\Subscription.cs" />

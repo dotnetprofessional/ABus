@@ -26,13 +26,13 @@ namespace ABus.MemoryServiceBus.ServiceBus
 
             GetTopic(message.Topic).Subscriptions.AsParallel().ForAll(pair =>
             {
-                var subscription = pair.Value;
+                Subscription subscription = pair.Value;
                 Console.WriteLine("Rvcd: H::" + message.Host + "  T::" + message.Topic + "  S::" + subscription.Name
                     + "  M::" + Encoding.Unicode.GetString(message.Message.Body));
                 try
                 {
                     if(subscription.OnMessageReceived != null)
-                        subscription.OnMessageReceived(message);
+                        subscription.OnMessageReceived(message.Clone());
                 }
                 catch (Exception ex)
                 {

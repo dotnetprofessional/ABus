@@ -74,5 +74,19 @@ namespace ABus.MemoryServiceBus.ServiceBus
             }
             while (!Queue.IsCompleted);
         }
+
+        public void Acquire(BrokeredMessage message)
+        {
+        }
+
+        public void Abandon(BrokeredMessage message)
+        {
+            Send(message);
+        }
+
+        public void Complete(BrokeredMessage message)
+        {
+            // do nothing
+        }
     }
 }

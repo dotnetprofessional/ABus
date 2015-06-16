@@ -11,7 +11,8 @@ namespace ABus.MemoryServiceBus.ServiceBus
     {
         //public int MaxConcurrentCalls { get; set; }
         //public Func<BrokeredMessage, Task> OnMessageReceivedAsync;
-        public Action<BrokeredMessage> OnMessageReceived;
+        public Topic ErrorTopic { get; set; }
+        public Action<BrokeredMessage> OnMessageReceived { get; set; }
     }
 
     public class Subscription
@@ -21,13 +22,14 @@ namespace ABus.MemoryServiceBus.ServiceBus
             HostUri = hostUri;
             TopicName = topicName;
             Name = subscriptionName;
-            Options = options;
+            ErrorTopic = options.ErrorTopic;
+            OnMessageReceived = options.OnMessageReceived;
         }
 
         public string HostUri { get; private set; }
         public string TopicName { get; private set; }
         public string Name { get; private set; }
+        public Topic ErrorTopic { get; set; }
         public Action<BrokeredMessage> OnMessageReceived { get; set; }
-        SubscriptionOptions Options;
     }
 }
