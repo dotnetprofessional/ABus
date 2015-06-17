@@ -14,6 +14,8 @@ namespace ABus.Sample
             Console.WriteLine(string.Format("Received message with name {0} and address {1}", messageCommand.Name, messageCommand.Addresss));
 
             this.Bus.Send(new TestMessage2Event{Name = "Test Send of a message!", Addresss = "No Hope Lane!"});
+
+            throw new Exception("Demo Exception!");
         }
 
         public void Handler(string test)

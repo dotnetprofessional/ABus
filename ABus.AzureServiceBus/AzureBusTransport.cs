@@ -102,17 +102,27 @@ namespace ABus.AzureServiceBus
                 bool shouldAbandon = false;
                 try
                 {
+                    RawMessage rawMessage = null;
                     // publish the message to the lister
                     if (this.MessageReceived != null)
                     {
                         var source = string.Format("{0}:{1}", endpoint.Name, subscriptionName);
-                        this.MessageReceived(source, this.ConvertFromBrokeredMessage(message));
+                        rawMessage = this.ConvertFromBrokeredMessage(message);
+                        this.MessageReceived(source, rawMessage);
                     }
 
+                    if (rawMessage.MetaData.Contains(StandardMetaData.ShouldDeadLetterMessage))
+                    {
+                        // Move message to dead letter queue
+                        this.UpdateMessageMetaData(message, rawMessage);
+                        await message.DeadLetterAsync(message.Properties);
+                    }
+                    else
                     // Remove message from subscription
-                    await message.CompleteAsync();
+                        await message.CompleteAsync();
+
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     // Capture the exception that has occured so that it can be evented out
                     transportException = new TransportException("OnMessage pump", ex);
@@ -124,13 +134,20 @@ namespace ABus.AzureServiceBus
                 {
                     // Abandon the message first
                     await message.AbandonAsync();
-
                     // Now event the exception
                     if (this.ExceptionOccured != null && transportException != null)
                         this.ExceptionOccured(this, transportException);
                 }  
 
             }, options);
+        }
+
+        void UpdateMessageMetaData(BrokeredMessage message, RawMessage rawMessage)
+        {
+            foreach(var m in rawMessage.MetaData)
+                if(!message.Properties.ContainsKey(m.Name) && m.Name != StandardMetaData.ShouldDeadLetterMessage)
+                    message.Properties.Add(m.Name, m.Value);
+
         }
 
         Dictionary<string, TopicClient> CreatedTopicClients { get; set; }
@@ -192,7 +209,7 @@ namespace ABus.AzureServiceBus
                         LockDuration = TimeSpan.FromSeconds(300), // 5 mins
                         EnableDeadLetteringOnMessageExpiration = true,
                         EnableDeadLetteringOnFilterEvaluationExceptions = true,
-                        ForwardDeadLetteredMessagesTo = errorQueue,
+                        //ForwardDeadLetteredMessagesTo = errorQueue,
                     };
                     ns.CreateSubscriptionAsync(subscriptionConfig).Wait();
                 }
@@ -210,7 +227,15 @@ namespace ABus.AzureServiceBus
         {
             var bm = new BrokeredMessage(new MemoryStream(rawMessage.Body), true);
             foreach (var m in rawMessage.MetaData)
-                bm.Properties.Add(m.Name, m.Value);
+            {
+                if (m.Name != StandardMetaData.ContentType)
+                    bm.Properties.Add(m.Name, m.Value);
+            }
+
+            // Transfer system properties
+            bm.MessageId = rawMessage.MessageId;
+            bm.CorrelationId = rawMessage.CorrelationId;
+            bm.ContentType = rawMessage.MetaData[StandardMetaData.ContentType].Value;
 
             return bm;
         }
@@ -219,6 +244,9 @@ namespace ABus.AzureServiceBus
         {
             var msg = new RawMessage();
             msg.MessageId = brokeredMessage.MessageId;
+            msg.CorrelationId = brokeredMessage.CorrelationId;
+            if(brokeredMessage.ContentType != null)
+                msg.MetaData.Add(new MetaData{Name = StandardMetaData.ContentType, Value = brokeredMessage.ContentType});
 
             // Transfer meta data
             foreach(var p in brokeredMessage.Properties)
@@ -242,7 +270,7 @@ namespace ABus.AzureServiceBus
             return this.HostInstances[endpoint.Host].Namespace.TopicExistsAsync(endpoint.Name);
         }
 
-        public Task DeferAsync(RawMessage message, TimeSpan timeToDelay)
+        public Task DeferAsync(QueueEndpoint endpoint, RawMessage message, TimeSpan timeToDelay)
         {
             throw new NotImplementedException();
         }
