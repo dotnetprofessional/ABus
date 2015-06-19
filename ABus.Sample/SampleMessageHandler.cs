@@ -4,7 +4,7 @@ using ABus.Sample.Contracts.Payments;
 
 namespace ABus.Sample
 {
-    public class SampleMessageHandler : IHandleMessage<TestMessageCommand>, IHandleMessage<TestMessage2Event>, IHandleMessage<MakePaymentCommand>, IConfigureHandler<MakePaymentCommand>
+    public class SampleMessageHandler : IHandleMessage<TestMessageCommand>//, IHandleMessage<TestMessage2Event>, IHandleMessage<MakePaymentCommand>, IConfigureHandler<MakePaymentCommand>
     {
         public IBus Bus { get; set; }
 
@@ -15,7 +15,7 @@ namespace ABus.Sample
 
             this.Bus.Send(new TestMessage2Event{Name = "Test Send of a message!", Addresss = "No Hope Lane!"});
 
-            throw new Exception("Demo Exception!");
+            //throw new Exception("Demo Exception!");
         }
 
         public void Handler(string test)
