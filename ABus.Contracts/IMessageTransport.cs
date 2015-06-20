@@ -71,6 +71,6 @@ namespace ABus.Contracts
         /// </summary>
         /// <param name="message"></param>
         /// <param name="timeToDelay">The amount of time to delay the delivery of this message</param>
-        Task DeferAsync(RawMessage message, TimeSpan timeToDelay);
+        Task DeferAsync(QueueEndpoint endpoint, RawMessage message, TimeSpan timeToDelay);
     }
 }
