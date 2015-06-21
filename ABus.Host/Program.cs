@@ -24,8 +24,8 @@ namespace ABus.Host
                 x.RunAsLocalSystem();
 
                 x.SetDescription("ABus Service Host");
-                x.SetDisplayName("ABus");
-                x.SetServiceName("ABus");
+                x.SetDisplayName("ABus Host");
+                x.SetServiceName("ABusHost");
             });         
             
             Console.ReadLine();  

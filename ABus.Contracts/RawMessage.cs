@@ -30,7 +30,7 @@ namespace ABus.Contracts
         /// <summary>
         /// Gets/sets the Id that is used to track messages within a process flow
         /// </summary>
-        public string CorrelationId { get { return null; } }
+        public string CorrelationId { get; set; }
 
         /// <summary>
         /// Gets/sets the body content of the message

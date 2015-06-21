@@ -7,7 +7,8 @@ namespace ABus.Tasks.Outbound
     {
         public void Invoke(OutboundMessageContext context, Action next)
         {
-            context.RawMessage.MessageId = Guid.NewGuid().ToString();
+            if (string.IsNullOrEmpty(context.RawMessage.MessageId))
+                context.RawMessage.MessageId = Guid.NewGuid().ToString();
 
             next(); 
         }

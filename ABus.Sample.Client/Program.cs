@@ -141,7 +141,7 @@ namespace ABus.Sample.Client
         }
 
         static void SendPaymentCommandMessage(IMessageTransport t, TransportDefinition host)
-        {
+            {
             t.ConfigureHost(host);
 
             var entity = new MakePaymentCommand {};
