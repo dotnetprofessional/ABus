@@ -33,5 +33,11 @@ namespace ABus.Config.Transport
 
             return this;
         }
+
+        public TransportDefinitionGrammar UsingAuditQueue(string auditQueue)
+        {
+            this.Definition.AuditQueue = auditQueue;
+            return this;
+        }
     }
 }

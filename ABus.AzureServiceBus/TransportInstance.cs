@@ -5,6 +5,7 @@ namespace ABus.AzureServiceBus
 {
     internal class TransportInstance : TransportDefinition
     {
+        public TransportDefinition Definition { get; set; }
         public NamespaceManager Namespace { get; set; }
 
         public string ConnectionString { get { return string.Format("Endpoint={0};{1}", this.Uri, this.Credentials); } }

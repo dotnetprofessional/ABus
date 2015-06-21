@@ -33,7 +33,8 @@ namespace ABus.Tasks.Outbound
                         Value = Guid.NewGuid().ToString()
                     });
 
-                raw.MetaData.Add(new MetaData{Name = StandardMetaData.RelatedTo,Value = inboundMessage.MessageId});
+                if(inboundMessage.MessageId != null)
+                    raw.MetaData.Add(new MetaData{Name = StandardMetaData.RelatedTo,Value = inboundMessage.MessageId});
             }
 
             if (Thread.CurrentPrincipal.Identity.IsAuthenticated)
