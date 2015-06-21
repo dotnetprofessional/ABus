@@ -4,6 +4,12 @@ namespace ABus.Contracts
 {
     public class TransportDefinition
     {
+        public TransportDefinition()
+        {
+            this.AuditQueue = "Audit";
+            this.EnableAuditing = true;
+        }
+
         /// <summary>
         /// Unique name to define the transport definition
         /// </summary>
@@ -23,5 +29,15 @@ namespace ABus.Contracts
         /// A fully qualified definition of the transport class to use
         /// </summary> 
         public string TransportType { get; set; }
+
+        /// <summary>
+        /// The queue where all messages sent to any queue for this transport will be forwarded
+        /// </summary>
+        public string AuditQueue { get; set; }
+
+        /// <summary>
+        /// Specifies if messages should be audited
+        /// </summary>
+        public bool EnableAuditing { get; set; }
     }
 }
