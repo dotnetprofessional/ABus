@@ -10,10 +10,12 @@ namespace ABus.MemoryServiceBus.ServiceBus
 {
     public class MemoryHost
     {
+        public TransportDefinition Definition { get; private set; }
         public string HostUri { get; private set; }
 
         public MemoryHost(TransportDefinition transport)
         {
+            Definition = transport;
             HostUri = transport.Uri;
             Queue = new MemoryQueue(MessageReceived);
             Topics = new ConcurrentDictionary<string, Topic>();

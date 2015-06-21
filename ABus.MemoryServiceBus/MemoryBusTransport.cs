@@ -45,10 +45,8 @@ namespace ABus.MemoryServiceBus
         public void Subscribe(QueueEndpoint endpoint, string subscriptionName)
         {
             var host = HostInstances[endpoint.Host];
-            var errorTopic = host.CreateTopic("errors");
             SubscriptionOptions options = new SubscriptionOptions
             {
-                ErrorTopic = errorTopic,
                 OnMessageReceived = (message) =>
                 {
                     TransportException transportException = null;
@@ -78,7 +76,24 @@ namespace ABus.MemoryServiceBus
 
         public void CreateQueue(QueueEndpoint endpoint)
         {
-            HostInstances[endpoint.Host].CreateTopic(endpoint.Name);
+            var host = HostInstances[endpoint.Host];
+            var topic = host.CreateTopic(endpoint.Name);
+
+            // TODO: Revise.  From AzureBusTransport.CreateQueue() it's not clear how Audit and log subscriptions are handled.
+            if (host.Definition.EnableAuditing && endpoint.Name != host.Definition.AuditQueue)
+            {
+                topic.CreateSubscription("Audit", new SubscriptionOptions()
+                {
+                    // ForwardTo = host.AuditQueue
+                });
+            }
+            else
+            {
+                topic.CreateSubscription("log", new SubscriptionOptions()
+                {
+                    // ForwardTo = host.AuditQueue
+                });
+            }
         }
 
         public void DeleteQueue(QueueEndpoint endpoint)
@@ -121,7 +136,7 @@ namespace ABus.MemoryServiceBus
             return HostInstances[endpoint.Host].TopicExists(endpoint.Name);
         }
 
-        public Task DeferAsync(RawMessage message, TimeSpan timeToDelay)
+        public Task DeferAsync(QueueEndpoint endpoint, RawMessage message, TimeSpan timeToDelay)
         {
             throw new NotImplementedException();
         }
