@@ -1,9 +1,10 @@
 using System;
+using System.Threading.Tasks;
 
 namespace ABus
 {
     public interface IPipelineInboundMessageTask
     {
-        void Invoke(InboundMessageContext context, Action next);
+        Task InvokeAsync(InboundMessageContext context, Func<Task> next);
     }
 }

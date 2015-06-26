@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using ABus.Contracts;
 using Newtonsoft.Json;
 
@@ -7,7 +8,7 @@ namespace ABus.Tasks.Outbound
 {
     internal class SerializeMessageToJsonTask : IPipelineOutboundMessageTask
     {
-        public void Invoke(OutboundMessageContext context, Action next)
+        public async Task InvokeAsync(OutboundMessageContext context, Func<Task> next)
         {
             // Set the content type of the message
             context.RawMessage.MetaData.Add(new MetaData {Name = StandardMetaData.MessageType, Value = context.MessageInstance.GetType().FullName});
@@ -18,7 +19,7 @@ namespace ABus.Tasks.Outbound
 
             context.RawMessage.Body = Encoding.Unicode.GetBytes(json);
 
-            next();
+            await next().ConfigureAwait(false);
         }
     }
 }

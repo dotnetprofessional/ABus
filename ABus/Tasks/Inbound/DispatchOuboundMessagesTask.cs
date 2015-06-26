@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ABus.Contracts;
 
 namespace ABus.Tasks.Inbound
 {
     internal class DispatchOuboundMessagesTask : IPipelineInboundMessageTask
     {
-        public void Invoke(InboundMessageContext context, Action next)
+        public async Task InvokeAsync(InboundMessageContext context, Func<Task> next)
         {
             // This task happens at the end of the inbound pipeline which includes all
             // calls to the outbound pipeline for any messages that have been sent.
             // This task however must be done once ALL messages have been queued for sending
             // which is why it can't be part of the outbound pipeline
 
-            next();
+            await next().ConfigureAwait(false);
 
             var transactionsEnabled = context.PipelineContext.Configuration.Transactions.TransactionsEnabled;
 

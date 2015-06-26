@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using ABus.Contracts;
 
 namespace ABus.Tasks.Startup
 {
     class AssignTransportToMessageTypesTask : IPipelineStartupTask
     {
-        public void Invoke(PipelineContext context, Action next)
+        public async Task InvokeAsync(PipelineContext context, Func<Task> next)
         {
             // Rules
             // Message endpoint configuration is considered in the order in which it is defined
@@ -53,7 +54,7 @@ namespace ABus.Tasks.Startup
                         m.Queue = m.MessageType.FullName.Replace("Command", "").Replace("Event", "");
             }
 
-            next();
+            await next().ConfigureAwait(false);
         }
     }
 } 

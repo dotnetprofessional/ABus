@@ -5,6 +5,6 @@ namespace ABus
 {
     public interface IPipelineStartupTask
     {
-        void Invoke(PipelineContext context, Action next);
+        Task InvokeAsync(PipelineContext context, Func<Task> next);
     }
 } 

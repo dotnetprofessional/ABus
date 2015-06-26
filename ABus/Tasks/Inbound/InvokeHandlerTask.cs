@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using ABus.Contracts;
 
 namespace ABus.Tasks.Inbound
 {
     class InvokeHandlerTask : IPipelineInboundMessageTask
     {
-        public void Invoke(InboundMessageContext context, Action next)
+        public async Task InvokeAsync(InboundMessageContext context, Func<Task> next)
         {
             // Note that each handler gets its own subscription so even if a message type is
             // handled more than once each one of those handlers will have its own subscription
             // this ensures that if one handler fails it doesn't impact the ability for other handlers
             // to process the message.
 
-            
             // Get the handler for this message based on the subscription
             var messageTypeFulllname = context.RawMessage.MetaData[StandardMetaData.MessageType].Value;
 
@@ -33,7 +33,7 @@ namespace ABus.Tasks.Inbound
 
             context.PipelineContext.Trace.Verbose(string.Format("Invoked handler: {0}.{1} ", handler.ClassType.Name, context.TypeInstance.GetType().Name));
 
-            next();
+            await next().ConfigureAwait(false);
         }
 
         void SetBusIfRequested(InboundMessageContext context, object typeInstance)

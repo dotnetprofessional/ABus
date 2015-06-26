@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ABus.Contracts;
 
 namespace ABus.Tasks.Startup
 {
     class InitializeTransportsTask : IPipelineStartupTask
     {
-        public void Invoke(PipelineContext context, Action next)
+        public async Task InvokeAsync(PipelineContext context, Func<Task> next)
         {
             foreach (var t in context.Configuration.AvailableTransports)
             {
@@ -17,7 +18,7 @@ namespace ABus.Tasks.Startup
                 transport.MessageReceived += context.RaiseMessageReceivedEvent;
             }
               
-            next();
+            await next().ConfigureAwait(false);
         } 
     }
 } 

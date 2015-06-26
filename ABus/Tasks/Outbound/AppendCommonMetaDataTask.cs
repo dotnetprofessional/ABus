@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using ABus.Contracts;
 
 namespace ABus.Tasks.Outbound
 {
     class AppendCommonMetaDataTask : IPipelineOutboundMessageTask
     {
-        public void Invoke(OutboundMessageContext context, Action next)
+        public async Task InvokeAsync(OutboundMessageContext context, Func<Task> next)
         {
             var raw = context.RawMessage;
 
@@ -48,7 +49,16 @@ namespace ABus.Tasks.Outbound
                 raw.MetaData.Add(new MetaData { Name = StandardMetaData.AuthenticationType, Value = "Non-Authenticated" });
             }
 
-            next();
+            // If this message is a send then add a replyTo 
+            var intent = raw.MetaData[StandardMetaData.MessageIntent].Value;
+            if (intent == OutboundMessageContext.MessageIntent.Send.ToString())
+                raw.MetaData.Add(new MetaData { Name = StandardMetaData.ReplyTo, Value = "" });
+
+            // TODO: Read this!
+            // NEed to add a configuration option to define a client queue to reply to
+            // This needs to match the outgoing transport type ie cant send on Azure and try to receive on SQL Server
+
+            await next().ConfigureAwait(false);
         } 
     }
 }

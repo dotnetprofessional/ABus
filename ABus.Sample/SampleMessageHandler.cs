@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ABus.Contracts;
 using ABus.Sample.Contracts.Payments;
 
@@ -8,7 +9,7 @@ namespace ABus.Sample
     {
         public IBus Bus { get; set; }
 
-        public void Handler(TestMessageCommand messageCommand)
+        public async Task HandlerAsync(TestMessageCommand messageCommand)
         {
             //Console.WriteLine(string.Format("Received message with Id {0} and Name {1}", this.Bus.CurrentMessage.MessageId, message.Name));
             Console.WriteLine(string.Format("Received message with name {0} and address {1}", messageCommand.Name, messageCommand.Addresss));
@@ -23,12 +24,12 @@ namespace ABus.Sample
 
         } 
 
-        public void Handler(TestMessage2Event message)
+        public async Task Handler(TestMessage2Event message)
         {
             Console.WriteLine(string.Format("Received test message 2 with name {0} and address {1}", message.Name, message.Addresss));
         }
 
-        public void Handler(MakePaymentCommand message)
+        public async Task  Handler(MakePaymentCommand message)
         {
             Console.WriteLine(string.Format("Received message type {0} ", message.GetType().Name));
 

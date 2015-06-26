@@ -47,7 +47,7 @@ namespace ABus.Sample.Client
             var json = JsonConvert.SerializeObject(entity);
             var raw = new RawMessage { Body = Encoding.Unicode.GetBytes(json) };
             var endpoint = new QueueEndpoint { Host = host.Uri, Name = "PaymentQueue" };
-            t.Send(endpoint, raw);
+            t.SendAsync(endpoint, raw).Wait();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ABus.Contracts;
 using System.Transactions;
 
@@ -17,7 +18,7 @@ namespace ABus.Tasks.Inbound
     /// </remarks>
     internal class EnableTransactionManagementTask : IPipelineInboundMessageTask
     {
-        public void Invoke(InboundMessageContext context, Action next)
+        public async Task InvokeAsync(InboundMessageContext context, Func<Task> next)
         {
             var transactionsEnabled = context.PipelineContext.Configuration.Transactions.TransactionsEnabled;
             IEnumerable<RawMessage> outboundMessages = null;
@@ -25,10 +26,7 @@ namespace ABus.Tasks.Inbound
 
             if (!transactionsEnabled)
             {
-                next();
-
-                // Assign messages directly from context
-                outboundMessages = context.OutboundMessages;
+                await next().ConfigureAwait(false);
             }
             else
             {
@@ -44,7 +42,7 @@ namespace ABus.Tasks.Inbound
                     {
                         messageManager.Begin();
 
-                        next();
+                        await next().ConfigureAwait(false);
 
                         // Transfer all outbound messages to the transaction manager
                         messageManager.AddRangeItems(context.OutboundMessages);
@@ -52,29 +50,8 @@ namespace ABus.Tasks.Inbound
                         // Persist outbound messages with any database transactions in an ACID transaction (if supported by transaciton manager)
                         messageManager.Commit();
                     }
-
-                    outboundMessages = messageManager.TransactionManager.GetMessages(messageManager.InboundMessageId);
                 }
             }
-
-            //// Now need to dispatch the outbound messages to their respective queues using the appropriate transport
-            //foreach (var m in outboundMessages)
-            //{
-            //    var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
-            //    var messageType = context.PipelineContext.RegisteredMessageTypes[messageTypeName];
-            //    var transport = context.PipelineContext.TransportInstances[messageType.Transport.Name];
-            //    var messageIntent = m.MetaData[StandardMetaData.MessageIntent].Value;
-
-            //    if (messageIntent == OutboundMessageContext.MessageIntent.Send.ToString())
-            //        transport.Send(messageType.QueueEndpoint, m);
-            //    else if (messageIntent == OutboundMessageContext.MessageIntent.Publish.ToString())
-            //        transport.Publish(messageType.QueueEndpoint, m);
-            //    else if (messageIntent == OutboundMessageContext.MessageIntent.Reply.ToString())
-            //        transport.Send(messageType.QueueEndpoint, m);
-
-            //    if (messageManager != null && transactionsEnabled)
-            //        messageManager.TransactionManager.MarkAsComplete(messageManager.InboundMessageId, m.MessageId);
-            //}
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using ABus.Contracts;
 
 namespace ABus.Tasks.Startup
@@ -13,7 +14,7 @@ namespace ABus.Tasks.Startup
             AssemblyResolver = assemblyResolver;
         }
 
-        public void Invoke(PipelineContext context, Action next)
+        public async Task InvokeAsync(PipelineContext context, Func<Task> next)
         {
             var assemblies = this.AssemblyResolver.GetAssemblies();
             var messageTypes = (from a in assemblies
@@ -32,7 +33,7 @@ namespace ABus.Tasks.Startup
 
                 context.Trace.Verbose(string.Format("Message {0} type found.", registeredMessageType.FullName));
             }
-            next(); 
+            await next().ConfigureAwait(false); 
         } 
     } 
 }

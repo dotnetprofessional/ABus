@@ -15,16 +15,7 @@ namespace ABus.Contracts
         /// </summary>
         /// <param name="endpoint"></param>
         /// <param name="message"></param>
-        void Publish(QueueEndpoint endpoint, RawMessage message);
-
-        /// <summary>
-        /// Sends a command message to the Endpoint
-        /// </summary>
-        /// <param name="endpoint"></param>
-        /// <param name="message"></param>
-        void Send(QueueEndpoint endpoint, RawMessage message);
-
-        void Send(QueueEndpoint endpoint, IEnumerable<RawMessage> message);
+        Task PublishAsync(QueueEndpoint endpoint, RawMessage message);
 
         /// <summary>
         /// Sends a command message to the Endpoint
@@ -54,6 +45,12 @@ namespace ABus.Contracts
         Task CreateQueueAsync(QueueEndpoint endpoint);
 
         /// <summary>
+        /// Create a queue with the supplied name
+        /// </summary>
+        /// <returns></returns>
+        //void CreateQueue(QueueEndpoint endpoint);
+
+        /// <summary>
         /// Delete a queue with the supplied name
         /// </summary>
         /// <returns></returns>
@@ -62,14 +59,13 @@ namespace ABus.Contracts
         /// <summary>
         /// Determines if a particular queue exists
         /// </summary>
-        /// <param name="endpoint"></param>
         /// <returns></returns>
         Task<bool> QueueExistsAsync(QueueEndpoint endpoint);
 
         /// <summary>
         /// Sends a message that will be queued in the future
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">message to be defered</param>
         /// <param name="timeToDelay">The amount of time to delay the delivery of this message</param>
         Task DeferAsync(QueueEndpoint endpoint, RawMessage message, TimeSpan timeToDelay);
     }

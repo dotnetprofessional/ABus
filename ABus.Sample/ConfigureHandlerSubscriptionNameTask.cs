@@ -15,7 +15,7 @@ namespace ABus.Sample
         /// </summary>
         /// <param name="context"></param>
         /// <param name="next"></param>
-        public void Invoke(PipelineContext context, Action next)
+        public async Task InvokeAsync(PipelineContext context, Func<Task> next)
         {
             //// Locate the handler to change from context by its key
             //var key = string.Format("{0}.{1}", "SampleMessageHandler", typeof(MakePaymentCommand).Name);
@@ -23,7 +23,7 @@ namespace ABus.Sample
 
             //handler.SubscriptionName = "MyCustomSubscriptionName";
 
-            next();
+            await next().ConfigureAwait(false);
         }
     }
 }

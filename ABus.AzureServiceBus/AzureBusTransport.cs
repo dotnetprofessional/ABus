@@ -14,7 +14,7 @@ namespace ABus.AzureServiceBus
 
         public event EventHandler<TransportException> ExceptionOccured;
 
-        object topicClientLock = new object();
+        readonly object topicClientLock = new object();
 
         public AzureBusTransport()
         {
@@ -38,55 +38,9 @@ namespace ABus.AzureServiceBus
             }
         }
 
-        public Task DeleteQueueAsync(QueueEndpoint endpoint)
+        public async Task PublishAsync(QueueEndpoint endpoint, RawMessage message)
         {
-            return this.HostInstances[endpoint.Host].Namespace.DeleteTopicAsync(endpoint.Name);
-        }
-
-        public async Task CreateQueueAsync(QueueEndpoint endpoint)
-        {
-            var host = this.HostInstances[endpoint.Host];
-            var topicDescription = new TopicDescription(endpoint.Name);
-
-            // Create the topic
-            await host.Namespace.CreateTopicAsync(topicDescription);
-
-            // If an audit enabled create a subscription to forward all mesages to the audit queue
-            // Ensure we dont try to audit the audit queue!!
-            if (host.EnableAuditing && endpoint.Name != host.AuditQueue)
-            {
-                var subscriptionConfig = new SubscriptionDescription(endpoint.Name, "Audit")
-                {
-                    ForwardTo = host.AuditQueue
-                };
-                await host.Namespace.CreateSubscriptionAsync(subscriptionConfig);
-            }
-            else
-            {
-                // When creating the audit queue, a default subscription is needed to hold the messages
-                var subscriptionConfig = new SubscriptionDescription(endpoint.Name, "log")
-        {
-                    LockDuration = TimeSpan.FromSeconds(300), // 5 mins
-                    EnableDeadLetteringOnMessageExpiration = true,
-                    EnableDeadLetteringOnFilterEvaluationExceptions = true,
-                };
-                host.Namespace.CreateSubscriptionAsync(subscriptionConfig).Wait();
-            }
-        }
-
-        public void Publish(QueueEndpoint endpoint, RawMessage message)
-        {
-            //var client = this.GetTopicClient(endpoint.Name);
-        }
-
-        public void Send(QueueEndpoint endpoint, RawMessage message)
-        {
-            this.SendAsync(endpoint, message).Wait();
-        }
-
-        public void Send(QueueEndpoint endpoint, IEnumerable<RawMessage> message)
-        {
-            this.SendAsync(endpoint, message).Wait();
+            await this.SendAsync(endpoint, message).ConfigureAwait(false);
         }
 
         public async Task SendAsync(QueueEndpoint endpoint, IEnumerable<RawMessage> messages)
@@ -110,7 +64,7 @@ namespace ABus.AzureServiceBus
 
         public async Task SubscribeAsync(QueueEndpoint endpoint, string subscriptionName)
         {
-            var client = await this.GetSubscriptionClient(endpoint, subscriptionName);
+            var client = await this.GetSubscriptionClient(endpoint, subscriptionName).ConfigureAwait(false);
 
             // Configure the callback options
             var options = new OnMessageOptions
@@ -139,11 +93,11 @@ namespace ABus.AzureServiceBus
                     {
                         // Move message to dead letter queue
                         this.UpdateMessageMetaData(message, rawMessage);
-                        await message.DeadLetterAsync(message.Properties);
+                        await message.DeadLetterAsync(message.Properties).ConfigureAwait(false);
                     }
                     else
                     // Remove message from subscription
-                        await message.CompleteAsync();
+                        await message.CompleteAsync().ConfigureAwait(false);
 
                 }
                 catch (Exception ex)
@@ -157,7 +111,7 @@ namespace ABus.AzureServiceBus
                 if (shouldAbandon)
                 {
                     // Abandon the message first
-                    await message.AbandonAsync();
+                    await message.AbandonAsync().ConfigureAwait(false);
                     // Now event the exception
                     if (this.ExceptionOccured != null && transportException != null)
                         this.ExceptionOccured(this, transportException);
@@ -166,10 +120,59 @@ namespace ABus.AzureServiceBus
             }, options);
         }
 
+        public async Task CreateQueueAsync(QueueEndpoint endpoint)
+        {
+            var host = this.HostInstances[endpoint.Host];
+            var topicDescription = new TopicDescription(endpoint.Name);
+
+            // Create the topic
+            await host.Namespace.CreateTopicAsync(topicDescription).ConfigureAwait(false);
+
+            // If an audit enabled create a subscription to forward all mesages to the audit queue
+            if (host.EnableAuditing)
+            {
+                // Ensure we dont try to audit the audit queue!!
+                if (endpoint.Name != host.AuditQueue)
+                {
+                    var subscriptionConfig = new SubscriptionDescription(endpoint.Name, "Audit")
+                    {
+                        ForwardTo = host.AuditQueue
+                    };
+                    await host.Namespace.CreateSubscriptionAsync(subscriptionConfig).ConfigureAwait(false);
+                }
+                else
+                {
+                    // When creating the audit queue, a default subscription is needed to hold the messages
+                    var subscriptionConfig = new SubscriptionDescription(endpoint.Name, "log")
+                    {
+                        LockDuration = TimeSpan.FromSeconds(300), // 5 mins
+                        EnableDeadLetteringOnMessageExpiration = true,
+                        EnableDeadLetteringOnFilterEvaluationExceptions = true,
+                    };
+                    await host.Namespace.CreateSubscriptionAsync(subscriptionConfig).ConfigureAwait(false);
+                }
+            }
+        }
+
+        public async Task DeleteQueueAsync(QueueEndpoint endpoint)
+        {
+            await this.HostInstances[endpoint.Host].Namespace.DeleteTopicAsync(endpoint.Name);
+        }
+
+        public Task<bool> QueueExistsAsync(QueueEndpoint endpoint)
+        {
+            return this.HostInstances[endpoint.Host].Namespace.TopicExistsAsync(endpoint.Name);
+        }
+
+        public Task DeferAsync(QueueEndpoint endpoint, RawMessage message, TimeSpan timeToDelay)
+        {
+            throw new NotImplementedException();
+        }
+
         void UpdateMessageMetaData(BrokeredMessage message, RawMessage rawMessage)
         {
-            foreach(var m in rawMessage.MetaData)
-                if(!message.Properties.ContainsKey(m.Name) && m.Name != StandardMetaData.ShouldDeadLetterMessage)
+            foreach (var m in rawMessage.MetaData)
+                if (!message.Properties.ContainsKey(m.Name) && m.Name != StandardMetaData.ShouldDeadLetterMessage)
                     message.Properties.Add(m.Name, m.Value);
 
         }
@@ -199,7 +202,7 @@ namespace ABus.AzureServiceBus
                     {
                         try
                         {
-                        ns.CreateTopic(topic);
+                            ns.CreateTopic(topic);
                         }
                         catch (MessagingEntityAlreadyExistsException)
                         {
@@ -274,12 +277,12 @@ namespace ABus.AzureServiceBus
             var msg = new RawMessage();
             msg.MessageId = brokeredMessage.MessageId;
             msg.CorrelationId = brokeredMessage.CorrelationId;
-            if(brokeredMessage.ContentType != null)
-                msg.MetaData.Add(new MetaData{Name = StandardMetaData.ContentType, Value = brokeredMessage.ContentType});
+            if (brokeredMessage.ContentType != null)
+                msg.MetaData.Add(new MetaData { Name = StandardMetaData.ContentType, Value = brokeredMessage.ContentType });
 
             // Transfer meta data
-            foreach(var p in brokeredMessage.Properties)
-                msg.MetaData.Add(new MetaData{Name = p.Key, Value = p.Value as string});
+            foreach (var p in brokeredMessage.Properties)
+                msg.MetaData.Add(new MetaData { Name = p.Key, Value = p.Value as string });
 
             using (var stream = brokeredMessage.GetBody<Stream>())
             {
@@ -291,17 +294,6 @@ namespace ABus.AzureServiceBus
             }
 
             return msg;
-        }
-
-
-        public Task<bool> QueueExistsAsync(QueueEndpoint endpoint)
-        {
-            return this.HostInstances[endpoint.Host].Namespace.TopicExistsAsync(endpoint.Name);
-        }
-
-        public Task DeferAsync(QueueEndpoint endpoint, RawMessage message, TimeSpan timeToDelay)
-        {
-            throw new NotImplementedException();
         }
     }
 }

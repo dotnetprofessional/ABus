@@ -7,7 +7,7 @@ namespace ABus.Tasks.Startup
 {
     public class InitializeHandlersTask : IPipelineStartupTask
     {
-        public void Invoke(PipelineContext context, Action next)
+        public async Task InvokeAsync(PipelineContext context, Func<Task> next)
         {
             // Check if transactions have been disabled and output
             if(!context.Configuration.Transactions.TransactionsEnabled)
@@ -24,10 +24,10 @@ namespace ABus.Tasks.Startup
                 context.Trace.Verbose(string.Format("Initializing handler: {0} with subscription {1}", h.MessageType.MessageType.Name, h.SubscriptionName));
             }
 
-            // Now wait for all tasks to complete
             try
             {
-                Task.WaitAll(tasks.ToArray());
+                // Now wait for all tasks to complete
+                await Task.WhenAll(tasks.ToArray());
                 context.Trace.Verbose("All handlers initialized.");
             } 
             catch (AggregateException ex)
@@ -36,7 +36,7 @@ namespace ABus.Tasks.Startup
                     context.Trace.Critical(e.Message);
             }
             
-            next();
+            await next().ConfigureAwait(false);
         }
     }
 }

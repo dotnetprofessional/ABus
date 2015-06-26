@@ -8,6 +8,6 @@ namespace ABus.Contracts
 {
     public interface IHandleMessage<T>
     {
-        void Handler(T message);
+        Task HandlerAsync(T message);
     }
 }

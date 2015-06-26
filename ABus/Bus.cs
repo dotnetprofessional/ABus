@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using ABus.Contracts;
 
 namespace ABus
@@ -21,18 +22,18 @@ namespace ABus
 
         public void Publish(object message)
         {
-            this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Publish, message);
+            Task.Run(async ()=> await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Publish, message).ConfigureAwait(false)).Wait();
         }
          
 
         public void Send(object message)
         {
-            this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Send, message);
+            Task.Run(async ()=> await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Send, message).ConfigureAwait(false)).Wait();
         }
 
         public void Reply(object message)
         {
-            this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Reply, message);
+            Task.Run(async ()=> await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Reply, message).ConfigureAwait(false)).Wait();
         }
 
         public void DeadLetterMessage()

@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ABus.Contracts;
 
 namespace ABus.Sample
 {
     class AddMetaDataToPaymentMessagesTask : IPipelineInboundMessageTask
     {
-        public void Invoke(InboundMessageContext context, Action next)
+        public async Task InvokeAsync(InboundMessageContext context, Func<Task> next)
         {
             // Only apply to messages from the Payments Subscription
             if (context.Queue == "PaymentQueue")
@@ -15,7 +16,7 @@ namespace ABus.Sample
                 context.RawMessage.MetaData.Add(new MetaData { Name = StandardMetaData.ContentType, Value = "application/json" });
             }
 
-            next();
+            await next().ConfigureAwait(false);
         }
     }
 }

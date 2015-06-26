@@ -1,22 +1,23 @@
 using System;
+using System.Threading.Tasks;
 
 namespace ABus.Sample
 {
     public class CustomSecurityTask: IPipelineInboundMessageTask
     {
-        public void Invoke(InboundMessageContext context, Action next)
+        public async Task InvokeAsync(InboundMessageContext context, Func<Task> next)
         {
             context.PipelineContext.Trace.Information("Authenticated request");
-            next();
+            await next().ConfigureAwait(false);
         }
     }
 
     public class CustomStartupTask : IPipelineStartupTask
     {
-        public void Invoke(PipelineContext context, Action next)
+        public async Task InvokeAsync(PipelineContext context, Func<Task> next)
         {
             context.Trace.Information("Custom Startup Task");
-            next();
+            await next().ConfigureAwait(false);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using ABus.Contracts;
 using ABus.Exceptions;
 using Newtonsoft.Json;
@@ -9,7 +10,7 @@ namespace ABus.Tasks.Inbound
 {
     internal class DeserializeMessageFromJsonTask : IPipelineInboundMessageTask
     {
-        public void Invoke(InboundMessageContext context, Action next)
+        public async Task InvokeAsync(InboundMessageContext context, Func<Task> next)
         {
             // Check that this message has compatable meta data
             if (context.RawMessage.MetaData.Contains(StandardMetaData.MessageType))
@@ -32,7 +33,7 @@ namespace ABus.Tasks.Inbound
             else
                 throw new MessageDeserializationException(string.Format("Unable to deserialize message from queue {0} as it has no message type defined.", context.Queue));
 
-            next();
+            await next().ConfigureAwait(false);
         }
     }
 }

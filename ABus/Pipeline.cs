@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using ABus.Config;
 using ABus.Contracts;
 using Microsoft.Practices.ServiceLocation;
@@ -115,7 +116,7 @@ namespace ABus
         }
 
 
-        void InboundMessageReceived(object sender, RawMessage e)
+        async void InboundMessageReceived(object sender, RawMessage e)
         {
             // Initialize the message context
             var inboundMessageContext = new InboundMessageContext(sender as string, e, this.PipelineContext);
@@ -125,12 +126,12 @@ namespace ABus
             // Start the inbound message pipeline
             var tasks = this.Configure.Configuration.Pipeline.InboundMessagePipelineTasks.GetTasks();
             if (tasks.Count > 0)
-                this.ExecuteInboundMessageTask(inboundMessageContext, tasks.First);
+                await this.ExecuteInboundMessageTask(inboundMessageContext, tasks.First);
         }
 
 
         
-        public void SendOutboundMessage(InboundMessageContext inboundMessageContext, OutboundMessageContext.MessageIntent messageIntent, object messageInstance)
+        public async Task SendOutboundMessage(InboundMessageContext inboundMessageContext, OutboundMessageContext.MessageIntent messageIntent, object messageInstance)
         {
             // Initialize the message context
             var registeredType = this.PipelineContext.RegisteredMessageTypes[messageInstance.GetType().FullName];
@@ -142,41 +143,41 @@ namespace ABus
             // Start the inbound message pipeline
             var tasks = this.Configure.Configuration.Pipeline.OutboundMessagePipelineTasks.GetTasks();
             if (tasks.Count > 0)
-                this.ExecuteOutboundMessageTask(outBoundMessageContext, tasks.First);
+                await this.ExecuteOutboundMessageTask(outBoundMessageContext, tasks.First);
         }
 
 
-        
-        void ExecuteStartupTask(PipelineContext context, LinkedListNode<PipelineTask> task)
+
+        async Task ExecuteStartupTask(PipelineContext context, LinkedListNode<PipelineTask> task)
         {
 
             var taskInstance = this.ServiceLocator.GetInstance(task.Value.Task) as IPipelineStartupTask;
-            taskInstance.Invoke(context, () =>
+            await taskInstance.InvokeAsync(context, async () =>
             {
                 if (task.Next != null)
-                    this.ExecuteStartupTask(context, task.Next);
+                    await this.ExecuteStartupTask(context, task.Next);
             });
         }
 
-        void ExecuteInboundMessageTask(InboundMessageContext context, LinkedListNode<PipelineTask> task)
+        async Task ExecuteInboundMessageTask(InboundMessageContext context, LinkedListNode<PipelineTask> task)
         {
 
             var taskInstance = this.ServiceLocator.GetInstance(task.Value.Task) as IPipelineInboundMessageTask;
-            taskInstance.Invoke(context, () =>
+            await taskInstance.InvokeAsync(context, async () =>
             {
                 
                 if (task.Next != null && !context.ShouldTerminatePipeline)
-                    this.ExecuteInboundMessageTask(context, task.Next);
+                    await this.ExecuteInboundMessageTask(context, task.Next);
             });
         }
-        void ExecuteOutboundMessageTask(OutboundMessageContext context, LinkedListNode<PipelineTask> task)
+        async Task ExecuteOutboundMessageTask(OutboundMessageContext context, LinkedListNode<PipelineTask> task)
         {
 
             var taskInstance = this.ServiceLocator.GetInstance(task.Value.Task) as IPipelineOutboundMessageTask;
-            taskInstance.Invoke(context, () =>
+            await taskInstance.InvokeAsync(context, async () =>
             {
                 if (task.Next != null && !context.InboundMessageContext.ShouldTerminatePipeline) 
-                    this.ExecuteOutboundMessageTask(context, task.Next);
+                    await this.ExecuteOutboundMessageTask(context, task.Next);
             });
         }
     }

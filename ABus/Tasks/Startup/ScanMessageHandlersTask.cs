@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using ABus.Contracts;
 
 namespace ABus.Tasks.Startup
@@ -14,7 +15,7 @@ namespace ABus.Tasks.Startup
             AssemblyResolver = assemblyResolver;
         }
 
-        public void Invoke(PipelineContext context, Action next)
+        public async Task InvokeAsync(PipelineContext context, Func<Task> next)
         {
             var assemblies = this.AssemblyResolver.GetAssemblies();
             var handlers = (from a in assemblies
@@ -51,7 +52,7 @@ namespace ABus.Tasks.Startup
                     context.Trace.Verbose(string.Format("Class: {0} handles {1} message type.", registeredHandler.ClassType.Name, registeredHandler.MessageType.FullName));
                 }
             }
-            next();  
+            await next().ConfigureAwait(false);  
         }
     } 
 }

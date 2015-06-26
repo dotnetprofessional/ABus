@@ -12,5 +12,6 @@
         public static readonly string SourceEndpoint = "ABUs.SourceEndpoint";
         public static readonly string ConversationId = "ABus.ConversationId";
         public static readonly string RelatedTo = "ABus.RelatedTo";
+        public static readonly string ReplyTo = "Abus.ReplyTo";
     } 
 }

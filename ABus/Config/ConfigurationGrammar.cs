@@ -36,6 +36,18 @@ namespace ABus.Config
             return this;
         }
 
+        /// <summary>
+        /// Defines the queue used for all replies for commands sent
+        /// </summary>
+        /// <returns></returns>
+        public ConfigurationGrammar ReplyToQueue(string transportName, string name)
+        {
+            var definition = new MessageEndpointDefinition {TransportName = transportName, Endpoint = name};
+            this.Configuration.ReplyToQueue = definition;
+
+            return this;
+        }
+
         public ConfigurationGrammar UseContainer(IServiceLocator container)
         {
             this.Configuration.Container = container;

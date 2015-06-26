@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using ABus.Config;
 using ABus.Contracts;
 using Microsoft.Practices.ServiceLocation;
@@ -44,7 +45,7 @@ namespace ABus
                 this.MessageReceivedHandler(sender, e);
         }
 
-        public void DispatchMessage(RawMessage m)
+        public async Task DispatchMessage(RawMessage m)
         {
             var messageTypeName = m.MetaData[StandardMetaData.MessageType].Value;
             var messageType = this.RegisteredMessageTypes[messageTypeName];
@@ -52,11 +53,11 @@ namespace ABus
             var messageIntent = m.MetaData[StandardMetaData.MessageIntent].Value;
 
             if (messageIntent == OutboundMessageContext.MessageIntent.Send.ToString())
-                transport.Send(messageType.QueueEndpoint, m);
+                await transport.SendAsync(messageType.QueueEndpoint, m).ConfigureAwait(false);
             else if (messageIntent == OutboundMessageContext.MessageIntent.Publish.ToString())
-                transport.Publish(messageType.QueueEndpoint, m);
+                await transport.PublishAsync(messageType.QueueEndpoint, m).ConfigureAwait(false);
             else if (messageIntent == OutboundMessageContext.MessageIntent.Reply.ToString())
-                transport.Send(messageType.QueueEndpoint, m);
+                await transport.SendAsync(messageType.QueueEndpoint, m).ConfigureAwait(false);
 
             this.Trace.Verbose(string.Format("Dispatched message {0}", m.MessageId));
         }

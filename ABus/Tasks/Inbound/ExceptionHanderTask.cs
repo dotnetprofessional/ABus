@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ABus.Contracts;
 using ABus.Exceptions;
 using Newtonsoft.Json;
@@ -14,14 +15,14 @@ namespace ABus.Tasks.Inbound
 
         public int RetryCount { get; set; }
 
-        public void Invoke(InboundMessageContext context, Action next)
+        public async Task InvokeAsync(InboundMessageContext context, Func<Task> next)
         {
             var deadLetterMessage = false;
             Exception exceptionToAppend = null;
 
             try
             {
-                next();
+                await next().ConfigureAwait(false);
             }
             catch (MessageDeserializationException ex)
             {
@@ -42,7 +43,8 @@ namespace ABus.Tasks.Inbound
                     context.PipelineContext.Trace.Error(string.Format("Error occured retry {0} attempt: ", this.RetryCount + 1));
                     this.RetryCount++;
 
-                    this.Invoke(context, next);
+                    // Can't await here - update for C#6
+                    this.RetryTask(context, next).Wait();
                 }
                 else
                 {
@@ -60,6 +62,11 @@ namespace ABus.Tasks.Inbound
                 context.PipelineContext.Trace.Error(string.Format("Transferring message from subscription {0} with Id {1} to error queue",context.SubscriptionName, context.RawMessage.MessageId));
                 context.Bus.DeadLetterMessage();
             }
+        }
+
+        async Task RetryTask(InboundMessageContext context, Func<Task> next)
+        {
+            await this.InvokeAsync(context, next).ConfigureAwait(false);
         }
     }
 }

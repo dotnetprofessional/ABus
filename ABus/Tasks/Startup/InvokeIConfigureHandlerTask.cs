@@ -10,7 +10,7 @@ namespace ABus.Tasks.Startup
 {
     class InvokeIConfigureHandlerTask : IPipelineStartupTask
     {
-        public void Invoke(PipelineContext context, Action next)
+        public async Task InvokeAsync(PipelineContext context, Func<Task> next)
         {
             var interfaceType = typeof(IConfigureHandler<>);
             var handlers = GetTypesImplementingInterface(interfaceType);
@@ -40,7 +40,7 @@ namespace ABus.Tasks.Startup
                 }
             }
 
-            next();
+            await next().ConfigureAwait(false);
         }
         static IEnumerable<Type> GetTypesImplementingInterface(Type type)
         {

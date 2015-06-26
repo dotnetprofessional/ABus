@@ -29,6 +29,8 @@ namespace ABus.Config
         public TransactionOptions Transactions { get; private set; }
  
         public bool EnsureQueuesExist { get; set; }
+
+        public MessageEndpointDefinition ReplyToQueue { get; set; }
     }
 
     public class AvailableTransportCollection : KeyedCollection<string, TransportDefinition>
