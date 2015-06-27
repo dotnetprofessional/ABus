@@ -52,11 +52,9 @@ namespace ABus.Tasks.Outbound
             // If this message is a send then add a replyTo 
             var intent = raw.MetaData[StandardMetaData.MessageIntent].Value;
             if (intent == OutboundMessageContext.MessageIntent.Send.ToString())
-                raw.MetaData.Add(new MetaData { Name = StandardMetaData.ReplyTo, Value = "" });
-
-            // TODO: Read this!
-            // NEed to add a configuration option to define a client queue to reply to
-            // This needs to match the outgoing transport type ie cant send on Azure and try to receive on SQL Server
+                // This tells the reciever where to send the response back to if a replyTo queue has been defined!
+                if (context.PipelineContext.Configuration.ReplyToQueue != null)
+                    raw.MetaData.Add(new MetaData {Name = StandardMetaData.ReplyTo, Value = context.PipelineContext.Configuration.ReplyToQueue.Endpoint});
 
             await next().ConfigureAwait(false);
         } 

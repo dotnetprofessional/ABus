@@ -10,6 +10,7 @@ namespace ABus.Contracts
         public RawMessage()
         {
             this.MetaData = new MetaDataCollection();
+            this.State = MessageState.Active;
         }
 
         /// <summary>
@@ -36,5 +37,7 @@ namespace ABus.Contracts
         /// Gets/sets the body content of the message
         /// </summary>
         public byte[] Body { get; set; }
+
+        public MessageState State { get; set; }
     }
 }

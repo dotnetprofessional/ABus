@@ -20,25 +20,25 @@ namespace ABus
             get { return this.Context.RawMessage; }
         }
 
-        public void Publish(object message)
+        public async Task PublishAsync(object message)
         {
-            Task.Run(async ()=> await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Publish, message).ConfigureAwait(false)).Wait();
+            await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Publish, message).ConfigureAwait(false);
         }
          
 
-        public void Send(object message)
+        public async Task SendAsync(object message)
         {
-            Task.Run(async ()=> await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Send, message).ConfigureAwait(false)).Wait();
+            await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Send, message).ConfigureAwait(false);
         }
 
-        public void Reply(object message)
+        public async Task ReplyAsync(object message)
         {
-            Task.Run(async ()=> await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Reply, message).ConfigureAwait(false)).Wait();
+            await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Reply, message).ConfigureAwait(false);
         }
 
         public void DeadLetterMessage()
         {
-            this.CurrentMessage.MetaData.Add(new MetaData{Name = StandardMetaData.ShouldDeadLetterMessage, Value = ""});
+            this.CurrentMessage.State = MessageState.Deadlettered;
         }
 
         public void TerminateMessagePipeline()

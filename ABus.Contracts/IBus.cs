@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace ABus.Contracts
 {
@@ -17,19 +18,19 @@ namespace ABus.Contracts
         /// Publishes an event message to the active transport
         /// </summary>
         /// <param name="message"></param>
-        void Publish(object message);
+        Task PublishAsync(object message);
 
         /// <summary>
         /// Sends a command message to the active transport
         /// </summary>
         /// <param name="message"></param>
-        void Send(object message);
+        Task SendAsync(object message);
 
         /// <summary>
         /// Sends a reply to a command message on the active transport
         /// </summary>
         /// <param name="message"></param>
-        void Reply(object message);
+        Task ReplyAsync(object message);
 
         /// <summary>
         /// Forwards the current message to the error queue and removes it from the subscription queue

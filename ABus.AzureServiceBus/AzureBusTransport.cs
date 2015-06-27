@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ABus.Contracts;
 using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
+using MessageState = ABus.Contracts.MessageState;
 
 namespace ABus.AzureServiceBus
 {
@@ -89,7 +90,7 @@ namespace ABus.AzureServiceBus
                         this.MessageReceived(source, rawMessage);
                     }
 
-                    if (rawMessage.MetaData.Contains(StandardMetaData.ShouldDeadLetterMessage))
+                    if (rawMessage.State == MessageState.Deadlettered)
                     {
                         // Move message to dead letter queue
                         this.UpdateMessageMetaData(message, rawMessage);
@@ -172,7 +173,7 @@ namespace ABus.AzureServiceBus
         void UpdateMessageMetaData(BrokeredMessage message, RawMessage rawMessage)
         {
             foreach (var m in rawMessage.MetaData)
-                if (!message.Properties.ContainsKey(m.Name) && m.Name != StandardMetaData.ShouldDeadLetterMessage)
+                if (!message.Properties.ContainsKey(m.Name))
                     message.Properties.Add(m.Name, m.Value);
 
         }

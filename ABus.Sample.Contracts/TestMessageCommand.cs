@@ -6,4 +6,9 @@ namespace ABus.Sample
 
         public string Addresss { get; set; }
     }
+
+    public class TestMessageResponseCommand
+    {
+        public string Message { get; set; }
+    }
 }

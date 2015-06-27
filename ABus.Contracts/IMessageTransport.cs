@@ -45,12 +45,6 @@ namespace ABus.Contracts
         Task CreateQueueAsync(QueueEndpoint endpoint);
 
         /// <summary>
-        /// Create a queue with the supplied name
-        /// </summary>
-        /// <returns></returns>
-        //void CreateQueue(QueueEndpoint endpoint);
-
-        /// <summary>
         /// Delete a queue with the supplied name
         /// </summary>
         /// <returns></returns>

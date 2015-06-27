@@ -14,7 +14,9 @@ namespace ABus.Sample
             //Console.WriteLine(string.Format("Received message with Id {0} and Name {1}", this.Bus.CurrentMessage.MessageId, message.Name));
             Console.WriteLine(string.Format("Received message with name {0} and address {1}", messageCommand.Name, messageCommand.Addresss));
 
-            this.Bus.Send(new TestMessage2Event{Name = "Test Send of a message!", Addresss = "No Hope Lane!"});
+            //await this.Bus.SendAsync(new TestMessage2Event{Name = "Test Send of a message!", Addresss = "No Hope Lane!"});
+
+            await this.Bus.ReplyAsync(new TestMessageResponseCommand {Message = "Thanks for the message!"});
 
             //throw new Exception("Demo Exception!");
         }
@@ -33,7 +35,7 @@ namespace ABus.Sample
         {
             Console.WriteLine(string.Format("Received message type {0} ", message.GetType().Name));
 
-            this.Bus.Send(new TestMessage2Event { Name = "Payment Received!", Addresss = "No return address.." });
+            await this.Bus.SendAsync(new TestMessage2Event { Name = "Payment Received!", Addresss = "No return address.." });
         }
 
         public void HandlerConfig(RegisteredHandler handler)

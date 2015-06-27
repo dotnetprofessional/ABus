@@ -21,7 +21,7 @@ namespace ABus.Sample.Client
                 do
                 {
                     // Using CustomerBC
-                    bus.Send(new TestMessageCommand());
+                    bus.SendAsync(new TestMessageCommand()).Wait();
 
                     // Using PaymentsBC
                     //bus.Send(new MakePaymentCommand());
