@@ -54,6 +54,7 @@
     <Compile Include="TopicTests.cs" />
     <Compile Include="BrokeredMessageTests.cs" />
     <Compile Include="HostTests.cs" />
+    <Compile Include="SubscriptionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ABus.Contracts\ABus.Contracts.csproj">

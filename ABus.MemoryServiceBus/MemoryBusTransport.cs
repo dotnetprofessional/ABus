@@ -79,17 +79,9 @@ namespace ABus.MemoryServiceBus
             var host = HostInstances[endpoint.Host];
             var topic = host.CreateTopic(endpoint.Name);
 
-            // TODO: Revise.  From AzureBusTransport.CreateQueue() it's not clear how Audit and log subscriptions are handled.
             if (host.Definition.EnableAuditing && endpoint.Name != host.Definition.AuditQueue)
             {
-                topic.CreateSubscription("Audit", new SubscriptionOptions()
-                {
-                    // ForwardTo = host.AuditQueue
-                });
-            }
-            else
-            {
-                topic.CreateSubscription("log", new SubscriptionOptions()
+                topic.CreateSubscription(host.Definition.AuditQueue, new SubscriptionOptions()
                 {
                     // ForwardTo = host.AuditQueue
                 });

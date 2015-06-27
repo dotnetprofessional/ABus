@@ -18,12 +18,12 @@ namespace ABus.MemoryServiceBus.ServiceBus
             Queue = queue;
         }
 
-        internal void Send(BrokeredMessage message)
+        public void Send(BrokeredMessage message)
         {
             Queue.Send(message);
         }
 
-        internal Subscription GetSubscription(string subscriptionName)
+        public Subscription GetSubscription(string subscriptionName)
         {
             Subscription subscription;
             if (!Subscriptions.TryGetValue(subscriptionName, out subscription))
@@ -31,7 +31,7 @@ namespace ABus.MemoryServiceBus.ServiceBus
             return subscription;
         }
 
-        internal Subscription CreateSubscription(string subscriptionName, SubscriptionOptions options)
+        public Subscription CreateSubscription(string subscriptionName, SubscriptionOptions options)
         {
             Subscription subscription = null;
             Subscriptions.AddOrUpdate(subscriptionName,
