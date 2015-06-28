@@ -2,7 +2,7 @@
 using ABus.Config;
 using ABus.Tasks.Startup;
 using ABus.Unity;
- 
+
 namespace ABus.Sample
 {
     public class Startup : IConfigureHost

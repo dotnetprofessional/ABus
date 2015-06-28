@@ -29,7 +29,8 @@ namespace ABus.Tasks.Inbound
             // Set the Bus property if one has been defined
             this.SetBusIfRequested(context, typeInstance);
 
-            handler.Method.Invoke(typeInstance, new[] { context.TypeInstance });
+            var task = handler.Method.Invoke(typeInstance, new[] { context.TypeInstance }) as Task;
+            await task;
 
             context.PipelineContext.Trace.Verbose(string.Format("Invoked handler: {0}.{1} ", handler.ClassType.Name, context.TypeInstance.GetType().Name));
 

@@ -10,6 +10,10 @@ namespace ABus.Tasks.Startup
         {
             foreach (var m in context.RegisteredMessageTypes)
             {
+                // Check that the message type isn't a response aka Reply as they are special messages handled by a ReplyTo Queue
+                if (m.Queue.EndsWith("Response"))
+                    continue;
+
                 // get message transport
                 var transport = context.TransportInstances[m.Transport.Name];
                 var endpoint = new QueueEndpoint {Host = m.Transport.Uri, Name = m.Queue};

@@ -131,7 +131,7 @@ namespace ABus
 
 
         
-        public async Task SendOutboundMessage(InboundMessageContext inboundMessageContext, OutboundMessageContext.MessageIntent messageIntent, object messageInstance)
+        public async Task SendOutboundMessage(InboundMessageContext inboundMessageContext, MessageIntent messageIntent, object messageInstance)
         {
             // Initialize the message context
             var registeredType = this.PipelineContext.RegisteredMessageTypes[messageInstance.GetType().FullName];

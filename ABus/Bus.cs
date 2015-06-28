@@ -22,18 +22,18 @@ namespace ABus
 
         public async Task PublishAsync(object message)
         {
-            await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Publish, message).ConfigureAwait(false);
+            await this.Pipeline.SendOutboundMessage(this.Context, MessageIntent.Publish, message).ConfigureAwait(false);
         }
          
 
         public async Task SendAsync(object message)
         {
-            await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Send, message).ConfigureAwait(false);
+            await this.Pipeline.SendOutboundMessage(this.Context, MessageIntent.Send, message).ConfigureAwait(false);
         }
 
         public async Task ReplyAsync(object message)
         {
-            await this.Pipeline.SendOutboundMessage(this.Context, OutboundMessageContext.MessageIntent.Reply, message).ConfigureAwait(false);
+            await this.Pipeline.SendOutboundMessage(this.Context, MessageIntent.Reply, message).ConfigureAwait(false);
         }
 
         public void DeadLetterMessage()

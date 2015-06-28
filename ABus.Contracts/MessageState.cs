@@ -6,6 +6,5 @@
         Deferred,
         Scheduled,
         Deadlettered,
-        Reply,
     }
 }

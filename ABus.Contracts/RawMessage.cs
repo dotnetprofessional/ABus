@@ -39,5 +39,16 @@ namespace ABus.Contracts
         public byte[] Body { get; set; }
 
         public MessageState State { get; set; }
+
+        public MessageIntent MessageIntent
+        {
+            get
+            {
+                if (this.MetaData.Contains(StandardMetaData.MessageIntent))
+                    return ((MessageIntent) Enum.Parse(typeof (MessageIntent), this.MetaData[StandardMetaData.MessageIntent].Value));
+
+                return MessageIntent.Unknown;
+            }
+        }
     }
 }

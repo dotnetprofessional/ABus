@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using ABus.AzureServiceBus;
 using ABus.Contracts;
-using ABus.Sample.Contracts.Payments;
+using ABusSample.Contracts;
+using ABusSample.Contracts.Payments;
 using Newtonsoft.Json;
 
 namespace ABus.Sample.Client
@@ -21,7 +23,7 @@ namespace ABus.Sample.Client
                 do
                 {
                     // Using CustomerBC
-                    bus.SendAsync(new TestMessageCommand()).Wait();
+                    bus.SendAsync(new TestMessageCommand {Name = "Client test message", Addresss = "1 Way Street"}).Wait();
 
                     // Using PaymentsBC
                     //bus.Send(new MakePaymentCommand());
@@ -48,6 +50,15 @@ namespace ABus.Sample.Client
             var raw = new RawMessage { Body = Encoding.Unicode.GetBytes(json) };
             var endpoint = new QueueEndpoint { Host = host.Uri, Name = "PaymentQueue" };
             t.SendAsync(endpoint, raw).Wait();
+        }
+    }
+
+    public class TestMessageCommandHandler :IHandleReplyMessage<TestMessageCommandResponse>
+    {
+        public IBus Bus { get; set; }
+        public async Task HandlerAsync(TestMessageCommandResponse message)
+        {
+            Console.WriteLine(string.Format("Received Reply for message {0} which was {1}", this.Bus.CurrentMessage.CorrelationId, message.Message));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ABus.Sample.Contracts.Payments
+﻿namespace ABusSample.Contracts.Payments
 {
     public class MakePaymentCommand
     {

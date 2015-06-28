@@ -11,7 +11,6 @@ namespace ABus.Tasks.Outbound
         public async Task InvokeAsync(OutboundMessageContext context, Func<Task> next)
         {
             // Set the content type of the message
-            context.RawMessage.MetaData.Add(new MetaData {Name = StandardMetaData.MessageType, Value = context.MessageInstance.GetType().FullName});
             context.RawMessage.MetaData.Add(new MetaData {Name = StandardMetaData.ContentType, Value = "application/json"});
 
             // Serialize the message to json

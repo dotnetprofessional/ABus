@@ -1,4 +1,4 @@
-namespace ABus.Sample
+namespace ABusSample.Contracts
 {
     public class TestMessageCommand
     {
@@ -7,7 +7,7 @@ namespace ABus.Sample
         public string Addresss { get; set; }
     }
 
-    public class TestMessageResponseCommand
+    public class TestMessageCommandResponse
     {
         public string Message { get; set; }
     }

@@ -52,11 +52,11 @@ namespace ABus
             var transport = this.TransportInstances[messageType.Transport.Name];
             var messageIntent = m.MetaData[StandardMetaData.MessageIntent].Value;
 
-            if (messageIntent == OutboundMessageContext.MessageIntent.Send.ToString())
+            if (messageIntent == MessageIntent.Send.ToString())
                 await transport.SendAsync(messageType.QueueEndpoint, m).ConfigureAwait(false);
-            else if (messageIntent == OutboundMessageContext.MessageIntent.Publish.ToString())
+            else if (messageIntent == MessageIntent.Publish.ToString())
                 await transport.PublishAsync(messageType.QueueEndpoint, m).ConfigureAwait(false);
-            else if (messageIntent == OutboundMessageContext.MessageIntent.Reply.ToString())
+            else if (messageIntent == MessageIntent.Reply.ToString())
                 await transport.SendAsync(messageType.QueueEndpoint, m).ConfigureAwait(false);
 
             this.Trace.Verbose(string.Format("Dispatched message {0}", m.MessageId));

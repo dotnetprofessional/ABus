@@ -7,13 +7,6 @@ namespace ABus
     /// </summary>
     public class OutboundMessageContext
     {
-        public enum MessageIntent
-        {
-            Send,
-            Reply,
-            Publish
-        }
-
         public OutboundMessageContext(QueueEndpoint queue, object messageInstance, PipelineContext pipelineContext, InboundMessageContext inboundMessageContext)
         {
             this.Queue = queue;

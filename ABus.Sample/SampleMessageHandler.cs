@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ABus.Contracts;
-using ABus.Sample.Contracts.Payments;
+using ABusSample.Contracts;
+using ABusSample.Contracts.Payments;
 
 namespace ABus.Sample
 {
@@ -16,7 +17,7 @@ namespace ABus.Sample
 
             //await this.Bus.SendAsync(new TestMessage2Event{Name = "Test Send of a message!", Addresss = "No Hope Lane!"});
 
-            await this.Bus.ReplyAsync(new TestMessageResponseCommand {Message = "Thanks for the message!"});
+            await this.Bus.ReplyAsync(new TestMessageCommandResponse() {Message = "Thanks for the message!"});
 
             //throw new Exception("Demo Exception!");
         }

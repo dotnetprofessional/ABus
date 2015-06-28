@@ -19,7 +19,8 @@ namespace ABus.Tasks.Startup
             var assemblies = this.AssemblyResolver.GetAssemblies();
             var messageTypes = (from a in assemblies
                 from t in a.GetTypes()
-                where t.IsClass && (t.Name.EndsWith("Command") || t.Name.EndsWith("Event"))
+                                where t.IsClass && !t.FullName.StartsWith("ABus.")
+                                && (t.Name.EndsWith("Command") || t.Name.EndsWith("Event") || t.Name.EndsWith("Message") || t.Name.EndsWith("Response"))
                 // Find types that are either commands or events
                 select t).Distinct();
 

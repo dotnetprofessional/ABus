@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -18,10 +19,21 @@ namespace ABus.Tasks.Startup
         public async Task InvokeAsync(PipelineContext context, Func<Task> next)
         {
             var assemblies = this.AssemblyResolver.GetAssemblies();
+            this.ScanForHandlers(context, assemblies, "IHandleMessage`1");
+            this.ScanForHandlers(context, assemblies, "IHandleReplyMessage`1");
+
+            await next().ConfigureAwait(false);
+        }
+
+        void ScanForHandlers(PipelineContext context, List<Assembly> assemblies, string interfaceName)
+        {
             var handlers = (from a in assemblies
-                from t in a.GetTypes()                              // Get a list of all types within each assembly
-                from i in t.GetTypeInfo().ImplementedInterfaces     // Check TypeInfo for type 
-                            where i.Name == "IHandleMessage`1"      //and only select those that implement IHandler(T message)
+                from t in a.GetTypes()
+                // Get a list of all types within each assembly
+                from i in t.GetTypeInfo().ImplementedInterfaces
+                // Check TypeInfo for type 
+                where i.Name == interfaceName
+                //and only select those that implement IHandler(T message)
                 select t).Distinct();
 
             foreach (var handler in handlers)
@@ -32,7 +44,6 @@ namespace ABus.Tasks.Startup
                 var interfaces = handlerInterfaces.Where(i => i.Name == "IHandleMessage`1");
                 foreach (var interfaceImplementation in interfaces)
                 {
-
                     // Get the message type used
                     var argumentType = interfaceImplementation.GenericTypeArguments[0];
                     var method = interfaceImplementation.GetTypeInfo().DeclaredMethods.First();
@@ -52,7 +63,6 @@ namespace ABus.Tasks.Startup
                     context.Trace.Verbose(string.Format("Class: {0} handles {1} message type.", registeredHandler.ClassType.Name, registeredHandler.MessageType.FullName));
                 }
             }
-            await next().ConfigureAwait(false);  
         }
     } 
 }

@@ -1,4 +1,4 @@
-namespace ABus.Sample
+namespace ABusSample.Contracts
 {
     public class TestMessage2Event
     {

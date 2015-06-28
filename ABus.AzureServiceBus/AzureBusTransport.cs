@@ -57,7 +57,15 @@ namespace ABus.AzureServiceBus
 
         public async Task SendAsync(QueueEndpoint endpoint, RawMessage message)
         {
-            var client = this.GetTopicClient(endpoint);
+
+            var messageEndpoint = endpoint;
+            // If this is a reply then we need to override the Endpoint for this message
+            // and use the ReplyTo endpoint instead. Currently only support request/response on the same transport definition.
+            if (message.MessageIntent == MessageIntent.Reply)
+            {
+                messageEndpoint = new QueueEndpoint {Host = endpoint.Host, Name = message.MetaData[StandardMetaData.ReplyTo].Value};
+            }
+            var client = this.GetTopicClient(messageEndpoint);
 
             var brokeredMessage = this.ConvertToBrokeredMessage(message);
             await client.SendAsync(brokeredMessage).ConfigureAwait(false);

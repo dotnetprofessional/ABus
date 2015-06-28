@@ -7,7 +7,7 @@
     <ProjectGuid>{B0424B6D-E089-4444-8F48-D86BA043BA86}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ABus.Sample.Contracts</RootNamespace>
+    <RootNamespace>ABusSample.Contracts</RootNamespace>
     <AssemblyName>ABus.Sample.Contracts</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
