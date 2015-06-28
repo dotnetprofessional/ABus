@@ -53,8 +53,11 @@ namespace ABus.MemoryServiceBus
                     bool shouldAbandon = false;
                     try
                     {
-                        var source = string.Format("{0}:{1}", endpoint.Name, subscriptionName);
-                        MessageReceived(source, message.Message);
+                        if (MessageReceived != null)
+                        {
+                            var source = string.Format("{0}:{1}", endpoint.Name, subscriptionName);
+                            MessageReceived(source, message.Message);
+                        }
                         message.Complete();
                     }
                     catch (Exception ex)
@@ -81,10 +84,7 @@ namespace ABus.MemoryServiceBus
 
             if (host.Definition.EnableAuditing && endpoint.Name != host.Definition.AuditQueue)
             {
-                topic.CreateSubscription(host.Definition.AuditQueue, new SubscriptionOptions()
-                {
-                    // ForwardTo = host.AuditQueue
-                });
+                topic.Audit = host.CreateTopic(host.Definition.AuditQueue);
             }
         }
 

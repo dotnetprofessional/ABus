@@ -29,8 +29,6 @@ namespace ABus.MemoryServiceBus.ServiceBus
             GetTopic(message.Topic).Subscriptions.AsParallel().ForAll(pair =>
             {
                 Subscription subscription = pair.Value;
-                Console.WriteLine("Rvcd: H::" + message.Host + "  T::" + message.Topic + "  S::" + subscription.Name
-                    + "  M::" + Encoding.Unicode.GetString(message.Message.Body));
                 try
                 {
                     if(subscription.OnMessageReceived != null)
@@ -38,7 +36,6 @@ namespace ABus.MemoryServiceBus.ServiceBus
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Exception: {0}", ex.Message);
                     // TODO: handle failed messages
                 }
             });
