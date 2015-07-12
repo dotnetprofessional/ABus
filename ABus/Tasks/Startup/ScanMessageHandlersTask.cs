@@ -20,12 +20,13 @@ namespace ABus.Tasks.Startup
         {
             var assemblies = this.AssemblyResolver.GetAssemblies();
             this.ScanForHandlers(context, assemblies, "IHandleMessage`1");
-            this.ScanForHandlers(context, assemblies, "IHandleReplyMessage`1");
+            if (context.Configuration.ReplyToQueue != null)
+                this.ScanForHandlers(context, assemblies, "IHandleReplyMessage`1", context.Configuration.ReplyToQueue.Endpoint);
 
             await next().ConfigureAwait(false);
         }
 
-        void ScanForHandlers(PipelineContext context, List<Assembly> assemblies, string interfaceName)
+        void ScanForHandlers(PipelineContext context, List<Assembly> assemblies, string interfaceName, string defaultSubscription= null)
         {
             var handlers = (from a in assemblies
                 from t in a.GetTypes()
@@ -41,7 +42,7 @@ namespace ABus.Tasks.Startup
                 var handlerInterfaces = handler.GetTypeInfo().ImplementedInterfaces;
 
                 // Only deal with implementations of IHandleMessage interfaces
-                var interfaces = handlerInterfaces.Where(i => i.Name == "IHandleMessage`1");
+                var interfaces = handlerInterfaces.Where(i => i.Name == interfaceName);
                 foreach (var interfaceImplementation in interfaces)
                 {
                     // Get the message type used
@@ -58,7 +59,10 @@ namespace ABus.Tasks.Startup
                     registeredHandler.ClassType = handler;
                     context.RegisteredHandlers.Add(registeredHandler);
 
-                    registeredHandler.SubscriptionName = handlerKey;
+                    if (string.IsNullOrEmpty(defaultSubscription))
+                        defaultSubscription = handlerKey;
+
+                    registeredHandler.SubscriptionName = defaultSubscription;
 
                     context.Trace.Verbose(string.Format("Class: {0} handles {1} message type.", registeredHandler.ClassType.Name, registeredHandler.MessageType.FullName));
                 }

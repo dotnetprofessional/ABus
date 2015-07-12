@@ -180,5 +180,13 @@ namespace ABus
                     await this.ExecuteOutboundMessageTask(context, task.Next);
             });
         }
+
+        public static string ThisEndpointName {
+            get
+            {
+                return string.Format("{0}-{1}:{2}", Environment.MachineName, Assembly.GetExecutingAssembly().GetName().Name,
+                    System.Diagnostics.Process.GetCurrentProcess().Id);
+            }
+        }
     }
 }

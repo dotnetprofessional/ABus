@@ -57,7 +57,15 @@ namespace ABus
             else if (messageIntent == MessageIntent.Publish.ToString())
                 await transport.PublishAsync(messageType.QueueEndpoint, m).ConfigureAwait(false);
             else if (messageIntent == MessageIntent.Reply.ToString())
-                await transport.SendAsync(messageType.QueueEndpoint, m).ConfigureAwait(false);
+            {
+                var endpoint = messageType.QueueEndpoint;
+                // If this is a reply then we need to override the Endpoint for this message type
+                // and use the ReplyTo endpoint instead. Currently only support request/response on the same transport definition.
+                var messageEndpoint = new QueueEndpoint {Host = endpoint.Host};
+                messageEndpoint.SetQueueName(m.MetaData[StandardMetaData.ReplyTo].Value);
+
+                await transport.SendAsync(messageEndpoint, m).ConfigureAwait(false);
+            }
 
             this.Trace.Verbose(string.Format("Dispatched message {0}", m.MessageId));
         }

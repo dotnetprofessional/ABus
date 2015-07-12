@@ -17,8 +17,7 @@ namespace ABus.Tasks.Outbound
             raw.MetaData.Add(new MetaData
             {
                 Name = StandardMetaData.SourceEndpoint,
-                Value = string.Format("{0}\\{1}:{2}", Environment.MachineName, Assembly.GetExecutingAssembly().GetName().Name,
-                        System.Diagnostics.Process.GetCurrentProcess().Id)
+                Value = Pipeline.ThisEndpointName
             });
 
             // Define the conversation Id for this message

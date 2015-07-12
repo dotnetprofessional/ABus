@@ -39,6 +39,14 @@ namespace ABus.Contracts
         Task SubscribeAsync(QueueEndpoint endpoint, string subscriptionName);
 
         /// <summary>
+        /// Create a subsription on the Endpoint
+        /// </summary>
+        /// <param name="endpoint"></param>
+        /// <param name="subscriptionName">The unique name for this subscription</param>
+        /// <param name="filter">an ANSI SQL statement to filter out messages for this subscription</param>
+        Task SubscribeAsync(QueueEndpoint endpoint, string subscriptionName, string filter);
+
+        /// <summary>
         /// Create a queue with the supplied name
         /// </summary>
         /// <returns></returns>

@@ -24,8 +24,6 @@ namespace ABus.Tasks.Startup
                 context.Trace.Verbose(string.Format("Initializing handler: {0} with subscription {1}", h.MessageType.MessageType.Name, h.SubscriptionName));
             }
 
-            // 
-
             try
             {
                 // Now wait for all tasks to complete

@@ -7,6 +7,7 @@ namespace ABus.Contracts
         public TransportDefinition()
         {
             this.AuditQueue = "Audit";
+            this.ErrorQueue = "Errors";
             this.EnableAuditing = true;
         }
 
@@ -34,6 +35,11 @@ namespace ABus.Contracts
         /// The queue where all messages sent to any queue for this transport will be forwarded
         /// </summary>
         public string AuditQueue { get; set; }
+
+        /// <summary>
+        /// The queue where all messages that can't be processed by a subscription are sent
+        /// </summary>
+        public string ErrorQueue { get; set; }
 
         /// <summary>
         /// Specifies if messages should be audited

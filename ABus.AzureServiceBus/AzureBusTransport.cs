@@ -57,29 +57,23 @@ namespace ABus.AzureServiceBus
 
         public async Task SendAsync(QueueEndpoint endpoint, RawMessage message)
         {
-
-            var messageEndpoint = endpoint;
-            // If this is a reply then we need to override the Endpoint for this message
-            // and use the ReplyTo endpoint instead. Currently only support request/response on the same transport definition.
-            if (message.MessageIntent == MessageIntent.Reply)
-            {
-                messageEndpoint = new QueueEndpoint {Host = endpoint.Host, Name = message.MetaData[StandardMetaData.ReplyTo].Value};
-            }
-            var client = this.GetTopicClient(messageEndpoint);
+            var client = this.GetTopicClient(endpoint);
+            if (endpoint.SubQueueName != "")
+                message.MetaData.Add(new MetaData {Name = AzureTransportMetaData.ForSubscriber, Value = endpoint.SubQueueName});
 
             var brokeredMessage = this.ConvertToBrokeredMessage(message);
             await client.SendAsync(brokeredMessage).ConfigureAwait(false);
         }
 
-        public async Task SubscribeAsync(QueueEndpoint endpoint, string subscriptionName)
+        public async Task SubscribeAsync(QueueEndpoint endpoint, string subscriptionName, string filter)
         {
-            var client = await this.GetSubscriptionClient(endpoint, subscriptionName).ConfigureAwait(false);
+            var client = await this.GetSubscriptionClient(endpoint, subscriptionName, filter).ConfigureAwait(false);
 
             // Configure the callback options
             var options = new OnMessageOptions
             {
                 AutoComplete = false,
-                AutoRenewTimeout = TimeSpan.FromMinutes(1),
+                AutoRenewTimeout = TimeSpan.FromMinutes(10),
                 MaxConcurrentCalls = 10,
             };
             client.PrefetchCount = 100;
@@ -90,7 +84,7 @@ namespace ABus.AzureServiceBus
                 try
                 {
                     RawMessage rawMessage = null;
-                    // publish the message to the lister
+                    // publish the message to the listener
                     if (this.MessageReceived != null)
                     {
                         var source = string.Format("{0}:{1}", endpoint.Name, subscriptionName);
@@ -105,7 +99,7 @@ namespace ABus.AzureServiceBus
                         await message.DeadLetterAsync(message.Properties).ConfigureAwait(false);
                     }
                     else
-                    // Remove message from subscription
+                        // Remove message from subscription
                         await message.CompleteAsync().ConfigureAwait(false);
 
                 }
@@ -129,6 +123,11 @@ namespace ABus.AzureServiceBus
             }, options);
         }
 
+        public Task SubscribeAsync(QueueEndpoint endpoint, string subscriptionName)
+        {
+            return this.SubscribeAsync(endpoint, subscriptionName, null);
+        }
+
         public async Task CreateQueueAsync(QueueEndpoint endpoint)
         {
             var host = this.HostInstances[endpoint.Host];
@@ -137,6 +136,23 @@ namespace ABus.AzureServiceBus
             // Create the topic
             await host.Namespace.CreateTopicAsync(topicDescription).ConfigureAwait(false);
 
+            // When creating special queues such as Audit and Errors then additional steps are needed
+
+            // Error Queue
+            if (endpoint.Name == host.ErrorQueue)
+            {
+                //  Neeed to create a default subscription so the messages dont disappear!
+                var subscriptionConfig = new SubscriptionDescription(endpoint.Name, "log")
+                {
+                    LockDuration = TimeSpan.FromSeconds(300), // 5 mins
+                    EnableDeadLetteringOnMessageExpiration = true,
+                    EnableDeadLetteringOnFilterEvaluationExceptions = true,
+                };
+                await host.Namespace.CreateSubscriptionAsync(subscriptionConfig).ConfigureAwait(false);
+
+            }
+
+            // Audit Queue
             // If an audit enabled create a subscription to forward all mesages to the audit queue
             if (host.EnableAuditing)
             {
@@ -228,8 +244,12 @@ namespace ABus.AzureServiceBus
             return this.CreatedTopicClients[topic];
         }
 
-        async Task<SubscriptionClient> GetSubscriptionClient(QueueEndpoint endpoint, string subscription)
+        async Task<SubscriptionClient> GetSubscriptionClient(QueueEndpoint endpoint, string subscription, string filter)
         {
+            // Azure Service Bus doesnt support using dot notation when using filters for properties
+            // As such we need to strip dots and replace them with underscores for any properties that are used in filters
+            subscription = subscription.Replace('.', '_');
+
             var host = this.HostInstances[endpoint.Host];
             var ns = host.Namespace;
 
@@ -250,9 +270,18 @@ namespace ABus.AzureServiceBus
                         LockDuration = TimeSpan.FromSeconds(300), // 5 mins
                         EnableDeadLetteringOnMessageExpiration = true,
                         EnableDeadLetteringOnFilterEvaluationExceptions = true,
-                        //ForwardDeadLetteredMessagesTo = errorQueue,
+                        //ForwardDeadLetteredMessagesTo = host.ErrorQueue,
                     };
-                    await ns.CreateSubscriptionAsync(subscriptionConfig).ConfigureAwait(false);
+
+                    // Define a custom filter that supports sending messages directly to a subscription
+                    var subscriptionFilter = string.Format("{0} is null OR {0}={1}", AzureTransportMetaData.ForSubscriber, subscription);
+
+                    if (!string.IsNullOrEmpty(filter))
+                        subscriptionFilter += " AND " + filter;
+                    
+                    var sqlFilter = new SqlFilter(subscriptionFilter);
+
+                    await ns.CreateSubscriptionAsync(subscriptionConfig, sqlFilter).ConfigureAwait(false);
                 }
 
                 subscriptionClient = SubscriptionClient.CreateFromConnectionString(host.ConnectionString, topic, subscription, ReceiveMode.PeekLock);
