@@ -65,7 +65,7 @@ namespace ABus.AzureServiceBus
             {
                 // When creating the audit queue, a default subscription is needed to hold the messages
                 var subscriptionConfig = new SubscriptionDescription(endpoint.Name, "log")
-        {
+                {
                     LockDuration = TimeSpan.FromSeconds(300), // 5 mins
                     EnableDeadLetteringOnMessageExpiration = true,
                     EnableDeadLetteringOnFilterEvaluationExceptions = true,
